@@ -1,0 +1,48 @@
+<aside class="sidebar" [class.sidebar--collapsed]="collapsed">
+    <!-- Header optimizado: Solo el botón de colapso -->
+  <div class="sidebar__header">
+    <!-- El logo se elimina de aquí porque ya está en la Navbar -->
+    <button class="sidebar__collapse-btn" (click)="toggleCollapse()" [title]="collapsed ? 'Expandir' : 'Colapsar'">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline *ngIf="!collapsed" points="15 18 9 12 15 6"/>
+        <polyline *ngIf="collapsed"  points="9 18 15 12 9 6"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Línea divisora superior -->
+  <div class="sidebar__divider"></div>
+
+  <!-- Menú nav -->
+  <nav class="sidebar__nav">
+    <p class="sidebar__section-label" *ngIf="!collapsed">Menú</p>
+
+    <a
+      class="sidebar__item"
+      *ngFor="let item of items"
+      [routerLink]="item.route"
+      routerLinkActive="sidebar__item--active"
+      [title]="collapsed ? item.label : ''"
+    >
+      <span class="sidebar__item-icon" [innerHTML]="item.icon"></span>
+      <span class="sidebar__item-label" *ngIf="!collapsed">{{ item.label }}</span>
+      <span class="sidebar__item-badge" *ngIf="item.badge && !collapsed">{{ item.badge }}</span>
+    </a>
+  </nav>
+
+  <!-- Footer sidebar -->
+  <div class="sidebar__footer">
+    <div class="sidebar__divider"></div>
+    <div class="sidebar__user-mini" *ngIf="!collapsed">
+      <div class="sidebar__avatar">{{ auth.nombre.charAt(0) }}</div>
+      <div class="sidebar__user-text">
+        <span class="sidebar__user-name">{{ auth.nombre }}</span>
+        <span class="sidebar__user-ver">v{{ version }}</span>
+      </div>
+    </div>
+    <div class="sidebar__user-mini sidebar__user-mini--center" *ngIf="collapsed">
+      <div class="sidebar__avatar">{{ auth.nombre.charAt(0) }}</div>
+    </div>
+  </div>
+
+</aside>

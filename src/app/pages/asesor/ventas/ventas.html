@@ -1,0 +1,151 @@
+<div class="min-h-screen bg-slate-50 p-4 md:p-8">
+  <!-- Header -->
+  <header class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <div>
+      <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">
+        Mis Ventas
+      </h1>
+      <p class="text-slate-500 font-medium">Gestión y seguimiento de operaciones comerciales</p>
+    </div>
+    
+    <!-- Resumen rápido (Opcional) -->
+    <div class="flex gap-4">
+      <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center gap-3">
+        <div class="p-2 bg-blue-100 rounded-lg">
+          <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="Value-path-here" /></svg>
+        </div>
+        <div>
+          <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Total Hoy</p>
+          <p class="text-xl font-bold text-slate-800">S/ {{ calcularTotalHoy() | number:'1.2-2' }}</p>
+        </div>
+      </div>
+    </div>
+  </header>
+  <div class="mb-6 bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-wrap items-end gap-4">
+    <!-- Desde -->
+    <div class="flex flex-col gap-1.5">
+      <label class="text-xs font-bold text-slate-500 uppercase ml-1">Desde</label>
+      <div class="relative">
+        <input type="date" [(ngModel)]="fechaInicio" 
+          class="pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all text-slate-700">
+        <div class="absolute left-3 top-2.5 text-slate-400">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hasta -->
+    <div class="flex flex-col gap-1.5">
+      <label class="text-xs font-bold text-slate-500 uppercase ml-1">Hasta</label>
+      <div class="relative">
+        <input type="date" [(ngModel)]="fechaFin"
+          class="pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all text-slate-700">
+        <div class="absolute left-3 top-2.5 text-slate-400">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botones de Acción -->
+    <div class="flex gap-2">
+      <button (click)="cargarVentas(0)" 
+        class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-bold shadow-lg shadow-blue-200 transition-all flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        Filtrar
+      </button>
+      
+      <button (click)="limpiarFiltros()" 
+        class="px-5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-sm font-bold transition-all">
+        Limpiar
+      </button>
+    </div>
+  </div>
+  <!-- Tabla Principal -->
+  <div class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left">
+        <thead class="bg-slate-50 border-b border-slate-200">
+          <tr>
+            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Venta / Fecha</th>
+            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Cliente</th>
+            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Campaña / Línea</th>
+            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Monto</th>
+            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Estado</th>
+            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          <tr *ngFor="let venta of ventasPage?.content" class="hover:bg-slate-50/80 transition-all duration-200">
+            <!-- Código y Fecha -->
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-3">
+                <div *ngIf="venta.tieneAlerta" class="w-2 h-2 rounded-full bg-red-500 animate-pulse" [title]="venta.alertaDetalle"></div>
+                <div>
+                  <div class="text-sm font-bold text-slate-900">{{ venta.codigoVenta }}</div>
+                  <div class="text-xs text-slate-400">{{ venta.fechaVenta | date:'dd MMM, yyyy' }}</div>
+                </div>
+              </div>
+            </td>
+
+            <!-- Cliente -->
+            <td class="px-6 py-4">
+              <div class="flex flex-col">
+                <span class="text-sm font-semibold text-slate-700">{{ venta.clienteNombre }}</span>
+                <div class="flex items-center gap-2 mt-1">
+                   <span class="text-xs text-slate-400">{{ venta.clienteDoc }}</span>
+                   <span *ngIf="venta.clienteTelefono" class="text-[10px] bg-slate-100 px-1.5 py-0.5 rounded text-slate-500">{{ venta.clienteTelefono }}</span>
+                </div>
+              </div>
+            </td>
+
+            <!-- Campaña -->
+            <td class="px-6 py-4 text-sm">
+              <span class="text-slate-700 block font-medium">{{ venta.campanaNombre }}</span>
+              <span class="text-[11px] text-blue-500 font-bold uppercase tracking-tighter">{{ venta.lineaNombre }}</span>
+            </td>
+
+            <!-- Monto -->
+            <td class="px-6 py-4">
+              <span class="text-sm font-bold text-slate-900">S/ {{ venta.monto | number:'1.2-2' }}</span>
+            </td>
+
+            <!-- Estado con Badge Dinámico -->
+            <td class="px-6 py-4 text-center">
+              <span [ngClass]="{
+                'bg-emerald-100 text-emerald-700 border-emerald-200': venta.estadoCodigo === 'ACTIVO',
+                'bg-amber-100 text-amber-700 border-amber-200': venta.estadoCodigo !== 'ACTIVO',
+                'bg-red-100 text-red-700 border-red-200': venta.eliminado
+              }" class="px-3 py-1 rounded-full text-[11px] font-bold border uppercase">
+                {{ venta.estadoNombre }}
+              </span>
+            </td>
+
+            <!-- Acciones -->
+            <td class="px-6 py-4">
+               <button class="p-2 hover:bg-slate-200 rounded-lg text-slate-400 hover:text-blue-600 transition-colors">
+                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+               </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Paginación Modernizada -->
+    <div class="px-6 py-4 bg-slate-50 flex items-center justify-between border-t border-slate-200">
+      <p class="text-sm text-slate-500">
+        Página <span class="font-bold text-slate-900">{{ (ventasPage?.page || 0) + 1 }}</span> de {{ ventasPage?.totalPages }}
+      </p>
+      <div class="inline-flex shadow-sm rounded-md">
+        <button (click)="cargarVentas(ventasPage!.page - 1)" [disabled]="ventasPage?.page === 0"
+          class="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-l-lg hover:bg-slate-50 disabled:opacity-50">
+          Anterior
+        </button>
+        <button (click)="cargarVentas(ventasPage!.page + 1)" [disabled]="ventasPage?.last"
+          class="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-r-lg hover:bg-slate-50 disabled:opacity-50">
+          Siguiente
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,26 @@
+<!-- Añade esto en tu Header, junto al resumen de 'Total Hoy' -->
+<button (click)="abrirModalVenta()" 
+  class="flex items-center gap-2 px-6 py-3 bg-slate-900 text-white rounded-2xl font-bold shadow-xl hover:bg-slate-800 transition-all transform hover:scale-105 active:scale-95">
+  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+  </svg>
+  Nueva Venta
+</button>
+
+<!-- ... (resto de tu tabla) ... -->
+
+<!-- MODAL OVERLAY (Al final del archivo) -->
+<div *ngIf="showModal" 
+  class="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fadeIn">
+  <!-- Fondo oscuro con blur -->
+  <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" (click)="cerrarModal()"></div>
+  
+  <!-- Contenedor del Componente -->
+  <div class="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden animate-slideUp">
+    <app-venta-form 
+      [isModal]="true" 
+      (onClose)="cerrarModal()" 
+      (onSave)="finalizarVenta($event)">
+    </app-venta-form>
+  </div>
+</div>

@@ -1,0 +1,12 @@
+.layout-content {
+  margin-top: 60px; 
+  margin-left: 232px;
+  min-height: calc(100vh - 60px);
+  padding: 24px;
+  background: #f9fafb; 
+  transition: margin-left 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.layout-content--collapsed {
+  margin-left: 64px;
+}

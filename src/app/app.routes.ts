@@ -1,3 +1,108 @@
 import { Routes } from '@angular/router';
+import { Layout } from './shared/layout/layout';
+import { authGuard, publicGuard, roleGuard } from './core/guards/auth.guard';
 
-export const routes: Routes = [];
+export const routes: Routes = [
+  // ── RUTAS PÚBLICAS (Login y Recuperación) ─────────────────
+  {
+    path: 'login',
+    loadComponent: () => import('./features/auth/login/login').then(m => m.LoginComponent),
+    canActivate: [publicGuard]
+  },
+  {
+    path: 'forgot-password',
+    loadComponent: () => import('./features/auth/forgot-password/forgot-password').then(m => m.ForgotPassword),
+    canActivate: [publicGuard]
+  },
+  {
+    path: 'reset-password',
+    loadComponent: () => import('./features/auth/reset-password/reset-password').then(m => m.ResetPassword)
+    // No lleva publicGuard por si el usuario ya está logueado pero usa un link de reset
+  },
+
+  // ── RUTAS PRIVADAS (Con Layout y AuthGuard) ───────────────
+  {
+    path: '',
+    component: Layout,
+    canActivate: [authGuard],
+    children: [
+      // ── Módulo ASESOR ──
+      {
+        path: 'asesor',
+        canActivate: [roleGuard(['AGENTE', 'GERENTE'])],
+        children: [
+          { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+          {
+            path: 'dashboard',
+            loadComponent: () => import('./pages/asesor/dashboard/dashboard').then(m => m.Dashboard)
+          },
+          {
+            path: 'ventas',
+            loadComponent: () => import('./pages/asesor/ventas/ventas').then(m => m.Ventas)
+          },
+          {
+            path: 'nueva-venta',
+            loadComponent: () => import('./pages/asesor/nuevas-ventas/nuevas-ventas').then(m => m.NuevasVentas)
+          },
+          {
+            path: 'seguimiento',
+            loadComponent: () => import('./pages/asesor/ventas/ventas').then(m => m.Ventas)
+          },
+          {
+            path: 'alertas',
+            loadComponent: () => import('./pages/asesor/alerta/alerta').then(m => m.Alerta)
+          },
+        ]
+      },
+
+      // ── Módulo SUPERVISOR ──
+      {
+        path: 'supervisor',
+        canActivate: [roleGuard(['SUPERVISOR', 'GERENTE'])],
+        children: [
+          { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+          { 
+            path: 'dashboard',  
+            loadComponent: () => import('./pages/supervisor/dashboard/dashboard').then(m => m.Dashboard) 
+          },
+        ]
+      },
+
+      // ── Módulo GERENTE ──
+      {
+        path: 'gerente',
+        canActivate: [roleGuard(['GERENTE'])],
+        children: [
+          { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+          { 
+            path: 'dashboard', 
+            loadComponent: () => import('./pages/gerente/dashboard/dashboard').then(m => m.Dashboard) 
+          },
+        ]
+      },
+
+      // ── Módulo BACK OFFICE ──
+      {
+        path: 'backoffice',
+        canActivate: [roleGuard(['BACK_OFFICE', 'GERENTE'])],
+        children: [
+          { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+          { 
+            path: 'dashboard', 
+            loadComponent: () => import('./pages/backoffice/dashboard/dashboard').then(m => m.Dashboard) 
+          },
+        ]
+      },
+
+      // Redirección inicial al entrar al sistema
+      { path: '', redirectTo: 'asesor', pathMatch: 'full' }
+    ]
+  },
+
+  // ── RUTAS DE ERROR ────────────────────────────────────────
+  { 
+    path: 'no-autorizado', 
+    loadComponent: () => import('./pages/unauthorized').then(m => m.UnauthorizedComponent) 
+  },
+  { path: '**', redirectTo: 'login' }
+];

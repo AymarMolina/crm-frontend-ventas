@@ -1,26 +1,207 @@
-<!-- Añade esto en tu Header, junto al resumen de 'Total Hoy' -->
-<button (click)="abrirModalVenta()" 
-  class="flex items-center gap-2 px-6 py-3 bg-slate-900 text-white rounded-2xl font-bold shadow-xl hover:bg-slate-800 transition-all transform hover:scale-105 active:scale-95">
-  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-  </svg>
-  Nueva Venta
-</button>
+<div class="da-root">
 
-<!-- ... (resto de tu tabla) ... -->
+  <!-- ══ HEADER ══ -->
+  <header class="da-header">
+    <div class="da-header-left">
+      <div class="da-avatar">{{ inicialesUsuario }}</div>
+      <div>
+        <p class="da-header-name">{{ nombreUsuario }}</p>
+        <p class="da-header-role">Asesor comercial</p>
+      </div>
+    </div>
+    <div class="da-header-right">
+      <div class="da-period-selector">
+        <button
+          *ngFor="let p of periodos"
+          [class.active]="periodoActivo === p.value"
+          (click)="cambiarPeriodo(p.value)"
+          class="da-period-btn">
+          {{ p.label }}
+        </button>
+      </div>
+      <button (click)="abrirModalVenta()" class="da-btn-nueva-venta">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M12 4v16m8-8H4"/>
+        </svg>
+        Nueva venta
+      </button>
+    </div>
+  </header>
 
-<!-- MODAL OVERLAY (Al final del archivo) -->
-<div *ngIf="showModal" 
-  class="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fadeIn">
-  <!-- Fondo oscuro con blur -->
-  <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" (click)="cerrarModal()"></div>
-  
-  <!-- Contenedor del Componente -->
-  <div class="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden animate-slideUp">
-    <app-venta-form 
-      [isModal]="true" 
-      (onClose)="cerrarModal()" 
-      (onSave)="finalizarVenta($event)">
-    </app-venta-form>
+  <!-- ══ KPI CARDS ══ -->
+  <section class="da-kpi-grid">
+    <div class="da-kpi-card">
+      <p class="da-kpi-label">Ventas activas</p>
+      <p class="da-kpi-value">{{ resumen?.ventasActivas ?? '—' }}</p>
+      <p class="da-kpi-sub">de {{ resumen?.objetivo ?? '—' }} objetivo</p>
+      <div class="da-kpi-progress">
+        <div class="da-kpi-progress-fill" [style.width.%]="pctAlcance"></div>
+      </div>
+    </div>
+    <div class="da-kpi-card">
+      <p class="da-kpi-label">Monto total</p>
+      <p class="da-kpi-value">S/ {{ resumen?.montoTotal | number:'1.0-0' }}</p>
+      <p class="da-kpi-sub">este período</p>
+    </div>
+    <div class="da-kpi-card">
+      <p class="da-kpi-label">Comisión estimada</p>
+      <p class="da-kpi-value da-kpi-value--green">S/ {{ resumen?.comisionEstimada | number:'1.2-2' }}</p>
+      <p class="da-kpi-sub">según ventas activas</p>
+    </div>
+    <div class="da-kpi-card da-kpi-card--alert" *ngIf="resumen?.alertas > 0">
+      <p class="da-kpi-label">Alertas pendientes</p>
+      <p class="da-kpi-value da-kpi-value--amber">{{ resumen?.alertas }}</p>
+      <p class="da-kpi-sub">ventas observadas</p>
+    </div>
+    <div class="da-kpi-card" *ngIf="!resumen?.alertas || resumen?.alertas === 0">
+      <p class="da-kpi-label">Alertas</p>
+      <p class="da-kpi-value da-kpi-value--green">0</p>
+      <p class="da-kpi-sub">sin observaciones</p>
+    </div>
+  </section>
+
+  <!-- ══ GRÁFICOS FILA 1 ══ -->
+  <section class="da-charts-row">
+
+    <!-- Línea: tendencia diaria -->
+    <div class="da-chart-card da-chart-card--wide">
+      <div class="da-chart-header">
+        <div>
+          <p class="da-chart-title">Tendencia de ventas</p>
+          <p class="da-chart-sub">Monto diario en S/ · últimos 15 días</p>
+        </div>
+        <span class="da-chart-badge">S/</span>
+      </div>
+      <div class="da-canvas-wrap" style="height:200px">
+        <canvas id="daLineChart" role="img" aria-label="Gráfico de línea con tendencia de ventas diarias en soles">Tendencia de ventas diarias.</canvas>
+      </div>
+    </div>
+
+    <!-- Dona: por campaña -->
+    <div class="da-chart-card">
+      <div class="da-chart-header">
+        <div>
+          <p class="da-chart-title">Mis campañas</p>
+          <p class="da-chart-sub">Distribución de ventas</p>
+        </div>
+      </div>
+      <div class="da-legend" id="daDonutLegend"></div>
+      <div class="da-canvas-wrap" style="height:170px">
+        <canvas id="daDoughnutChart" role="img" aria-label="Gráfico de dona con distribución de ventas por campaña">Ventas por campaña.</canvas>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ══ GRÁFICOS FILA 2 ══ -->
+  <section class="da-charts-row">
+
+    <!-- Barra: progreso de meta -->
+    <div class="da-chart-card">
+      <div class="da-chart-header">
+        <div>
+          <p class="da-chart-title">Alcance de meta</p>
+          <p class="da-chart-sub">Ventas activas vs objetivo</p>
+        </div>
+        <span class="da-chart-badge da-chart-badge--green">{{ pctAlcance | number:'1.0-0' }}%</span>
+      </div>
+      <div class="da-canvas-wrap" style="height:120px">
+        <canvas id="daMetaChart" role="img" aria-label="Barra de progreso de meta mensual">Progreso de meta mensual.</canvas>
+      </div>
+    </div>
+
+    <!-- Barras: ventas por estado -->
+    <div class="da-chart-card">
+      <div class="da-chart-header">
+        <div>
+          <p class="da-chart-title">Estado de mis ventas</p>
+          <p class="da-chart-sub">Distribución por estado</p>
+        </div>
+      </div>
+      <div class="da-legend" id="daEstadoLegend"></div>
+      <div class="da-canvas-wrap" style="height:140px">
+        <canvas id="daEstadoChart" role="img" aria-label="Gráfico de barras con estado de las ventas del asesor">Estados de venta.</canvas>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ══ ALERTAS ══ -->
+  <section class="da-alertas" *ngIf="alertas && alertas.length > 0">
+    <div class="da-alertas-header">
+      <p class="da-alertas-title">Ventas observadas</p>
+      <span class="da-alertas-count">{{ alertas.length }}</span>
+    </div>
+    <div class="da-alertas-list">
+      <div class="da-alerta-item" *ngFor="let a of alertas">
+        <div class="da-alerta-icon">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+          </svg>
+        </div>
+        <div class="da-alerta-info">
+          <p class="da-alerta-codigo">{{ a.codigo_venta }}</p>
+          <p class="da-alerta-cliente">{{ a.cliente_nombre }}</p>
+          <p class="da-alerta-detalle">{{ a.alerta_detalle }}</p>
+        </div>
+        <div class="da-alerta-meta">
+          <span class="da-alerta-estado">{{ a.estado }}</span>
+          <span class="da-alerta-fecha">{{ a.actualizado_en | date:'dd/MM/yy' }}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ TABLA DE VENTAS RECIENTES ══ -->
+  <section class="da-tabla-section">
+    <div class="da-tabla-header">
+      <p class="da-tabla-title">Mis ventas recientes</p>
+      <span class="da-tabla-count">{{ ventas?.length ?? 0 }} registros</span>
+    </div>
+    <div class="da-tabla-wrap">
+      <table class="da-tabla">
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Cliente</th>
+            <th>Campaña</th>
+            <th>Monto</th>
+            <th>Comisión</th>
+            <th>Estado</th>
+            <th>Fecha</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let v of ventas">
+            <td class="da-td-mono">{{ v.codigo_venta }}</td>
+            <td>{{ v.cliente_nombre }}</td>
+            <td>{{ v.campana }}</td>
+            <td class="da-td-mono">S/ {{ v.monto | number:'1.2-2' }}</td>
+            <td class="da-td-mono da-td-green">S/ {{ v.comision_generada | number:'1.2-2' }}</td>
+            <td>
+              <span class="da-estado-badge" [ngClass]="'da-estado-' + v.estado_codigo?.toLowerCase()">
+                {{ v.estado }}
+              </span>
+            </td>
+            <td class="da-td-muted">{{ v.fecha_venta | date:'dd/MM/yy' }}</td>
+          </tr>
+          <tr *ngIf="!ventas || ventas.length === 0">
+            <td colspan="7" class="da-td-empty">Sin ventas en este período</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ══ MODAL ══ -->
+  <div *ngIf="showModal" class="da-modal-overlay" (click)="cerrarModal()">
+    <div class="da-modal-box" (click)="$event.stopPropagation()">
+      <app-venta-form
+        [isModal]="true"
+        (onClose)="cerrarModal()"
+        (onSave)="finalizarVenta($event)">
+      </app-venta-form>
+    </div>
   </div>
+
 </div>

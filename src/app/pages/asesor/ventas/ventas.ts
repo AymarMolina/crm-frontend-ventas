@@ -21,6 +21,14 @@ export class Ventas implements OnInit {
     last: true
   };
   loading = true;
+  ventaSeleccionada: Venta | null = null;
+
+  // Método para abrir el detalle
+  verDetalle(venta: Venta): void {
+    // Opcional: Podrías llamar al servicio aquí si quieres datos más frescos
+    // this.ventasService.obtenerDetalle(venta.id).subscribe(...)
+    this.ventaSeleccionada = venta;
+  }
   fechaInicio: string = '';
   fechaFin: string = '';
   constructor(
@@ -65,7 +73,10 @@ export class Ventas implements OnInit {
     this.fechaFin = '';
     this.cargarVentas(0);
   }
-
+  calcularComisionHoy(): number {
+    if (!this.ventasPage.content) return 0;
+    return this.ventasPage.content.reduce((acc, v) => acc + (v.comisionGenerada || 0), 0);
+  }
   calcularTotalHoy(): number {  
     if (!this.ventasPage.content) return 0;
     return this.ventasPage.content.reduce((acc, v) => acc + (v.monto || 0), 0);

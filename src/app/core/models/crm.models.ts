@@ -1,3 +1,5 @@
+import { DecimalPipe } from "@angular/common";
+
 // ── Auth ──────────────────────────────────────────────
 export interface LoginRequest {
   email: string;
@@ -80,6 +82,8 @@ export interface Venta {
   eliminado: boolean;
   estadoNombre?: string;
   // Agrega estas dos para limpiar los errores del HTML:
+  comisionPorcentaje?:number;
+  comisionGenerada?:number;
   lineaNombre: string;
   campanaNombre: string;
 }

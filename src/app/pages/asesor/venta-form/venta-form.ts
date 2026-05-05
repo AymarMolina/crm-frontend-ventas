@@ -44,8 +44,7 @@ export class VentaForm implements OnInit {
       campanaId: ['', Validators.required],
       monto: [null, [Validators.required, Validators.min(0)]],
       fechaVenta: [new Date().toISOString().split('T')[0], Validators.required],
-      observaciones: [''],
-      codigoVenta: [`VTA-${new Date().getFullYear()}-000`] 
+      observaciones: ['']
     });
   }
 
@@ -72,44 +71,51 @@ export class VentaForm implements OnInit {
     if (!nroDoc || this.loadingCliente) return;
     this.loadingCliente = true;
 
-    // Limpiar datos anteriores
-    this.ventaForm.patchValue({
-      clienteId: null,
-      nombreCompleto: '',
-      email: '',
-      telefono: '',
-      telefonoAlt: '',
-      direccion: '',
-      distrito: '',
-    });
-
     this.clientesService.buscarPorDocumento(tipoDoc, nroDoc).subscribe({
       next: (cliente) => {
         if (cliente) {
+          // Al encontrar al cliente, inyectamos el ID en el form
           this.ventaForm.patchValue({
-            clienteId:      cliente.id,
+            clienteId: cliente.id, // <--- Este ID es el que usará enviarVenta
             nombreCompleto: cliente.nombreCompleto,
-            email:          cliente.email,
-            telefono:       cliente.telefono,
-            telefonoAlt:    cliente.telefonoAlt,
-            direccion:      cliente.direccion,
-            distrito:       cliente.distrito,
+            email: cliente.email,
+            telefono: cliente.telefono,
+            telefonoAlt: cliente.telefonoAlt,
+            direccion: cliente.direccion,
+            distrito: cliente.distrito,
           });
+          this.esClienteNuevo = false; // Por seguridad, si lo encuentra, no es nuevo
         } else {
+          // Si no lo encuentra, podrías sugerir activar "Cliente Nuevo"
           console.warn('Cliente no encontrado');
+          this.ventaForm.get('clienteId')?.setValue(null);
         }
         this.loadingCliente = false;
         this.cdr.detectChanges();
       },
       error: (err) => {
-        console.error('Error:', err);
         this.loadingCliente = false;
+        this.cdr.detectChanges();
       }
     });
   }
 
   toggleClienteNuevo() {
     this.esClienteNuevo = !this.esClienteNuevo;
+    
+    const campos = ['nombreCompleto', 'email', 'telefono', 'telefonoAlt', 'direccion', 'distrito'];
+    
+    if (this.esClienteNuevo) {
+      // Habilitar campos y limpiar ID para que el formulario sea editable
+      campos.forEach(c => this.ventaForm.get(c)?.enable());
+      this.ventaForm.get('clienteId')?.setValue(null);
+      this.ventaForm.get('clienteId')?.clearValidators(); // Ya no es obligatorio un ID existente
+    } else {
+      // Deshabilitar y resetear
+      campos.forEach(c => this.ventaForm.get(c)?.disable());
+      this.ventaForm.get('clienteId')?.setValidators([Validators.required]);
+    }
+    this.ventaForm.get('clienteId')?.updateValueAndValidity();
   }
   get inicialesCliente(): string {
     const nombre = this.ventaForm.get('nombreCompleto')?.value as string ?? '';
@@ -122,14 +128,56 @@ export class VentaForm implements OnInit {
     if (this.ventaForm.invalid) return;
 
     this.submitting = true;
-    const payload = this.ventaForm.getRawValue(); 
+    const rawValue = this.ventaForm.getRawValue();
 
-    this.ventasService.guardarVenta(payload).subscribe({
+    if (this.esClienteNuevo) {
+      // PASO 1: Crear el cliente primero
+      const nuevoCliente: any = {
+        tipoDoc: rawValue.tipoDoc,
+        nroDoc: rawValue.nroDoc,
+        nombre: rawValue.nombreCompleto.split(' ')[0], // Lógica simple de split
+        apellidos: rawValue.nombreCompleto.split(' ').slice(1).join(' '),
+        email: rawValue.email,
+        telefono: rawValue.telefono,
+        telefonoAlt: rawValue.telefonoAlt,
+        direccion: rawValue.direccion,
+        distrito: rawValue.distrito
+      };
+
+      this.clientesService.crearCliente(nuevoCliente).subscribe({
+        next: (clienteCreado) => {
+          // PASO 2: Usar el ID generado para la venta
+          this.enviarVenta(clienteCreado.id, rawValue);
+        },
+        error: (err) => {
+          console.error('Error al crear cliente:', err);
+          this.submitting = false;
+        }
+      });
+    } else {
+      // Cliente existente, usamos el ID del formulario
+      this.enviarVenta(rawValue.clienteId, rawValue);
+    }
+  }
+
+  private enviarVenta(clienteId: string, formValues: any) {
+    const payloadVenta = {
+      campanaId: formValues.campanaId,
+      clienteId: clienteId,
+      fechaVenta: formValues.fechaVenta,
+      monto: formValues.monto,
+      observaciones: formValues.observaciones
+    };
+
+    this.ventasService.guardarVenta(payloadVenta).subscribe({
       next: (res) => {
         this.onSave.emit(res);
         this.submitting = false;
       },
-      error: () => this.submitting = false
+      error: (err) => {
+        console.error('Error al guardar venta:', err);
+        this.submitting = false;
+      }
     });
   }
 }

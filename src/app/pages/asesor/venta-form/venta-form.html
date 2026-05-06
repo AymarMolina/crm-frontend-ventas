@@ -107,8 +107,19 @@
           <p class="vf-nuevo-title">Datos del nuevo cliente</p>
 
           <div class="vf-field vf-mb8">
-            <label class="vf-label">Nombre Completo</label>
-            <input type="text" formControlName="nombreCompleto" class="vf-input">
+            <label class="vf-label">Nombres</label>
+            <input type="text" formControlName="nombre" class="vf-input" placeholder="Ej. Juan Manuel">
+          </div>
+
+          <div class="vf-grid-2 vf-mb8">
+            <div class="vf-field">
+              <label class="vf-label">Apellido Paterno</label>
+              <input type="text" formControlName="apellidoP" class="vf-input">
+            </div>
+            <div class="vf-field">
+              <label class="vf-label">Apellido Materno</label>
+              <input type="text" formControlName="apellidoM" class="vf-input">
+            </div>
           </div>
 
           <div class="vf-grid-2 vf-mb8">
@@ -144,30 +155,57 @@
           <span class="vf-section-label">Detalles de la operación</span>
         </div>
 
-        <div class="vf-grid-2 vf-mb8">
-          <div class="vf-field">
-            <label class="vf-label">Campaña</label>
-            <div class="vf-select-wrap">
-              <select formControlName="campanaId" class="vf-select">
-                <option value="">Seleccionar...</option>
-                <option *ngFor="let c of campanas" [value]="c.id">{{ c.nombre }}</option>
-              </select>
-              <svg class="vf-select-arrow" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
-            </div>
-          </div>
-
-          <div class="vf-field">
-            <label class="vf-label">Monto</label>
-            <div class="vf-input-wrap">
-              <span class="vf-prefix" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-weight: bold;">S/</span>
-              <input type="number" formControlName="monto" class="vf-input" style="padding-left: 2.5rem;">
-            </div>
+        <!-- Fila 1: Campaña -->
+        <div class="vf-field vf-mb8">
+          <label class="vf-label">Campaña</label>
+          <div class="vf-select-wrap">
+            <select formControlName="campanaId" class="vf-select">
+              <option value="">Seleccionar campaña...</option>
+              <option *ngFor="let c of campanas" [value]="c.id">{{ c.nombre }}</option>
+            </select>
+            <svg class="vf-select-arrow" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
           </div>
         </div>
 
+        <!-- Fila 2: Producto (aparece solo cuando hay productos cargados) -->
+        <div class="vf-field vf-mb8" *ngIf="productos.length > 0 || loadingProductos">
+          <label class="vf-label">
+            Producto
+            <span *ngIf="loadingProductos" class="vf-spinner vf-spinner-inline"></span>
+          </label>
+          <div class="vf-select-wrap">
+            <select formControlName="productoId" class="vf-select" [disabled]="loadingProductos">
+              <option [value]="null">Seleccionar producto...</option>
+              <option *ngFor="let p of productos" [value]="p.id">
+                {{ p.nombre }} — S/ {{ p.precio | number:'1.2-2' }}
+              </option>
+            </select>
+            <svg class="vf-select-arrow" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </div>
+          <p class="vf-hint" *ngIf="ventaForm.get('productoId')?.value">
+            El monto se completó automáticamente con el precio del producto.
+          </p>
+        </div>
+
+        <!-- Fila 3: Monto -->
+        <div class="vf-field vf-mb8">
+          <label class="vf-label">Monto</label>
+          <div class="vf-input-wrap">
+            <span class="vf-prefix" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-weight:bold;">S/</span>
+            <input type="number" formControlName="monto" class="vf-input" style="padding-left:2.5rem;"
+                  placeholder="0.00">
+          </div>
+        </div>
+
+        <!-- Observaciones -->
         <div class="vf-field">
           <label class="vf-label">Observaciones internas</label>
-          <textarea formControlName="observaciones" rows="3" placeholder="Notas adicionales..." class="vf-textarea"></textarea>
+          <textarea formControlName="observaciones" rows="3"
+                    placeholder="Notas adicionales..." class="vf-textarea"></textarea>
         </div>
       </div>
 

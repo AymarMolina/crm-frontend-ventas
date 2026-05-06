@@ -362,4 +362,22 @@
 @media (max-width: 480px) {
   .vf-grid-2, .vf-grid-doc { grid-template-columns: 1fr; }
   .vf-actions { flex-direction: column; }
+}/* Spinner inline junto al label */
+.vf-spinner-inline {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid #e2e8f0;
+  border-top-color: #6366f1;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+/* Hint debajo del select */
+.vf-hint {
+  font-size: 0.75rem;
+  color: #6366f1;
+  margin-top: 4px;
 }

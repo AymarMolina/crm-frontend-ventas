@@ -31,7 +31,8 @@ export interface ClienteRequest {
   tipoDoc: TipoDoc;
   nroDoc: string;
   nombre: string;
-  apellidos: string;
+  apellidoP: string;
+  apellidoM: string;
   telefono?: string;
   telefonoAlt?: string;
   nombreCompleto?: string;
@@ -50,16 +51,15 @@ export type EstadoVenta = 'ACTIVO' | 'EN_PROCESO' | 'OBSERVADO' | 'CAIDA';
 
 export interface VentaRequest {
   campanaId: string;
+  productoId?: string;    
   clienteId?: string;
   clienteNombre?: string;
   clienteDoc?: string;
   clienteTelefono?: string;
-  codigoVenta: string;
-  fechaVenta?: string;  // ISO date YYYY-MM-DD
+  fechaVenta?: string;
   monto?: number;
   observaciones?: string;
 }
-
 export interface CambioEstadoRequest {
   estadoCodigo: EstadoVenta;
   motivo?: string;
@@ -81,11 +81,13 @@ export interface Venta {
   observaciones?: string;
   eliminado: boolean;
   estadoNombre?: string;
-  // Agrega estas dos para limpiar los errores del HTML:
-  comisionPorcentaje?:number;
-  comisionGenerada?:number;
+  comisionPorcentaje?: number;
+  comisionGenerada?: number;
   lineaNombre: string;
   campanaNombre: string;
+  productoId?: string;
+  productoNombre?: string;
+  productoPrecio?: number;
 }
 
 // ── Campañas ──────────────────────────────────────────
@@ -106,4 +108,21 @@ export interface ForgotPasswordRequest {
 export interface ResetPasswordRequest {
   token: string;
   newPassword: string;
+}
+// ── Productos ─────────────────────────────────────────
+export interface Producto {
+  id: string;
+  nombre: string;
+  descripcion?: string;
+  precio: number;
+  activo: boolean;
+  campanaId: string;
+  campanaNombre: string;
+}
+
+export interface ProductoRequest {
+  campanaId: string;
+  nombre: string;
+  descripcion?: string;
+  precio: number;
 }

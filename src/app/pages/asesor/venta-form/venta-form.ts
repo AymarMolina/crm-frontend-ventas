@@ -1,14 +1,15 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Campana, ClienteRequest } from '../../../core/models/crm.models';
+import { Campana, ClienteRequest, Producto } from '../../../core/models/crm.models';
 import { ClientesService } from '../../../core/services/clientes.service';
 import { VentasService } from '../../../core/services/ventas.service';
 import { CampanasService } from '../../../core/services/campanas.service';
 import { CommonModule } from '@angular/common';
+import {  ProductosService } from '../../../core/services/Productos.service';
 
 @Component({
   selector: 'app-venta-form',
-  imports: [ReactiveFormsModule,CommonModule],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './venta-form.html',
   styleUrl: './venta-form.css',
 })
@@ -19,7 +20,9 @@ export class VentaForm implements OnInit {
 
   ventaForm: FormGroup;
   campanas: Campana[] = [];
+  productos: Producto[] = [];        
   loadingCliente = false;
+  loadingProductos = false;          
   submitting = false;
   esClienteNuevo = false;
 
@@ -28,28 +31,41 @@ export class VentaForm implements OnInit {
     private ventasService: VentasService,
     private clientesService: ClientesService,
     private campanasService: CampanasService,
+    private productosService: ProductosService,
     private cdr: ChangeDetectorRef,
   ) {
     this.ventaForm = this.fb.group({
-      tipoDoc: ['DNI', Validators.required],
-      nroDoc: ['', [Validators.required, Validators.minLength(8)]],
-      clienteId: [null, Validators.required], 
-      nombreCompleto: [{ value: '', disabled: true }], 
-      email:      [{ value: '', disabled: true }],
-      telefono:   [{ value: '', disabled: true }],
-      telefonoAlt:[{ value: '', disabled: true }],
-      direccion:  [{ value: '', disabled: true }],
-      distrito:   [{ value: '', disabled: true }],
-      
-      campanaId: ['', Validators.required],
-      monto: [null, [Validators.required, Validators.min(0)]],
-      fechaVenta: [new Date().toISOString().split('T')[0], Validators.required],
-      observaciones: ['']
+      tipoDoc:        ['DNI', Validators.required],
+      nroDoc:         ['', [Validators.required, Validators.minLength(8)]],
+      clienteId:      [null, Validators.required],
+      nombre: [{ value: '', disabled: true }],
+      apellidoP: [{ value: '', disabled: true }],
+      apellidoM: [{ value: '', disabled: true }],
+      email:          [{ value: '', disabled: true }],
+      telefono:       [{ value: '', disabled: true }],
+      direccion:      [{ value: '', disabled: true }],
+      distrito:       [{ value: '', disabled: true }],
+
+      campanaId:      ['', Validators.required],
+      productoId:     [null],                          // 👈 opcional por ahora
+      monto:          [null, [Validators.required, Validators.min(0)]],
+      fechaVenta:     [new Date().toISOString().split('T')[0], Validators.required],
+      observaciones:  ['']
     });
   }
 
   ngOnInit(): void {
     this.cargarCampanas();
+
+    // 👈 Escuchar cambio de campaña
+    this.ventaForm.get('campanaId')?.valueChanges.subscribe(campanaId => {
+      this.onCampanaChange(campanaId);
+    });
+
+    // 👈 Escuchar cambio de producto
+    this.ventaForm.get('productoId')?.valueChanges.subscribe(productoId => {
+      this.onProductoChange(productoId);
+    });
   }
 
   cargarCampanas() {
@@ -65,35 +81,65 @@ export class VentaForm implements OnInit {
     });
   }
 
+  // 👈 Al cambiar campaña: cargar productos y limpiar selección previa
+  onCampanaChange(campanaId: string) {
+    this.productos = [];
+    this.ventaForm.get('productoId')?.setValue(null, { emitEvent: false });
+    this.ventaForm.get('monto')?.setValue(null);
+
+    if (!campanaId) return;
+
+    this.loadingProductos = true;
+    this.productosService.listarPorCampana(campanaId).subscribe({
+      next: (lista) => {
+        this.productos = lista;
+        this.loadingProductos = false;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.loadingProductos = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  // 👈 Al elegir producto: autocompletar monto con precio
+  onProductoChange(productoId: string) {
+    if (!productoId) return;
+    const producto = this.productos.find(p => p.id === productoId);
+    if (producto) {
+      this.ventaForm.get('monto')?.setValue(producto.precio);
+    }
+  }
+
   buscarCliente() {
     const { tipoDoc, nroDoc } = this.ventaForm.getRawValue();
-
     if (!nroDoc || this.loadingCliente) return;
     this.loadingCliente = true;
 
     this.clientesService.buscarPorDocumento(tipoDoc, nroDoc).subscribe({
       next: (cliente) => {
         if (cliente) {
-          // Al encontrar al cliente, inyectamos el ID en el form
           this.ventaForm.patchValue({
-            clienteId: cliente.id, // <--- Este ID es el que usará enviarVenta
-            nombreCompleto: cliente.nombreCompleto,
-            email: cliente.email,
-            telefono: cliente.telefono,
-            telefonoAlt: cliente.telefonoAlt,
-            direccion: cliente.direccion,
-            distrito: cliente.distrito,
+            clienteId:      cliente.id,
+            nombre: cliente.nombre,
+            apellidoP: cliente.apellidoP,
+            apellidoM: cliente.apellidoM,
+            email:          cliente.email,
+            telefono:       cliente.telefono,
+            telefonoAlt:    cliente.telefonoAlt,
+            direccion:      cliente.direccion,
+            distrito:       cliente.distrito,
           });
-          this.esClienteNuevo = false; // Por seguridad, si lo encuentra, no es nuevo
+          this.esClienteNuevo = false;
         } else {
-          // Si no lo encuentra, podrías sugerir activar "Cliente Nuevo"
           console.warn('Cliente no encontrado');
           this.ventaForm.get('clienteId')?.setValue(null);
         }
         this.loadingCliente = false;
         this.cdr.detectChanges();
       },
-      error: (err) => {
+      error: () => {
         this.loadingCliente = false;
         this.cdr.detectChanges();
       }
@@ -102,21 +148,19 @@ export class VentaForm implements OnInit {
 
   toggleClienteNuevo() {
     this.esClienteNuevo = !this.esClienteNuevo;
-    
-    const campos = ['nombreCompleto', 'email', 'telefono', 'telefonoAlt', 'direccion', 'distrito'];
-    
+    const campos = ['nombre','apellidoP','apellidoM', 'email', 'telefono', 'telefonoAlt', 'direccion', 'distrito'];
+
     if (this.esClienteNuevo) {
-      // Habilitar campos y limpiar ID para que el formulario sea editable
       campos.forEach(c => this.ventaForm.get(c)?.enable());
       this.ventaForm.get('clienteId')?.setValue(null);
-      this.ventaForm.get('clienteId')?.clearValidators(); // Ya no es obligatorio un ID existente
+      this.ventaForm.get('clienteId')?.clearValidators();
     } else {
-      // Deshabilitar y resetear
       campos.forEach(c => this.ventaForm.get(c)?.disable());
       this.ventaForm.get('clienteId')?.setValidators([Validators.required]);
     }
     this.ventaForm.get('clienteId')?.updateValueAndValidity();
   }
+
   get inicialesCliente(): string {
     const nombre = this.ventaForm.get('nombreCompleto')?.value as string ?? '';
     const partes = nombre.trim().split(' ');
@@ -124,48 +168,42 @@ export class VentaForm implements OnInit {
       ? (partes[0][0] + partes[1][0]).toUpperCase()
       : nombre.slice(0, 2).toUpperCase();
   }
+
   guardarVenta() {
     if (this.ventaForm.invalid) return;
-
     this.submitting = true;
     const rawValue = this.ventaForm.getRawValue();
 
     if (this.esClienteNuevo) {
-      // PASO 1: Crear el cliente primero
       const nuevoCliente: any = {
-        tipoDoc: rawValue.tipoDoc,
-        nroDoc: rawValue.nroDoc,
-        nombre: rawValue.nombreCompleto.split(' ')[0], // Lógica simple de split
-        apellidos: rawValue.nombreCompleto.split(' ').slice(1).join(' '),
-        email: rawValue.email,
-        telefono: rawValue.telefono,
+        tipoDoc:    rawValue.tipoDoc,
+        nroDoc:     rawValue.nroDoc,
+        nombre:     rawValue.nombre,
+        apellidoP:  rawValue.apellidoP,
+        apellidoM:  rawValue.apellidoM,
+        email:      rawValue.email,
+        telefono:   rawValue.telefono,
         telefonoAlt: rawValue.telefonoAlt,
-        direccion: rawValue.direccion,
-        distrito: rawValue.distrito
+        direccion:  rawValue.direccion,
+        distrito:   rawValue.distrito
       };
 
       this.clientesService.crearCliente(nuevoCliente).subscribe({
-        next: (clienteCreado) => {
-          // PASO 2: Usar el ID generado para la venta
-          this.enviarVenta(clienteCreado.id, rawValue);
-        },
-        error: (err) => {
-          console.error('Error al crear cliente:', err);
-          this.submitting = false;
-        }
+        next: (clienteCreado) => this.enviarVenta(clienteCreado.id, rawValue),
+        error: () => { this.submitting = false; }
       });
     } else {
-      // Cliente existente, usamos el ID del formulario
       this.enviarVenta(rawValue.clienteId, rawValue);
     }
   }
 
   private enviarVenta(clienteId: string, formValues: any) {
     const payloadVenta = {
-      campanaId: formValues.campanaId,
-      clienteId: clienteId,
-      fechaVenta: formValues.fechaVenta,
-      monto: formValues.monto,
+      campanaId:    formValues.campanaId,
+      productoId:   formValues.productoId || null,  // 👈
+      clienteId:    clienteId,
+      fechaVenta:   formValues.fechaVenta,
+      monto:        formValues.monto,
       observaciones: formValues.observaciones
     };
 
@@ -174,10 +212,7 @@ export class VentaForm implements OnInit {
         this.onSave.emit(res);
         this.submitting = false;
       },
-      error: (err) => {
-        console.error('Error al guardar venta:', err);
-        this.submitting = false;
-      }
+      error: () => { this.submitting = false; }
     });
   }
 }

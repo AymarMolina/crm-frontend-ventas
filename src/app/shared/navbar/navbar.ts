@@ -3,6 +3,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { VentasService } from '../../core/services/ventas.service';
 import { Venta } from '../../core/models/crm.models';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',

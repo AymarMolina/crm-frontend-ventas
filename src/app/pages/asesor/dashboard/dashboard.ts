@@ -6,6 +6,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { VentaForm } from "../venta-form/venta-form";
 import Chart from 'chart.js/auto';
 import { DashboardService } from '../../../core/services/dashboardasesor.service';
+import { ObjetivoResponse, ObjetivoService } from '../../../core/services/objetivo.service';
 
 
 @Component({
@@ -20,6 +21,9 @@ export class Dashboard implements OnInit, OnDestroy {
   loading = true;
   loadingVentas = true;
 
+  objetivos: ObjetivoResponse[] = [];
+ loadingObjetivos = true;
+
   chartTendencia: any;
   chartCampana: any;
 
@@ -27,20 +31,38 @@ export class Dashboard implements OnInit, OnDestroy {
     private dashboardService: DashboardService,
     private ventasService: VentasService,
     private authService: AuthService,
+    private objetivoService: ObjetivoService,
     private cdr: ChangeDetectorRef
   ) {} 
 
-mostrarFormVenta = false;  // 👈
+mostrarFormVenta = false;  
 
-onVentaGuardada(venta: any) {
-  this.mostrarFormVenta = false;
-  this.cargarDatos();   // refresca el dashboard
-  this.cargarVentas();  // refresca la tabla
-}
 ngOnInit(): void {
-  this.cargarDatos(); // Las ventas se cargan DESPUÉS del dashboard
+  this.cargarDatos(); 
+  this.cargarObjetivos();
 }
+  cargarObjetivos() {
+    this.loadingObjetivos = true;
+    this.objetivoService.getMisObjetivos().subscribe({
+      next: (data) => {
+        this.objetivos = data;
+        this.loadingObjetivos = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error cargando objetivos', err);
+        this.loadingObjetivos = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
 
+  onVentaGuardada(venta: any) {
+    this.mostrarFormVenta = false;
+    this.cargarDatos();   
+    this.cargarVentas();  
+    this.cargarObjetivos(); 
+  }
 cargarDatos() {
   this.loading = true;
   this.dashboardService.getDashboardData('15d').subscribe({
@@ -50,14 +72,14 @@ cargarDatos() {
       this.cdr.detectChanges();
       requestAnimationFrame(() => {
         this.initCharts(data);
-        this.cargarVentas(); // 👈 Espera que el DOM esté listo
+        this.cargarVentas(); 
       });
     },
     error: (err) => {
       console.error('Error cargando dashboard', err);
       this.loading = false;
       this.cdr.detectChanges();
-      this.cargarVentas(); // igual carga ventas si falla el resumen
+      this.cargarVentas(); 
     }
   });
 }
@@ -65,13 +87,12 @@ cargarDatos() {
 cargarVentas() {
   this.loadingVentas = true;
   
-  // Obtén el ID del agente logueado para filtrar solo SUS ventas
-  const agenteId = this.authService.obtenerUsuarioId(); // ajusta según tu AuthService
+  const agenteId = this.authService.obtenerUsuarioId(); 
   
   this.ventasService.listar({ 
     agenteId: agenteId ?? undefined,
     page: 0, 
-    size: 10  // solo 10 registros, no más
+    size: 10  
   }).subscribe({
     next: (res) => {
       this.ventas = res.content;

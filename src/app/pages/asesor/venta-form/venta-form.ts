@@ -57,12 +57,10 @@ export class VentaForm implements OnInit {
   ngOnInit(): void {
     this.cargarCampanas();
 
-    // 👈 Escuchar cambio de campaña
     this.ventaForm.get('campanaId')?.valueChanges.subscribe(campanaId => {
       this.onCampanaChange(campanaId);
     });
 
-    // 👈 Escuchar cambio de producto
     this.ventaForm.get('productoId')?.valueChanges.subscribe(productoId => {
       this.onProductoChange(productoId);
     });
@@ -81,7 +79,6 @@ export class VentaForm implements OnInit {
     });
   }
 
-  // 👈 Al cambiar campaña: cargar productos y limpiar selección previa
   onCampanaChange(campanaId: string) {
     this.productos = [];
     this.ventaForm.get('productoId')?.setValue(null, { emitEvent: false });
@@ -103,7 +100,6 @@ export class VentaForm implements OnInit {
     });
   }
 
-  // 👈 Al elegir producto: autocompletar monto con precio
   onProductoChange(productoId: string) {
     if (!productoId) return;
     const producto = this.productos.find(p => p.id === productoId);
@@ -162,7 +158,7 @@ export class VentaForm implements OnInit {
   }
 
   get inicialesCliente(): string {
-    const nombre = this.ventaForm.get('nombreCompleto')?.value as string ?? '';
+    const nombre = this.ventaForm.get('nombre')?.value as string ?? '';
     const partes = nombre.trim().split(' ');
     return partes.length >= 2
       ? (partes[0][0] + partes[1][0]).toUpperCase()

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { catchError, Observable, of, throwError } from 'rxjs';
 
 export interface AgenteEquipo {
   id: string;
@@ -40,5 +40,26 @@ export class ObjetivoService {
 
   crearObjetivo(req: CrearObjetivoRequest): Observable<ObjetivoResponse> {
     return this.http.post<ObjetivoResponse>(`${this.API}/objetivos`, req);
+  }
+  buscarObjetivo(usuarioId: string, campanaId: string): Observable<ObjetivoResponse | null> {
+    return this.http.get<ObjetivoResponse>(
+      `${this.API}/objetivos/buscar`,
+      { params: { usuarioId, campanaId } }
+    ).pipe(
+      catchError(err => {
+        if (err.status === 204) return of(null); // no existe
+        return throwError(() => err);
+      })
+    );
+  }
+
+  actualizarObjetivo(id: number, data: CrearObjetivoRequest): Observable<ObjetivoResponse> {
+    return this.http.put<ObjetivoResponse>(
+      `${this.API}/objetivos/${id}`, data
+    );
+  }
+  
+  getMisObjetivos(): Observable<ObjetivoResponse[]> {
+    return this.http.get<ObjetivoResponse[]>(`${this.API}/objetivos/mis-objetivos`);
   }
 }

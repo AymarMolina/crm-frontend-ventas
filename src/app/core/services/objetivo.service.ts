@@ -1,0 +1,44 @@
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+
+export interface AgenteEquipo {
+  id: string;
+  nombres: string;
+  apellidos: string;
+  email: string;
+  nombreSupervisor: string;
+}
+
+export interface CrearObjetivoRequest {
+  campanaId: string;
+  usuarioId: string;
+  objetivoVentas: number;
+  montoComision: number;
+}
+
+export interface ObjetivoResponse {
+  id: number;
+  campanaId: string;
+  campanaNombre: string;
+  usuarioId: string;
+  usuarioNombre: string;
+  objetivoVentas: number;
+  montoComision: number;
+  creadoEn: string;
+}
+
+@Injectable({ providedIn: 'root' })
+export class ObjetivoService {
+  private readonly API = 'http://localhost:8080/api';
+
+  constructor(private http: HttpClient) {}
+
+  getMiEquipo(): Observable<AgenteEquipo[]> {
+    return this.http.get<AgenteEquipo[]>(`${this.API}/usuarios/mi-equipo`);
+  }
+
+  crearObjetivo(req: CrearObjetivoRequest): Observable<ObjetivoResponse> {
+    return this.http.post<ObjetivoResponse>(`${this.API}/objetivos`, req);
+  }
+}

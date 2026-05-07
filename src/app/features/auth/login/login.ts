@@ -32,14 +32,33 @@ export class LoginComponent {
   get password() { return this.form.get('password')!; }
 
   onSubmit(): void {
-    if (this.form.invalid) { this.form.markAllAsTouched(); return; }
-    this.loading = true;
-    this.errorMsg = '';
+  if (this.form.invalid) { this.form.markAllAsTouched(); return; }
+  this.loading = true;
+  this.errorMsg = '';
 
-    this.authService.login(this.form.value).subscribe({
+  this.authService.login(this.form.value).subscribe({
       next: () => {
-        // Navegamos a la raíz, el router se encarga de redirigir según tus rutas
-        this.router.navigateByUrl('/'); 
+        // Obtenemos el rol después del login
+        const rol = this.authService.getRol();
+
+        // Redirección basada en el rol
+        switch (rol) {
+          case 'SUPERVISOR':
+            this.router.navigate(['/supervisor']);
+            break;
+          case 'AGENTE':
+            this.router.navigate(['/asesor']);
+            break;
+          case 'GERENTE':
+            this.router.navigate(['/gerente']);
+            break;
+          case 'BACK_OFFICE':
+            this.router.navigate(['/backoffice']);
+            break;
+          default:
+            this.router.navigate(['/']); // O una página por defecto
+            break;
+        }
       },
       error: err => {
         this.loading = false;

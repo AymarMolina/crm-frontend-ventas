@@ -65,6 +65,10 @@ export const routes: Routes = [
             path: 'dashboard',  
             loadComponent: () => import('./pages/supervisor/dashboard/dashboard').then(m => m.Dashboard) 
           },
+          {
+            path: 'asignar-objetivo',
+            loadComponent: () => import('./pages/supervisor/asignar-objetivo/asignar-objetivo').then(m => m.AsignarObjetivo)
+          },
         ]
       },
 

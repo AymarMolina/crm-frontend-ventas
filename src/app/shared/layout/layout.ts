@@ -21,7 +21,7 @@ const MENUS: Record<string, NavItem[]> = {
   ],
   SUPERVISOR: [
     { label: 'Dashboard',      route: '/supervisor/dashboard', icon: ICONS.dashboard },
-    { label: 'Mi Equipo',      route: '/supervisor/equipo',    icon: ICONS.ventas    },
+    { label: 'Mi Equipo',      route: '/supervisor/asignar-objetivo',    icon: ICONS.ventas    },
     { label: 'Ventas',         route: '/supervisor/ventas',    icon: ICONS.seguimien },
     { label: 'Alertas',        route: '/supervisor/alertas',   icon: ICONS.alertas   },
   ],

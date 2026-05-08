@@ -1,0 +1,120 @@
+<!-- Spinner -->
+<div *ngIf="loading" class="flex justify-center items-center min-h-screen">
+  <span class="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></span>
+</div>
+
+<div *ngIf="!loading" class="p-6 bg-gray-50 min-h-screen">
+
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold text-gray-800">Designar Supervisor</h1>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 max-w-xl">
+
+    <div class="p-6 border-b border-gray-100">
+      <h2 class="font-semibold text-gray-700">Asignación de supervisor</h2>
+      <p class="text-sm text-gray-400 mt-1">Vincula un asesor a su supervisor correspondiente</p>
+    </div>
+
+    <div class="p-6 space-y-5">
+
+      <!-- Alerta error -->
+      <div *ngIf="error" class="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-lg">
+        {{ error }}
+      </div>
+
+      <!-- Alerta éxito -->
+      <div *ngIf="exito" class="bg-green-50 border border-green-200 text-green-700 text-sm px-4 py-3 rounded-lg">
+        ✓ Supervisor designado correctamente.
+      </div>
+
+      <!-- Asesor -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Asesor</label>
+        <select
+          [(ngModel)]="form.agenteId"
+          class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm
+                 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+          <option value="">Selecciona un asesor</option>
+          <option *ngFor="let a of asesores" [value]="a.id">
+            {{ a.nombres }} {{ a.apellidos }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Info supervisor actual -->
+      <div *ngIf="asesorSeleccionado"
+           class="bg-slate-50 border border-slate-200 text-slate-600 text-xs px-4 py-3 rounded-lg">
+        Supervisor actual:
+        <span class="font-bold text-slate-800">{{ asesorSeleccionado.nombreSupervisor }}</span>
+      </div>
+
+      <!-- Supervisor -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Nuevo supervisor</label>
+        <select
+          [(ngModel)]="form.supervisorId"
+          class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm
+                 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+          <option value="">Selecciona un supervisor</option>
+          <option *ngFor="let s of supervisores" [value]="s.id">
+            {{ s.nombres }} {{ s.apellidos }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Botones -->
+      <div class="flex gap-3">
+        <button
+          (click)="guardar()"
+          [disabled]="guardando || !formValido"
+          class="flex-1 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-300
+                 disabled:cursor-not-allowed text-white font-medium py-2 px-4
+                 rounded-lg text-sm transition-colors">
+          <span *ngIf="guardando">Guardando...</span>
+          <span *ngIf="!guardando">Designar supervisor</span>
+        </button>
+
+        <button
+          (click)="limpiar()"
+          class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600
+                 rounded-lg text-sm font-medium transition-colors">
+          Limpiar
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Tabla resumen de asesores -->
+  <div class="mt-8 bg-white rounded-xl shadow-sm border border-gray-100 max-w-xl overflow-hidden">
+    <div class="p-4 border-b border-gray-100">
+      <h3 class="font-semibold text-gray-700 text-sm">Asesores y sus supervisores</h3>
+    </div>
+    <table class="w-full text-sm">
+      <thead class="bg-slate-50">
+        <tr>
+          <th class="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase">Asesor</th>
+          <th class="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase">Supervisor</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100">
+        <tr *ngFor="let a of asesores" class="hover:bg-slate-50 transition-colors">
+          <td class="px-4 py-3">
+            <p class="font-medium text-slate-800">{{ a.nombres }} {{ a.apellidos }}</p>
+            <p class="text-xs text-slate-400">{{ a.email }}</p>
+          </td>
+          <td class="px-4 py-3">
+            <span [ngClass]="a.nombreSupervisor === 'Sin asignar'
+              ? 'bg-slate-100 text-slate-500'
+              : 'bg-indigo-100 text-indigo-700'"
+              class="px-2 py-1 rounded-full text-xs font-semibold">
+              {{ a.nombreSupervisor }}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>

@@ -99,6 +99,7 @@ export interface Campana {
   lineaCodigo: LineaCodigo;
   mes: number;
   anio: number;
+  objetivoTotal:number;
   activo: boolean;
 }
 export interface ForgotPasswordRequest {

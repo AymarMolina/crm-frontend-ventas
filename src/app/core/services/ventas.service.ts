@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CambioEstadoRequest, PageResponse, Venta, VentaRequest } from '../models/crm.models';
+import { environment } from '../../../environments/environment';
 
 export interface VentasFiltros {
   campanaId?: string;
@@ -14,7 +15,7 @@ export interface VentasFiltros {
 
 @Injectable({ providedIn: 'root' })
 export class VentasService {
-  private base = 'http://localhost:8080/api/ventas';
+  private base = `${environment.apiUrl}/api/ventas`;
 
   constructor(private http: HttpClient) {}
 

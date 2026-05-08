@@ -1,12 +1,14 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, forkJoin } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DashboardService {
-  private readonly API_URL = 'http://localhost:8080/api/ventas';
+  private readonly API_URL = `${environment.apiUrl}/api/ventas`;
+  
 
   constructor(private http: HttpClient) {}
 

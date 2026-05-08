@@ -82,6 +82,22 @@ export const routes: Routes = [
             path: 'dashboard', 
             loadComponent: () => import('./pages/gerente/dashboard/dashboard').then(m => m.Dashboard) 
           },
+          {
+            path: 'asignar-supervisor',
+            loadComponent: () => import('./pages/gerente/asignar-supervisor/asignar-supervisor').then(m => m.AsignarSupervisor)
+          },
+          {
+            path: 'crear-campana',
+            loadComponent: () => import('./pages/gerente/crear-campana/crear-campana').then(m => m.CrearCampana)
+          },
+          {
+            path: 'ver-ventas-general',
+            loadComponent: () => import('./pages/gerente/ver-ventas-general/ver-ventas-general').then(m => m.VerVentasGeneral)
+          },
+          {
+            path: 'gestion-usuarios',
+            loadComponent: () => import('./pages/gerente/gestion-usuarios/gestion-usuarios').then(m => m.GestionUsuarios)
+          },
         ]
       },
 

@@ -27,9 +27,10 @@ const MENUS: Record<string, NavItem[]> = {
   ],
   GERENTE: [
     { label: 'Dashboard',      route: '/gerente/dashboard',    icon: ICONS.dashboard },
-    { label: 'Ventas',         route: '/gerente/ventas',       icon: ICONS.ventas    },
-    { label: 'Exportar',       route: '/gerente/exportar',     icon: ICONS.nueva     },
-    { label: 'Configuración',  route: '/gerente/config',       icon: ICONS.alertas   },
+    { label: 'Asignar Supervisor',         route: '/gerente/asignar-supervisor',       icon: ICONS.ventas    },
+    { label: 'Crear Campaña',       route: '/gerente/crear-campana',     icon: ICONS.nueva     },
+    { label: 'Ver ventas',  route: '/gerente/ver-ventas-general',       icon: ICONS.alertas   },
+    { label: 'Gestion de Usuarios',  route: '/gerente/gestion-usuarios',       icon: ICONS.alertas   },
   ],
   BACK_OFFICE: [
     { label: 'Dashboard',      route: '/backoffice/dashboard', icon: ICONS.dashboard },

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { Campana, PageResponse } from '../models/crm.models';
+import { environment } from '../../../environments/environment';
 
 export interface CampanasFiltros {
   lineaCodigo?: 'MIGRACIONES' | 'MOVIL' | 'INTERNET';
@@ -13,7 +14,9 @@ export interface CampanasFiltros {
 
 @Injectable({ providedIn: 'root' })
 export class CampanasService {
-  private base = 'http://localhost:8080/api/campanas';
+
+  private base = `${environment.apiUrl}/api/campanas`;
+  
 
   constructor(private http: HttpClient) {}
 

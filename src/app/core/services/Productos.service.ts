@@ -3,11 +3,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Producto } from '../models/crm.models';
+import { environment } from '../../../environments/environment';
 
 
 @Injectable({ providedIn: 'root' })
 export class ProductosService {
-  private base = 'http://localhost:8080/api/campanas';
+  private base = `${environment.apiUrl}/api/campanas`;
 
   constructor(private http: HttpClient) {}
 

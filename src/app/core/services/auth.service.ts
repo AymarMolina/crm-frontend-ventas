@@ -4,15 +4,17 @@ import { Observable, tap } from 'rxjs';
 import { LoginRequest, LoginResponse } from '../models/crm.models';
 import { jwtDecode } from 'jwt-decode';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private base = 'http://localhost:8080/api';
+    private base = `${environment.apiUrl}/api/auth`;
+  
 
   constructor(private http: HttpClient,private router: Router) {}
 
   login(body: LoginRequest): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.base}/auth/login`, body).pipe(
+    return this.http.post<LoginResponse>(`${this.base}/login`, body).pipe(
       tap(res => {
         localStorage.setItem('token', res.accessToken);
         localStorage.setItem('rol', res.rol);
@@ -62,15 +64,15 @@ export class AuthService {
     return !!this.getToken();
   }
   forgotPassword(email: string): Observable<void> {
-    return this.http.post<void>(`${this.base}/auth/forgot-password`, { email });
+    return this.http.post<void>(`${this.base}/forgot-password`, { email });
   }
 
   resetPassword(token: string, newPassword: string): Observable<void> {
-    return this.http.post<void>(`${this.base}/auth/reset-password`, { token, newPassword });
+    return this.http.post<void>(`${this.base}/reset-password`, { token, newPassword });
   }
   checkEmail(email: string): Observable<{ existe: boolean }> {
     return this.http.get<{ existe: boolean }>(
-      `${this.base}/auth/check-email`, 
+      `${this.base}/check-email`, 
       { params: { email } }
     );
   }

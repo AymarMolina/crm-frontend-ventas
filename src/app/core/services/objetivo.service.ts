@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable, of, throwError } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface AgenteEquipo {
   id: string;
@@ -30,7 +31,7 @@ export interface ObjetivoResponse {
 
 @Injectable({ providedIn: 'root' })
 export class ObjetivoService {
-  private readonly API = 'http://localhost:8080/api';
+  private readonly API  = `${environment.apiUrl}/api`;
 
   constructor(private http: HttpClient) {}
 

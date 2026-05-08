@@ -7,59 +7,55 @@ import { PageResponse, Venta } from '../../../core/models/crm.models';
 
 @Component({
   selector: 'app-ventas',
-  imports: [FormsModule,CommonModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './ventas.html',
   styleUrl: './ventas.css',
 })
 export class Ventas implements OnInit {
-  ventasPage: PageResponse<Venta> = {
-    content: [],
-    totalElements: 0,
-    totalPages: 0,
-    page: 0,
-    size: 8,
-    last: true
-  };
+
   loading = true;
   ventaSeleccionada: Venta | null = null;
 
-  // Método para abrir el detalle
-  verDetalle(venta: Venta): void {
-    // Opcional: Podrías llamar al servicio aquí si quieres datos más frescos
-    // this.ventasService.obtenerDetalle(venta.id).subscribe(...)
-    this.ventaSeleccionada = venta;
-  }
   fechaInicio: string = '';
   fechaFin: string = '';
+  textoBusqueda: string = '';
+
+  readonly PAGE_SIZE = 8;
+  paginaActual = 0;
+
+  private _todos: Venta[] = [];
+  ventasFiltradas: Venta[] = [];
+  ventasPagina: Venta[] = [];
+
+  get totalPages(): number {
+    return Math.ceil(this.ventasFiltradas.length / this.PAGE_SIZE) || 1;
+  }
+  get esUltimaPagina(): boolean {
+    return this.paginaActual >= this.totalPages - 1;
+  }
+
   constructor(
     private ventasService: VentasService,
     private authService: AuthService,
-    private cdr: ChangeDetectorRef 
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    this.cargarVentas();
+    this.cargarTodos();
   }
 
-  cargarVentas(page = 0): void {
+  cargarTodos(): void {
     const agenteId = this.authService.obtenerUsuarioId();
     if (!agenteId) return;
 
     this.loading = true;
-    
-    // Aquí podrías extender tu VentasService para aceptar fechas 
-    // o usar el método genérico 'listar' que ya teníamos
-    this.ventasService.ventasdeAgente(agenteId, page, 8).subscribe({
+    this.ventasService.ventasdeAgente(agenteId, 0, 1000).subscribe({
       next: (res) => {
-        // Lógica de filtrado local si el backend no soporta fechas todavía
-        let data = res.content;
-        if (this.fechaInicio && this.fechaFin) {
-          data = data.filter(v => v.fechaVenta >= this.fechaInicio && v.fechaVenta <= this.fechaFin);
-        }
-        
-        this.ventasPage = { ...res, content: data };
+        this._todos = res.content;
+        console.log(this._todos)
+        this._aplicarFiltrosYPaginar(0);
         this.loading = false;
-        this.cdr.detectChanges(); 
+        this.cdr.detectChanges();
       },
       error: () => {
         this.loading = false;
@@ -68,17 +64,60 @@ export class Ventas implements OnInit {
     });
   }
 
+  verDetalle(venta: Venta): void {
+    this.ventaSeleccionada = venta;
+  }
+
+  filtrar(): void {
+    this._aplicarFiltrosYPaginar(0);
+  }
+
+  onTextoBusquedaChange(): void {
+    this._aplicarFiltrosYPaginar(0);
+  }
+
+  irAPagina(pagina: number): void {
+    if (pagina < 0 || pagina >= this.totalPages) return;
+    this._aplicarFiltrosYPaginar(pagina);
+  }
+
   limpiarFiltros(): void {
     this.fechaInicio = '';
     this.fechaFin = '';
-    this.cargarVentas(0);
+    this.textoBusqueda = '';
+    this._aplicarFiltrosYPaginar(0);
   }
   calcularComisionHoy(): number {
-    if (!this.ventasPage.content) return 0;
-    return this.ventasPage.content.reduce((acc, v) => acc + (v.comisionGenerada || 0), 0);
+    return this.ventasFiltradas.reduce((acc, v) => acc + (v.comisionGenerada || 0), 0);
   }
-  calcularTotalHoy(): number {  
-    if (!this.ventasPage.content) return 0;
-    return this.ventasPage.content.reduce((acc, v) => acc + (v.monto || 0), 0);
+
+  calcularTotalHoy(): number {
+    return this.ventasFiltradas.reduce((acc, v) => acc + (v.monto || 0), 0);
+  }
+
+  private _aplicarFiltrosYPaginar(pagina: number): void {
+    let resultado = [...this._todos];
+
+    if (this.fechaInicio && this.fechaFin) {
+      resultado = resultado.filter(
+        v => v.fechaVenta >= this.fechaInicio && v.fechaVenta <= this.fechaFin
+      );
+    }
+
+    const texto = this.textoBusqueda.trim().toLowerCase();
+    if (texto) {
+      resultado = resultado.filter(v =>
+        v.codigoVenta?.toLowerCase().includes(texto) ||
+        v.clienteNombre?.toLowerCase().includes(texto) ||
+        v.campanaNombre?.toLowerCase().includes(texto) ||
+        v.clienteDoc?.toLowerCase().includes(texto) 
+      );
+    }
+
+    this.ventasFiltradas = resultado;
+    this.paginaActual = pagina;
+
+    const inicio = pagina * this.PAGE_SIZE;
+    this.ventasPagina = resultado.slice(inicio, inicio + this.PAGE_SIZE);
   }
 }

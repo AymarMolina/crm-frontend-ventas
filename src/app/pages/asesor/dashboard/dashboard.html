@@ -61,18 +61,28 @@
   </div>
 
   <!-- Gráficos -->
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+  <div class="space-y-6">
+    <!-- Fila 1: dos gráficos -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- Fila 2: gráfico ancho completo -->
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        <h3 class="font-semibold mb-4 text-gray-700">Avance vs Meta por Campaña</h3>
+        <canvas id="avanceMetaChart"></canvas>
+      </div>
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        <h3 class="font-semibold mb-4 text-gray-700">Ventas por Campaña</h3>
+        <div class="max-w-[260px] mx-auto">
+          <canvas id="campanaChart"></canvas>
+        </div>
+      </div>
+    </div>
     <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
       <h3 class="font-semibold mb-4 text-gray-700">Tendencia de Ventas (últimos 15 días)</h3>
       <canvas id="tendenciaChart"></canvas>
     </div>
-    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-      <h3 class="font-semibold mb-4 text-gray-700">Ventas por Campaña</h3>
-      <div class="max-w-[260px] mx-auto">
-        <canvas id="campanaChart"></canvas>
-      </div>
-    </div>
+
   </div>
+
 
   <!-- Tabla de Ventas Recientes -->
   <div class="bg-white rounded-xl shadow-sm border border-gray-100">

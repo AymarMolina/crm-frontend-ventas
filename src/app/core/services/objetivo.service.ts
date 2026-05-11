@@ -27,6 +27,7 @@ export interface ObjetivoResponse {
   objetivoVentas: number;
   montoComision: number;
   creadoEn: string;
+  ventasActivas?: number; // <-- agregar esto
 }
 
 @Injectable({ providedIn: 'root' })

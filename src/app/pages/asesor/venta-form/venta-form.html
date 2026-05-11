@@ -1,6 +1,4 @@
 <div [ngClass]="{'vf-page': !isModal}">
-
-  <!-- Card -->
   <div class="vf-card">
 
     <!-- Header -->
@@ -42,16 +40,23 @@
             <div class="vf-select-wrap">
               <select formControlName="tipoDoc" class="vf-select">
                 <option value="DNI">DNI</option>
+                <option value="CE">Carnet de Extranjería</option>
                 <option value="RUC">RUC</option>
+                <option value="PASAPORTE">Pasaporte</option>
               </select>
-              <svg class="vf-select-arrow" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+              <svg class="vf-select-arrow" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M6 9l6 6 6-6"/>
+              </svg>
             </div>
           </div>
 
           <div class="vf-field">
             <label class="vf-label">Número de documento</label>
             <div class="vf-input-wrap">
-              <input type="text" formControlName="nroDoc" placeholder="Ej. 74385427" class="vf-input vf-input-mono vf-input-with-btn">
+              <input type="text" formControlName="nroDoc"
+                     [placeholder]="placeholderDoc"
+                     class="vf-input vf-input-mono vf-input-with-btn"
+                     [class.border-red-400]="ventaForm.get('nroDoc')?.invalid && ventaForm.get('nroDoc')?.touched">
               <button type="button" (click)="buscarCliente()" [disabled]="loadingCliente" class="vf-search-btn">
                 <ng-container *ngIf="!loadingCliente">
                   <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
@@ -61,6 +66,7 @@
                 <div *ngIf="loadingCliente" class="vf-spinner"></div>
               </button>
             </div>
+            <p *ngIf="getError('nroDoc')" class="text-red-500 text-xs mt-1 ml-1">{{ getError('nroDoc') }}</p>
           </div>
         </div>
 
@@ -72,7 +78,6 @@
               {{ ventaForm.get('tipoDoc')?.value }} · {{ ventaForm.get('nroDoc')?.value }}
             </span>
           </div>
-
           <div class="vf-cliente-body">
             <div class="vf-avatar-row">
               <div class="vf-avatar">{{ inicialesCliente }}</div>
@@ -81,7 +86,6 @@
                 <p class="vf-cliente-sub">{{ ventaForm.get('distrito')?.value }} · {{ ventaForm.get('email')?.value }}</p>
               </div>
             </div>
-
             <div class="vf-info-grid">
               <div class="vf-info-box">
                 <p class="vf-info-label">Teléfono</p>
@@ -104,14 +108,19 @@
           <p class="vf-nuevo-title">Datos del nuevo cliente</p>
 
           <div class="vf-field vf-mb8">
-            <label class="vf-label">Nombres</label>
-            <input type="text" formControlName="nombre" class="vf-input" placeholder="Ej. Juan Manuel">
+            <label class="vf-label">Nombres <span class="text-red-400">*</span></label>
+            <input type="text" formControlName="nombre" class="vf-input"
+                   placeholder="Ej. Juan Manuel"
+                   [class.border-red-400]="ventaForm.get('nombre')?.invalid && ventaForm.get('nombre')?.touched">
+            <p *ngIf="getError('nombre')" class="text-red-500 text-xs mt-1 ml-1">{{ getError('nombre') }}</p>
           </div>
 
           <div class="vf-grid-2 vf-mb8">
             <div class="vf-field">
-              <label class="vf-label">Apellido Paterno</label>
-              <input type="text" formControlName="apellidoP" class="vf-input">
+              <label class="vf-label">Apellido Paterno <span class="text-red-400">*</span></label>
+              <input type="text" formControlName="apellidoP" class="vf-input"
+                     [class.border-red-400]="ventaForm.get('apellidoP')?.invalid && ventaForm.get('apellidoP')?.touched">
+              <p *ngIf="getError('apellidoP')" class="text-red-500 text-xs mt-1 ml-1">{{ getError('apellidoP') }}</p>
             </div>
             <div class="vf-field">
               <label class="vf-label">Apellido Materno</label>
@@ -122,22 +131,28 @@
           <div class="vf-grid-2 vf-mb8">
             <div class="vf-field">
               <label class="vf-label">Email</label>
-              <input type="email" formControlName="email" class="vf-input">
+              <input type="email" formControlName="email" class="vf-input"
+                     placeholder="correo@ejemplo.com"
+                     [class.border-red-400]="ventaForm.get('email')?.invalid && ventaForm.get('email')?.touched">
+              <p *ngIf="getError('email')" class="text-red-500 text-xs mt-1 ml-1">{{ getError('email') }}</p>
             </div>
             <div class="vf-field">
               <label class="vf-label">Teléfono</label>
-              <input type="text" formControlName="telefono" class="vf-input">
+              <input type="text" formControlName="telefono" class="vf-input"
+                     placeholder="9XXXXXXXX"
+                     [class.border-red-400]="ventaForm.get('telefono')?.invalid && ventaForm.get('telefono')?.touched">
+              <p *ngIf="getError('telefono')" class="text-red-500 text-xs mt-1 ml-1">{{ getError('telefono') }}</p>
             </div>
           </div>
 
           <div class="vf-grid-2">
             <div class="vf-field">
               <label class="vf-label">Distrito</label>
-              <input type="text" formControlName="distrito" class="vf-input">
+              <input type="text" formControlName="distrito" class="vf-input" placeholder="Ej. Miraflores">
             </div>
             <div class="vf-field">
               <label class="vf-label">Dirección</label>
-              <input type="text" formControlName="direccion" class="vf-input">
+              <input type="text" formControlName="direccion" class="vf-input" placeholder="Ej. Av. Larco 123">
             </div>
           </div>
         </div>
@@ -152,11 +167,12 @@
           <span class="vf-section-label">Detalles de la operación</span>
         </div>
 
-        <!-- Fila 1: Campaña -->
+        <!-- Campaña -->
         <div class="vf-field vf-mb8">
-          <label class="vf-label">Campaña</label>
+          <label class="vf-label">Campaña <span class="text-red-400">*</span></label>
           <div class="vf-select-wrap">
-            <select formControlName="campanaId" class="vf-select">
+            <select formControlName="campanaId" class="vf-select"
+                    [class.border-red-400]="ventaForm.get('campanaId')?.invalid && ventaForm.get('campanaId')?.touched">
               <option value="">Seleccionar campaña...</option>
               <option *ngFor="let c of campanas" [value]="c.id">{{ c.nombre }}</option>
             </select>
@@ -164,9 +180,10 @@
               <path d="M6 9l6 6 6-6"/>
             </svg>
           </div>
+          <p *ngIf="getError('campanaId')" class="text-red-500 text-xs mt-1 ml-1">{{ getError('campanaId') }}</p>
         </div>
 
-        <!-- Fila 2: Producto (aparece solo cuando hay productos cargados) -->
+        <!-- Producto -->
         <div class="vf-field vf-mb8" *ngIf="productos.length > 0 || loadingProductos">
           <label class="vf-label">
             Producto
@@ -188,27 +205,33 @@
           </p>
         </div>
 
-        <!-- Fila 3: Monto -->
+        <!-- Monto -->
         <div class="vf-field vf-mb8">
-          <label class="vf-label">Monto</label>
+          <label class="vf-label">Monto <span class="text-red-400">*</span></label>
           <div class="vf-input-wrap">
             <span class="vf-prefix" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-weight:bold;">S/</span>
             <input type="number" formControlName="monto" class="vf-input" style="padding-left:2.5rem;"
-                  placeholder="0.00">
+                   placeholder="0.00"
+                   [class.border-red-400]="ventaForm.get('monto')?.invalid && ventaForm.get('monto')?.touched">
           </div>
+          <p *ngIf="getError('monto')" class="text-red-500 text-xs mt-1 ml-1">{{ getError('monto') }}</p>
         </div>
 
         <!-- Observaciones -->
         <div class="vf-field">
           <label class="vf-label">Observaciones internas</label>
           <textarea formControlName="observaciones" rows="3"
-                    placeholder="Notas adicionales..." class="vf-textarea"></textarea>
+                    placeholder="Notas adicionales... (máx. 500 caracteres)"
+                    class="vf-textarea"
+                    [class.border-red-400]="ventaForm.get('observaciones')?.invalid && ventaForm.get('observaciones')?.touched">
+          </textarea>
+          <p *ngIf="getError('observaciones')" class="text-red-500 text-xs mt-1 ml-1">{{ getError('observaciones') }}</p>
         </div>
       </div>
 
       <!-- Acciones -->
       <div class="vf-actions">
-        <button type="submit" [disabled]="ventaForm.invalid || submitting" class="vf-btn-primary">
+        <button type="submit" [disabled]="submitting" class="vf-btn-primary">
           {{ submitting ? 'Procesando...' : 'Confirmar venta' }}
         </button>
         <button type="button" (click)="onClose.emit()" class="vf-btn-secondary">
@@ -218,5 +241,4 @@
 
     </form>
   </div>
-
 </div>

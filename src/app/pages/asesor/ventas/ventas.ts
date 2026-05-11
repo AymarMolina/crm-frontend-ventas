@@ -5,6 +5,14 @@ import { VentasService } from '../../../core/services/ventas.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { PageResponse, Venta } from '../../../core/models/crm.models';
 
+// Agrega esta interfaz
+export interface HistorialEstado {
+  estadoAnterior: string;
+  estadoNuevo: string;
+  motivo: string;
+  cambiadoEn: string;
+}
+
 @Component({
   selector: 'app-ventas',
   imports: [FormsModule, CommonModule],
@@ -12,6 +20,8 @@ import { PageResponse, Venta } from '../../../core/models/crm.models';
   styleUrl: './ventas.css',
 })
 export class Ventas implements OnInit {
+
+  historialEstados: HistorialEstado[] = [];
 
   loading = true;
   ventaSeleccionada: Venta | null = null;
@@ -43,7 +53,70 @@ export class Ventas implements OnInit {
   ngOnInit(): void {
     this.cargarTodos();
   }
+  // Propiedades nuevas
+  estadosDisponibles = [
+    { codigo: 'EN_PROCESO', nombre: 'En Proceso' },
+    { codigo: 'ACTIVO',     nombre: 'Activo' },
+    { codigo: 'OBSERVADO',  nombre: 'Observado' },
+    { codigo: 'CAIDA',      nombre: 'Caída' },
+  ];
+  nuevoEstado: string = '';
+  motivoCambio: string = '';
+  cambiandoEstado = false;
+  mensajeExito: string = '';
 
+  // Método nuevo
+  cambiarEstado(): void {
+    if (!this.ventaSeleccionada || !this.nuevoEstado || !this.motivoCambio.trim()) return;
+
+    this.cambiandoEstado = true;
+    this.ventasService.cambiarEstado(this.ventaSeleccionada.id, {
+      estadoCodigo: this.nuevoEstado,
+      motivo: this.motivoCambio
+    }).subscribe({
+      next: (ventaActualizada) => {
+        const idx = this._todos.findIndex(v => v.id === ventaActualizada.id);
+        if (idx !== -1) this._todos[idx] = ventaActualizada;
+        this._aplicarFiltrosYPaginar(this.paginaActual);
+
+        this.ventaSeleccionada = ventaActualizada;
+        this.motivoCambio = this.motivoCambio;
+        console.log(this.motivoCambio)
+        this.mensajeExito = 'Estado actualizado correctamente';
+        this.cambiandoEstado = false;
+
+        // Recargar historial
+        this.ventasService.getHistorial(ventaActualizada.id).subscribe({
+          next: (data) => { this.historialEstados = data; this.cdr.detectChanges();}
+          
+        });
+
+        setTimeout(() => this.mensajeExito = '', 3000);
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.cambiandoEstado = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  // Modifica verDetalle para inicializar el selector
+  verDetalle(venta: Venta): void {
+    this.ventaSeleccionada = venta;
+    this.nuevoEstado = venta.estadoCodigo;
+    this.motivoCambio = '';
+    this.mensajeExito = '';
+    this.historialEstados = [];
+
+    // Cargar historial
+    this.ventasService.getHistorial(venta.id).subscribe({
+      next: (data) => {
+        this.historialEstados = data;
+        this.cdr.detectChanges();
+      }
+    });
+  }
   cargarTodos(): void {
     const agenteId = this.authService.obtenerUsuarioId();
     if (!agenteId) return;
@@ -64,9 +137,6 @@ export class Ventas implements OnInit {
     });
   }
 
-  verDetalle(venta: Venta): void {
-    this.ventaSeleccionada = venta;
-  }
 
   filtrar(): void {
     this._aplicarFiltrosYPaginar(0);

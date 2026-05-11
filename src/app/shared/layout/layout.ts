@@ -18,6 +18,7 @@ const MENUS: Record<string, NavItem[]> = {
     { label: 'Nueva Venta',    route: '/asesor/nueva-venta',  icon: ICONS.nueva     },
     { label: 'Seguimiento',    route: '/asesor/seguimiento',  icon: ICONS.seguimien },
     { label: 'Alertas',        route: '/asesor/alertas',      icon: ICONS.alertas   },
+    { label: 'Reporte',        route: '/asesor/generar-reporte',      icon: ICONS.alertas   },
   ],
   SUPERVISOR: [
     { label: 'Dashboard',      route: '/supervisor/dashboard', icon: ICONS.dashboard },

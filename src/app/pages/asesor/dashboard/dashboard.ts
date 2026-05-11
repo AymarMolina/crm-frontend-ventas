@@ -241,10 +241,10 @@ initCharts(data: any) {
 
 getBadgeClass(estado: string): string {
   const map: Record<string, string> = {
-    'ACTIVO': 'bg-green-100 text-green-700',
-    'PENDIENTE': 'bg-yellow-100 text-yellow-700',
-    'CANCELADO': 'bg-red-100 text-red-700',
-    'COMPLETADO': 'bg-blue-100 text-blue-700',
+    'ACTIVO': 'bg-emerald-100 text-emerald-700 border-emerald-200',
+    'EN_PROCESO': 'bg-blue-100 text-blue-700 border-blue-200',
+    'CAIDA': 'bg-red-100 text-red-700 border-red-200',
+    'OBSERVADO': 'bg-amber-100 text-amber-700 border-amber-200',
   };
   return map[estado] ?? 'bg-gray-100 text-gray-600';
 }

@@ -52,6 +52,10 @@ export const routes: Routes = [
             path: 'alertas',
             loadComponent: () => import('./pages/asesor/alerta/alerta').then(m => m.Alerta)
           },
+          {
+            path: 'generar-reporte',
+            loadComponent: () => import('./pages/asesor/generar-reporte/generar-reporte').then(m => m.GenerarReporte)
+          },
         ]
       },
 

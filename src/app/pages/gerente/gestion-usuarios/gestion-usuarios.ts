@@ -211,6 +211,7 @@ export class GestionUsuarios implements OnInit {
         },
       });
     }
+    setTimeout(() => this.cerrarModal(), 1200);
   }
 
   confirmarEliminar(): void {

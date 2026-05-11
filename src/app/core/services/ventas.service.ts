@@ -3,6 +3,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CambioEstadoRequest, PageResponse, Venta, VentaRequest } from '../models/crm.models';
 import { environment } from '../../../environments/environment';
+import { AlertaVenta } from '../../pages/asesor/alerta/alerta';
+import { HistorialEstado } from '../../pages/asesor/ventas/ventas';
 
 export interface VentasFiltros {
   campanaId?: string;
@@ -43,10 +45,6 @@ export class VentasService {
     return this.http.post<Venta>(this.base, body);
   }
 
-  cambiarEstado(id: string, body: CambioEstadoRequest): Observable<Venta> {
-    return this.http.patch<Venta>(`${this.base}/${id}/estado`, body);
-  }
-
   vincularCliente(ventaId: string, clienteId: string): Observable<Venta> {
     return this.http.patch<Venta>(`${this.base}/${ventaId}/cliente/${clienteId}`, {});
   }
@@ -72,4 +70,17 @@ export class VentasService {
     return this.http.get(`${this.base}/agente/${agenteId}?page=${page}&size=${size}`);
   }
 
+  getAlertas(): Observable<AlertaVenta[]> {
+    return this.http.get<AlertaVenta[]>(`${this.base}/alertas`);
+  }
+
+  cambiarEstado(id: string, body: { estadoCodigo: string; motivo: string }): Observable<any> {
+    return this.http.patch(`${this.base}/${id}/estado`, body);
+  }
+  archivarCaida(id: string): Observable<void> {
+    return this.http.patch<void>(`${this.base}/${id}/archivar-caida`, {});
+  }
+  getHistorial(ventaId: string): Observable<HistorialEstado[]> {
+    return this.http.get<HistorialEstado[]>(`${this.base}/${ventaId}/historial`);
+  }
 }

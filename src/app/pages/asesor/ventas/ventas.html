@@ -144,8 +144,9 @@
             <td class="px-6 py-4 text-center">
               <span [ngClass]="{
                 'bg-emerald-100 text-emerald-700 border-emerald-200': venta.estadoCodigo === 'ACTIVO',
-                'bg-amber-100 text-amber-700 border-amber-200': venta.estadoCodigo !== 'ACTIVO',
-                'bg-red-100 text-red-700 border-red-200': venta.eliminado
+                'bg-blue-100 text-blue-700 border-blue-200':   venta.estadoCodigo === 'EN_PROCESO',
+                'bg-red-100 text-red-700 border-red-200':       venta.estadoCodigo === 'CAIDA',
+                'bg-amber-100 text-amber-700 border-amber-200': venta.estadoCodigo !== 'ACTIVO' && venta.estadoCodigo !== 'EN_PROCESO' && venta.estadoCodigo !== 'CAIDA'
               }" class="px-3 py-1 rounded-full text-[11px] font-bold border uppercase">
                 {{ venta.estadoNombre }}
               </span>
@@ -251,29 +252,83 @@
           </div>
         </div>
       </div>
-
-      <!-- Sección 3: Observaciones y Alertas -->
-      <div class="mt-8 space-y-4">
-        <h4 class="text-xs font-bold text-slate-500 uppercase tracking-widest">Seguimiento y Notas</h4>
-        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
-          <div *ngIf="ventaSeleccionada.tieneAlerta" class="mb-4 p-3 bg-red-100 border border-red-200 rounded-xl flex items-start gap-3">
-            <svg class="w-5 h-5 text-red-600 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
-            <div>
-              <p class="text-xs font-bold text-red-800">Alerta del Sistema</p>
-              <p class="text-xs text-red-700">{{ ventaSeleccionada.alertaDetalle }}</p>
-            </div>
-          </div>
-          <p class="text-xs text-slate-400 mb-1">Observaciones del Asesor</p>
-          <p class="text-sm text-slate-700 italic">{{ ventaSeleccionada.observaciones || 'Sin observaciones adicionales.' }}</p>
-        </div>
-      </div>
     </div>
 
     <!-- Footer Modal -->
-    <div class="p-6 bg-slate-50 border-t border-slate-100 flex justify-end">
-      <button (click)="ventaSeleccionada = null" class="px-6 py-2 bg-slate-900 text-white rounded-xl text-sm font-bold hover:bg-slate-800 transition-all">
-        Cerrar Detalle
-      </button>
+    <div class="p-6 bg-slate-50 border-t border-slate-100">
+
+      <!-- Cambio de Estado -->
+      <div class="mb-4">
+        <h4 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Cambiar Estado</h4>
+
+        <!-- Mensaje éxito -->
+        <div *ngIf="mensajeExito"
+          class="mb-3 px-4 py-2 bg-emerald-50 border border-emerald-200 rounded-xl text-xs font-semibold text-emerald-700 flex items-center gap-2">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+          </svg>
+          {{ mensajeExito }}
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <!-- Fila selector + input motivo -->
+          <div class="flex flex-col sm:flex-row gap-2">
+            <select [(ngModel)]="nuevoEstado"
+              class="flex-1 px-3 py-2 bg-white border border-slate-200 rounded-xl text-sm text-slate-700 focus:ring-2 focus:ring-blue-500 outline-none">
+              <option *ngFor="let e of estadosDisponibles" [value]="e.codigo">{{ e.nombre }}</option>
+            </select>
+
+            <!-- Motivo SIEMPRE visible -->
+            <input
+              type="text"
+              [(ngModel)]="motivoCambio"
+              placeholder="Motivo del cambio..."
+              class="flex-1 px-3 py-2 bg-white border border-slate-200 rounded-xl text-sm text-slate-700 focus:ring-2 focus:ring-blue-500 outline-none">
+          </div>
+
+          <button (click)="cambiarEstado()"
+            [disabled]="cambiandoEstado || nuevoEstado === ventaSeleccionada?.estadoCodigo || !motivoCambio.trim()"
+            class="w-full px-5 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2">
+            <svg *ngIf="cambiandoEstado" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+            </svg>
+            {{ cambiandoEstado ? 'Guardando...' : 'Actualizar Estado' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Historial de estados -->
+      <div class="mb-4" *ngIf="historialEstados.length > 0">
+        <h4 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Historial</h4>
+        <div class="space-y-2 max-h-40 overflow-y-auto pr-1">
+          <div *ngFor="let h of historialEstados"
+            class="flex items-start gap-3 p-2.5 bg-slate-50 rounded-xl border border-slate-100">
+            <div class="w-2 h-2 rounded-full mt-1.5 shrink-0"
+              [ngClass]="{
+                'bg-emerald-500': h.estadoNuevo === 'ACTIVO',
+                'bg-blue-500':    h.estadoNuevo === 'EN_PROCESO',
+                'bg-red-500':     h.estadoNuevo === 'CAIDA',
+                'bg-amber-500':   h.estadoNuevo === 'OBSERVADO'
+              }">
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-xs font-bold text-slate-700">{{ h.estadoAnterior }} → {{ h.estadoNuevo }}</span>
+                <span class="text-[10px] text-slate-400 shrink-0">{{ h.cambiadoEn | date:'dd MMM, HH:mm' }}</span>
+              </div>
+              <p class="text-xs text-slate-500 mt-0.5 truncate">{{ h.motivo || 'Sin motivo' }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end">
+        <button (click)="ventaSeleccionada = null"
+          class="px-6 py-2 bg-slate-900 text-white rounded-xl text-sm font-bold hover:bg-slate-800 transition-all">
+          Cerrar
+        </button>
+      </div>
     </div>
   </div>
 </div>  

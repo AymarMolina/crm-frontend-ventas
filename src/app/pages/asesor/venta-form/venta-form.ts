@@ -1,15 +1,16 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Campana, Producto } from '../../../core/models/crm.models';
 import { ClientesService } from '../../../core/services/clientes.service';
 import { VentasService } from '../../../core/services/ventas.service';
 import { CampanasService } from '../../../core/services/campanas.service';
 import { CommonModule } from '@angular/common';
 import { ProductosService } from '../../../core/services/Productos.service';
+import { UbigeoService } from '../../../core/services/ubigeo.service';
 
 @Component({
   selector: 'app-venta-form',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, FormsModule],
   templateUrl: './venta-form.html',
   styleUrl: './venta-form.css',
 })
@@ -25,6 +26,53 @@ export class VentaForm implements OnInit {
   loadingProductos = false;
   submitting = false;
   esClienteNuevo = false;
+  provinciaHabilitada = false;
+  distritoHabilitado = false;
+  departamentos: string[] = [];
+  provincias: string[] = [];
+  distritos: string[] = [];
+  deptoFiltro = '';
+  provFiltro = '';
+  distFiltro = '';
+
+  get departamentosFiltrados() {
+    return this.departamentos.filter(d =>
+      d?.toLowerCase().startsWith(this.deptoFiltro.toLowerCase())
+    );
+  }
+  get provinciasFiltradas() {
+    return this.provincias.filter(p =>
+      p?.toLowerCase().startsWith(this.provFiltro.toLowerCase())
+    );
+  }
+  get distritosFiltrados() {
+    return this.distritos.filter(d =>
+      d?.toLowerCase().startsWith(this.distFiltro.toLowerCase())
+    );
+  }
+  deptoOpen = false;
+  provOpen = false;
+  distOpen = false;
+
+  seleccionarDepto(d: string) {
+    this.ventaForm.get('departamento')?.setValue(d);
+    this.deptoFiltro = d;
+    this.deptoOpen = false;
+  }
+  seleccionarProv(p: string) {
+    this.ventaForm.get('provincia')?.setValue(p);
+    this.provFiltro = p;
+    this.provOpen = false;
+  }
+  seleccionarDist(d: string) {
+    this.ventaForm.get('distrito')?.setValue(d);
+    this.distFiltro = d;
+    this.distOpen = false;
+  }
+
+  onBlurDepto() { setTimeout(() => this.deptoOpen = false, 150); }
+  onBlurProv() { setTimeout(() => this.provOpen = false, 150); }
+  onBlurDist() { setTimeout(() => this.distOpen = false, 150); }
 
   constructor(
     private fb: FormBuilder,
@@ -33,29 +81,101 @@ export class VentaForm implements OnInit {
     private campanasService: CampanasService,
     private productosService: ProductosService,
     private cdr: ChangeDetectorRef,
+    private ubigeoService: UbigeoService
   ) {
     this.ventaForm = this.fb.group({
-      tipoDoc:       ['DNI', Validators.required],
-      nroDoc:        ['', [Validators.required, Validators.pattern(/^\d{8}$/)]],
-      clienteId:     [null, Validators.required],
-      nombre:        [{ value: '', disabled: true }, [Validators.required, Validators.minLength(2)]],
-      apellidoP:     [{ value: '', disabled: true }, [Validators.required, Validators.minLength(2)]],
-      apellidoM:     [{ value: '', disabled: true }],
-      email:         [{ value: '', disabled: true }, [Validators.email]],
-      telefono:      [{ value: '', disabled: true }, [Validators.pattern(/^9\d{8}$/)]],
-      telefonoAlt:   [{ value: '', disabled: true }, [Validators.pattern(/^9\d{8}$/)]],
-      direccion:     [{ value: '', disabled: true }],
-      distrito:      [{ value: '', disabled: true }],
-      campanaId:     ['', Validators.required],
-      productoId:    [null],
-      monto:         [null, [Validators.required, Validators.min(0.01)]],
-      fechaVenta:    [new Date().toISOString().split('T')[0], Validators.required],
+      tipoDoc: ['DNI', Validators.required],
+      nroDoc: ['', [Validators.required, Validators.pattern(/^\d{8}$/)]],
+      clienteId: [null, Validators.required],
+      nombre: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(2)]],
+      apellidoP: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(2)]],
+      apellidoM: [{ value: '', disabled: true }],
+      // ✅ EMAIL OBLIGATORIO
+      email: [{ value: '', disabled: true }, [Validators.required, Validators.email]],
+      // ✅ TELÉFONO OBLIGATORIO
+      telefono: [{ value: '', disabled: true }, [Validators.required, Validators.pattern(/^9\d{8}$/)]],
+      telefonoAlt: [{ value: '', disabled: true }, [Validators.pattern(/^9\d{8}$/)]],
+      // ✅ DIRECCIÓN OBLIGATORIA
+      direccion: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(5)]],
+      departamento: [{ value: '', disabled: true }, Validators.required],
+      // ✅ PROVINCIA OBLIGATORIA
+      provincia: [{ value: '', disabled: true }, Validators.required],
+      // ✅ DISTRITO OBLIGATORIO
+      distrito: [{ value: '', disabled: true }, Validators.required],
+      campanaId: ['', Validators.required],
+      productoId: [null],
+      monto: [null, [Validators.required, Validators.min(0.01)]],
+      fechaVenta: [new Date().toISOString().split('T')[0], Validators.required],
       observaciones: ['', Validators.maxLength(500)]
     });
   }
 
   ngOnInit(): void {
     this.cargarCampanas();
+
+    this.ubigeoService.listarDepartamentos().subscribe({
+      next: (res: any) => {
+        this.departamentos = res
+          .filter((r: any) => r.CodigoDepartamento > 0)
+          .map((r: any) => r.Descripcion);
+        this.cdr.detectChanges();
+      }
+    });
+
+    this.ventaForm.get('departamento')?.valueChanges.subscribe(dep => {
+      this.ventaForm.get('provincia')?.setValue('', { emitEvent: false });
+      this.ventaForm.get('distrito')?.setValue('', { emitEvent: false });
+      this.provFiltro = ''; this.distFiltro = '';
+      this.provincias = []; this.distritos = [];
+      this.provinciaHabilitada = false;
+      this.distritoHabilitado = false;
+      if (!dep) return;
+
+      this.ubigeoService.listarProvincias(dep).subscribe((res: any) => {
+        this.provincias = res
+          .filter((r: any) => r.IdUbigeo > 0)
+          .map((r: any) => r.Descripcion);
+
+        this.provinciaHabilitada = true;
+        this.ventaForm.get('provincia')?.enable();
+        this.cdr.detectChanges();
+      });
+    });
+
+    this.ventaForm.get('provincia')?.valueChanges.subscribe(prov => {
+      this.ventaForm.get('distrito')?.setValue('', { emitEvent: false });
+      this.distFiltro = '';
+      this.distritos = [];
+      this.distritoHabilitado = false;
+
+      const dep = this.ventaForm.get('departamento')?.value;
+      if (!dep || !prov) {
+        this.ventaForm.get('distrito')?.disable();
+        return;
+      }
+
+      this.ubigeoService.listarDistritos(dep, prov).subscribe({
+        next: (res: any) => {
+          this.distritos = res
+            .filter((r: any) => r.IdUbigeo > 0)
+            .map((r: any) => r.Descripcion);
+
+          if (this.distritos.length > 0) {
+            this.distritoHabilitado = true;
+            this.ventaForm.get('distrito')?.enable();
+          } else {
+            this.ventaForm.get('distrito')?.disable();
+          }
+
+          this.cdr.detectChanges();
+        },
+        error: () => {
+          this.distritoHabilitado = false;
+          this.ventaForm.get('distrito')?.disable();
+          this.cdr.detectChanges();
+        }
+      });
+    });
 
     this.ventaForm.get('tipoDoc')?.valueChanges.subscribe(tipo => {
       this.actualizarValidacionDoc(tipo);
@@ -83,37 +203,6 @@ export class VentaForm implements OnInit {
     });
   }
 
-  actualizarValidacionDoc(tipo: string) {
-    const nroDoc = this.ventaForm.get('nroDoc');
-    switch (tipo) {
-      case 'DNI':
-        nroDoc?.setValidators([Validators.required, Validators.pattern(/^\d{8}$/)]);
-        break;
-      case 'RUC':
-        nroDoc?.setValidators([Validators.required, Validators.pattern(/^\d{11}$/)]);
-        break;
-      case 'CE':
-        nroDoc?.setValidators([Validators.required, Validators.minLength(6), Validators.maxLength(12)]);
-        break;
-      case 'PASAPORTE':
-        nroDoc?.setValidators([Validators.required, Validators.minLength(6), Validators.maxLength(20)]);
-        break;
-    }
-    nroDoc?.reset('');
-    nroDoc?.updateValueAndValidity();
-  }
-
-  get placeholderDoc(): string {
-    const tipo = this.ventaForm.get('tipoDoc')?.value;
-    switch (tipo) {
-      case 'DNI':       return 'Ej. 74385427 (8 dígitos)';
-      case 'RUC':       return 'Ej. 20123456789 (11 dígitos)';
-      case 'CE':        return 'Ej. 000123456 (6-12 caracteres)';
-      case 'PASAPORTE': return 'Ej. AB123456 (6-20 caracteres)';
-      default:          return 'Número de documento';
-    }
-  }
-
   onCampanaChange(campanaId: string) {
     this.productos = [];
     this.ventaForm.get('productoId')?.setValue(null, { emitEvent: false });
@@ -134,6 +223,14 @@ export class VentaForm implements OnInit {
     });
   }
 
+  onDocumentoInput(event: any) {
+    const tipo = this.ventaForm.get('tipoDoc')?.value;
+    if (tipo === 'CE' || tipo === 'PASAPORTE') {
+      const upperValue = event.target.value.toUpperCase();
+      this.ventaForm.get('nroDoc')?.setValue(upperValue, { emitEvent: false });
+    }
+  }
+
   onProductoChange(productoId: string) {
     if (!productoId) return;
     const producto = this.productos.find(p => p.id === productoId);
@@ -151,15 +248,17 @@ export class VentaForm implements OnInit {
       next: (cliente) => {
         if (cliente) {
           this.ventaForm.patchValue({
-            clienteId:   cliente.id,
-            nombre:      cliente.nombre,
-            apellidoP:   cliente.apellidoP,
-            apellidoM:   cliente.apellidoM,
-            email:       cliente.email,
-            telefono:    cliente.telefono,
+            clienteId: cliente.id,
+            nombre: cliente.nombre,
+            apellidoP: cliente.apellidoP,
+            apellidoM: cliente.apellidoM,
+            email: cliente.email,
+            telefono: cliente.telefono,
             telefonoAlt: cliente.telefonoAlt,
-            direccion:   cliente.direccion,
-            distrito:    cliente.distrito,
+            direccion: cliente.direccion,
+            departamento: cliente.departamento || '',
+            provincia: cliente.provincia || '',
+            distrito: cliente.distrito || '',
           });
           this.esClienteNuevo = false;
         } else {
@@ -177,14 +276,28 @@ export class VentaForm implements OnInit {
 
   toggleClienteNuevo() {
     this.esClienteNuevo = !this.esClienteNuevo;
-    const campos = ['nombre', 'apellidoP', 'apellidoM', 'email', 'telefono', 'telefonoAlt', 'direccion', 'distrito'];
+    const campos = ['nombre', 'apellidoP', 'apellidoM', 'email',
+      'telefono', 'telefonoAlt', 'direccion',
+      'distrito', 'departamento', 'provincia'];
 
     if (this.esClienteNuevo) {
+      // Habilitamos los campos base
       campos.forEach(c => this.ventaForm.get(c)?.enable());
+
+      // Como aún no hay provincia elegida, deshabilitar dependientes
+      this.ventaForm.get('provincia')?.disable();
+      this.ventaForm.get('distrito')?.disable();
+
       this.ventaForm.get('clienteId')?.setValue(null);
       this.ventaForm.get('clienteId')?.clearValidators();
     } else {
       campos.forEach(c => this.ventaForm.get(c)?.disable());
+      // Limpiar ubigeo
+      this.ventaForm.get('departamento')?.setValue('');
+      this.ventaForm.get('provincia')?.setValue('');
+      this.ventaForm.get('distrito')?.setValue('');
+      this.deptoFiltro = ''; this.provFiltro = ''; this.distFiltro = '';
+      this.provincias = []; this.distritos = [];
       this.ventaForm.get('clienteId')?.setValidators([Validators.required]);
     }
     this.ventaForm.get('clienteId')?.updateValueAndValidity();
@@ -208,16 +321,18 @@ export class VentaForm implements OnInit {
 
     if (this.esClienteNuevo) {
       const nuevoCliente: any = {
-        tipoDoc:     rawValue.tipoDoc,
-        nroDoc:      rawValue.nroDoc,
-        nombre:      rawValue.nombre,
-        apellidoP:   rawValue.apellidoP,
-        apellidoM:   rawValue.apellidoM,
-        email:       rawValue.email,
-        telefono:    rawValue.telefono,
+        tipoDoc: rawValue.tipoDoc,
+        nroDoc: rawValue.nroDoc,
+        nombre: rawValue.nombre,
+        apellidoP: rawValue.apellidoP,
+        apellidoM: rawValue.apellidoM,
+        email: rawValue.email,
+        telefono: rawValue.telefono,
         telefonoAlt: rawValue.telefonoAlt,
-        direccion:   rawValue.direccion,
-        distrito:    rawValue.distrito
+        direccion: rawValue.direccion,
+        departamento: rawValue.departamento,
+        provincia: rawValue.provincia,
+        distrito: rawValue.distrito
       };
       this.clientesService.crearCliente(nuevoCliente).subscribe({
         next: (clienteCreado) => this.enviarVenta(clienteCreado.id, rawValue),
@@ -230,11 +345,11 @@ export class VentaForm implements OnInit {
 
   private enviarVenta(clienteId: string, formValues: any) {
     const payloadVenta = {
-      campanaId:    formValues.campanaId,
-      productoId:   formValues.productoId || null,
-      clienteId:    clienteId,
-      fechaVenta:   formValues.fechaVenta,
-      monto:        formValues.monto,
+      campanaId: formValues.campanaId,
+      productoId: formValues.productoId || null,
+      clienteId: clienteId,
+      fechaVenta: formValues.fechaVenta,
+      monto: formValues.monto,
       observaciones: formValues.observaciones
     };
     this.ventasService.guardarVenta(payloadVenta).subscribe({
@@ -246,13 +361,64 @@ export class VentaForm implements OnInit {
     });
   }
 
+  actualizarValidacionDoc(tipo: string) {
+    const nroDoc = this.ventaForm.get('nroDoc');
+    switch (tipo) {
+      case 'DNI':
+        nroDoc?.setValidators([
+          Validators.required,
+          Validators.pattern(/^\d{8}$/),
+          Validators.minLength(8),
+          Validators.maxLength(8)
+        ]);
+        break;
+      case 'RUC':
+        nroDoc?.setValidators([
+          Validators.required,
+          Validators.pattern(/^(10|20)\d{9}$/),
+          Validators.minLength(11),
+          Validators.maxLength(11)
+        ]);
+        break;
+      case 'CE':
+        nroDoc?.setValidators([
+          Validators.required,
+          Validators.pattern(/^[A-Z0-9]{9,12}$/),
+          Validators.minLength(9),
+          Validators.maxLength(12)
+        ]);
+        break;
+      case 'PASAPORTE':
+        nroDoc?.setValidators([
+          Validators.required,
+          Validators.pattern(/^[A-Z0-9]{6,20}$/),
+          Validators.minLength(6),
+          Validators.maxLength(20)
+        ]);
+        break;
+    }
+    nroDoc?.reset('');
+    nroDoc?.updateValueAndValidity();
+  }
+
+  get placeholderDoc(): string {
+    const tipo = this.ventaForm.get('tipoDoc')?.value;
+    switch (tipo) {
+      case 'DNI': return 'Ej. 74385427 (8 dígitos)';
+      case 'RUC': return 'Ej. 20123456789 (empieza con 10 o 20, 11 dígitos)';
+      case 'CE': return 'Ej. 001234567 (9-12 caracteres alfanuméricos)';
+      case 'PASAPORTE': return 'Ej. AB123456 (6-20 caracteres alfanuméricos)';
+      default: return 'Número de documento';
+    }
+  }
+
   getError(campo: string): string {
     const control = this.ventaForm.get(campo);
     if (!control || !control.invalid || !control.touched) return '';
 
-    if (control.hasError('required'))  return 'Este campo es obligatorio';
-    if (control.hasError('email'))     return 'Ingresa un correo válido (ej. nombre@correo.com)';
-    if (control.hasError('min'))       return 'El monto debe ser mayor a 0';
+    if (control.hasError('required')) return 'Este campo es obligatorio';
+    if (control.hasError('email')) return 'Ingresa un correo válido (ej. nombre@correo.com)';
+    if (control.hasError('min')) return 'El monto debe ser mayor a 0';
     if (control.hasError('maxlength')) return `Máximo ${control.errors?.['maxlength'].requiredLength} caracteres`;
     if (control.hasError('minlength')) return `Mínimo ${control.errors?.['minlength'].requiredLength} caracteres`;
 
@@ -261,8 +427,10 @@ export class VentaForm implements OnInit {
         return 'Debe ser un celular peruano (9 dígitos, empieza en 9)';
       if (campo === 'nroDoc') {
         const tipo = this.ventaForm.get('tipoDoc')?.value;
-        if (tipo === 'DNI') return 'El DNI debe tener exactamente 8 dígitos';
-        if (tipo === 'RUC') return 'El RUC debe tener exactamente 11 dígitos';
+        if (tipo === 'DNI') return 'El DNI debe tener exactamente 8 dígitos numéricos';
+        if (tipo === 'RUC') return 'El RUC debe empezar con 10 o 20 y tener 11 dígitos';
+        if (tipo === 'CE') return 'El CE debe tener entre 9-12 caracteres alfanuméricos';
+        if (tipo === 'PASAPORTE') return 'El Pasaporte debe tener entre 6-20 caracteres alfanuméricos';
         return 'Formato de documento inválido';
       }
     }

@@ -380,4 +380,31 @@
   font-size: 0.75rem;
   color: #6366f1;
   margin-top: 4px;
+}.vf-ubigeo-wrap {
+  position: relative;
+}
+.vf-ubigeo-dropdown {
+  position: absolute;
+  z-index: 50;
+  top: calc(100% + 4px);
+  left: 0; right: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  max-height: 180px;
+  overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+  padding: 4px 0;
+  margin: 0;
+  list-style: none;
+}
+.vf-ubigeo-dropdown li {
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: var(--text-main);
+  transition: background 0.15s;
+}
+.vf-ubigeo-dropdown li:hover {
+  background: var(--bg-hover);
 }

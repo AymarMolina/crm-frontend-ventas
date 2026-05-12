@@ -1,0 +1,16 @@
+ubigeo-wrap  { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    .ubigeo-field { position: relative; }
+    .ubigeo-combo { position: relative; }
+    .ubigeo-list  {
+      position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 200;
+      background: var(--color-background-primary);
+      border: 1px solid var(--color-border-secondary);
+      border-radius: 8px; max-height: 220px; overflow-y: auto;
+      box-shadow: 0 4px 16px rgba(0,0,0,.08); list-style: none; margin: 0; padding: 4px 0;
+    }
+    .ubigeo-list li {
+      padding: 8px 14px; cursor: pointer; font-size: 14px;
+      color: var(--color-text-primary); border-radius: 4px; margin: 0 4px;
+    }
+    .ubigeo-list li:hover { background: var(--color-background-secondary); }
+    @media (max-width: 640px) { .ubigeo-wrap { grid-template-columns: 1fr; } }

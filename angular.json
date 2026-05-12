@@ -55,12 +55,14 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
+          "options": {},
           "configurations": {
             "production": {
               "buildTarget": "crm-frontend:build:production"
             },
             "development": {
-              "buildTarget": "crm-frontend:build:development"
+              "buildTarget": "crm-frontend:build:development",
+              "proxyConfig": "proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"

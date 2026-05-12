@@ -54,9 +54,11 @@
             <label class="vf-label">Número de documento</label>
             <div class="vf-input-wrap">
               <input type="text" formControlName="nroDoc"
-                     [placeholder]="placeholderDoc"
-                     class="vf-input vf-input-mono vf-input-with-btn"
-                     [class.border-red-400]="ventaForm.get('nroDoc')?.invalid && ventaForm.get('nroDoc')?.touched">
+                [placeholder]="placeholderDoc"
+                class="vf-input vf-input-mono vf-input-with-btn"
+                [class.border-red-400]="ventaForm.get('nroDoc')?.invalid && ventaForm.get('nroDoc')?.touched"
+                [style.text-transform]="ventaForm.get('tipoDoc')?.value === 'CE' || ventaForm.get('tipoDoc')?.value === 'PASAPORTE' ? 'uppercase' : 'none'"
+                (input)="onDocumentoInput($event)">
               <button type="button" (click)="buscarCliente()" [disabled]="loadingCliente" class="vf-search-btn">
                 <ng-container *ngIf="!loadingCliente">
                   <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
@@ -145,10 +147,78 @@
             </div>
           </div>
 
+          <!-- Ubigeo: Departamento / Provincia / Distrito -->
+          <div class="vf-grid-2 vf-mb8">
+
+            <!-- DEPARTAMENTO -->
+            <div class="vf-field">
+              <label class="vf-label">Departamento</label>
+              <div class="vf-ubigeo-wrap">
+                <input type="text"
+                      class="vf-input"
+                      placeholder="Buscar departamento..."
+                      [(ngModel)]="deptoFiltro"
+                      [ngModelOptions]="{standalone: true}"
+                      [disabled]="!!ventaForm.get('departamento')?.disabled"
+                      (input)="deptoOpen = true"
+                      (focus)="deptoOpen = true"
+                      (blur)="onBlurDepto()"
+                      [value]="ventaForm.get('departamento')?.value || deptoFiltro">
+                <ul *ngIf="deptoOpen && departamentosFiltrados.length > 0" class="vf-ubigeo-dropdown">
+                  <li *ngFor="let d of departamentosFiltrados"
+                      (mousedown)="seleccionarDepto(d)">
+                    {{ d }}
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- PROVINCIA -->
+            <div class="vf-field">
+              <label class="vf-label">Provincia</label>
+              <div class="vf-ubigeo-wrap">
+                <input type="text"
+                class="vf-input"
+                placeholder="Buscar provincia..."
+                [(ngModel)]="provFiltro"
+                [ngModelOptions]="{standalone: true}"
+                [disabled]="!provincias.length" 
+                (input)="provOpen = true"
+                (focus)="provOpen = true"
+                (blur)="onBlurProv()"
+                [value]="ventaForm.get('provincia')?.value || provFiltro">
+                <ul *ngIf="provOpen && provinciasFiltradas.length > 0" class="vf-ubigeo-dropdown">
+                  <li *ngFor="let p of provinciasFiltradas"
+                      (mousedown)="seleccionarProv(p)">
+                    {{ p }}
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- DISTRITO + DIRECCIÓN (ya existían) -->
           <div class="vf-grid-2">
             <div class="vf-field">
               <label class="vf-label">Distrito</label>
-              <input type="text" formControlName="distrito" class="vf-input" placeholder="Ej. Miraflores">
+              <div class="vf-ubigeo-wrap">
+                <input type="text"
+                      class="vf-input"
+                      placeholder="Buscar distrito..."
+                      [(ngModel)]="distFiltro"
+                      [ngModelOptions]="{standalone: true}"
+                      (input)="distOpen = true"
+                      (focus)="distOpen = true"
+                      (blur)="onBlurDist()"
+                      [value]="ventaForm.get('distrito')?.value || distFiltro">
+                <ul *ngIf="distOpen && distritosFiltrados.length > 0" class="vf-ubigeo-dropdown">
+                  <li *ngFor="let d of distritosFiltrados"
+                      (mousedown)="seleccionarDist(d)">
+                    {{ d }}
+                  </li>
+                </ul>
+              </div>
             </div>
             <div class="vf-field">
               <label class="vf-label">Dirección</label>

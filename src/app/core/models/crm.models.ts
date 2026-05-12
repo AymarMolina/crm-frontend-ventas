@@ -36,6 +36,8 @@ export interface ClienteRequest {
   telefono?: string;
   telefonoAlt?: string;
   nombreCompleto?: string;
+  departamento?:string;
+  provincia?:string;
   email?: string;
   direccion?: string;
   distrito?: string;

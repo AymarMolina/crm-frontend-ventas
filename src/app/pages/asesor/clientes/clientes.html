@@ -1,0 +1,99 @@
+<div class="vf-page">
+  <div class="vf-card">
+    <div class="vf-header">
+      <div class="vf-header-left">
+        <h2 class="vf-title">Cartera de Clientes</h2>
+        <p class="vf-subtitle">Listado general y edición de información</p>
+      </div>
+    </div>
+
+    <!-- Tabla de Clientes -->
+    <div class="vf-table-wrapper" style="overflow-x: auto; margin-top: 1rem;">
+      <table class="vf-table" style="width: 100%; border-collapse: collapse;">
+        <thead>
+          <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0; text-align: left;">
+            <th style="padding: 12px;">Cliente</th>
+            <th style="padding: 12px;">Documento</th>
+            <th style="padding: 12px;">Contacto</th>
+            <th style="padding: 12px;">Ubicación</th>
+            <th style="padding: 12px; text-align: center;">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let c of clientes" style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px;">
+              <div style="font-weight: 600; color: #1e293b;">{{ c.nombre }} {{ c.apellidoP }}</div>
+              <div style="font-size: 0.8rem; color: #64748b;">{{ c.email }}</div>
+            </td>
+            <td style="padding: 12px;">
+              <span class="vf-cliente-badge" style="background: #e0f2fe; color: #0369a1; padding: 2px 8px; border-radius: 4px; font-size: 0.85rem;">
+                {{ c.tipoDoc }}: {{ c.nroDoc }}
+              </span>
+            </td>
+            <td style="padding: 12px;">{{ c.telefono }}</td>
+            <td style="padding: 12px;">{{ c.distrito }}</td>
+            <td style="padding: 12px; text-align: center;">
+              <button (click)="abrirEditar(c)" class="vf-btn-icon" title="Editar">✏️</button>
+              <button (click)="eliminar(c.id)" class="vf-btn-icon" style="color: #ef4444;" title="Eliminar">🗑️</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Edición -->
+<div class="vf-modal-overlay" *ngIf="showModal">
+  <div class="vf-card vf-modal-content" style="max-width: 600px; width: 90%; margin: 2rem auto;">
+    <div class="vf-header">
+      <h2 class="vf-title">Editar Cliente</h2>
+      <button (click)="cerrarModal()" class="vf-close-btn">&times;</button>
+    </div>
+
+    <form [formGroup]="clienteForm" (ngSubmit)="guardarCambios()" class="vf-form">
+      <div class="vf-grid-2">
+        <div class="vf-field">
+          <label class="vf-label">Nombres</label>
+          <input type="text" formControlName="nombre" class="vf-input">
+        </div>
+        <div class="vf-field">
+          <label class="vf-label">Apellido Paterno</label>
+          <input type="text" formControlName="apellidoP" class="vf-input">
+        </div>
+      </div>
+
+      <div class="vf-grid-2">
+        <div class="vf-field">
+          <label class="vf-label">Email</label>
+          <input type="email" formControlName="email" class="vf-input">
+        </div>
+        <div class="vf-field">
+          <label class="vf-label">Teléfono</label>
+          <input type="text" formControlName="telefono" class="vf-input">
+        </div>
+      </div>
+
+      <div class="vf-field">
+        <label class="vf-label">Dirección</label>
+        <input type="text" formControlName="direccion" class="vf-input">
+      </div>
+
+      <div class="vf-grid-2">
+        <div class="vf-field">
+          <label class="vf-label">Distrito</label>
+          <input type="text" formControlName="distrito" class="vf-input">
+        </div>
+        <div class="vf-field">
+          <label class="vf-label">Documento</label>
+          <input type="text" formControlName="nroDoc" class="vf-input" readonly>
+        </div>
+      </div>
+
+      <div class="vf-actions" style="margin-top: 1.5rem;">
+        <button type="submit" class="vf-btn-primary">Actualizar Datos</button>
+        <button type="button" (click)="cerrarModal()" class="vf-btn-secondary">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>

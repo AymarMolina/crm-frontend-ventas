@@ -20,6 +20,7 @@ export interface HistorialEstado {
   styleUrl: './ventas.css',
 })
 export class Ventas implements OnInit {
+  mostrarFormVenta = false;  
 
   historialEstados: HistorialEstado[] = [];
 

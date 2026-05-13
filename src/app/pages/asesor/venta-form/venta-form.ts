@@ -90,17 +90,12 @@ export class VentaForm implements OnInit {
       nombre: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(2)]],
       apellidoP: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(2)]],
       apellidoM: [{ value: '', disabled: true }],
-      // ✅ EMAIL OBLIGATORIO
       email: [{ value: '', disabled: true }, [Validators.required, Validators.email]],
-      // ✅ TELÉFONO OBLIGATORIO
       telefono: [{ value: '', disabled: true }, [Validators.required, Validators.pattern(/^9\d{8}$/)]],
       telefonoAlt: [{ value: '', disabled: true }, [Validators.pattern(/^9\d{8}$/)]],
-      // ✅ DIRECCIÓN OBLIGATORIA
       direccion: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(5)]],
       departamento: [{ value: '', disabled: true }, Validators.required],
-      // ✅ PROVINCIA OBLIGATORIA
       provincia: [{ value: '', disabled: true }, Validators.required],
-      // ✅ DISTRITO OBLIGATORIO
       distrito: [{ value: '', disabled: true }, Validators.required],
       campanaId: ['', Validators.required],
       productoId: [null],

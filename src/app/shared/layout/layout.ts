@@ -22,22 +22,28 @@ const MENUS: Record<string, NavItem[]> = {
   ],
   SUPERVISOR: [
     { label: 'Dashboard',      route: '/supervisor/dashboard', icon: ICONS.dashboard },
+    { label: 'Mis Ventas',     route: '/supervisor/ventas',       icon: ICONS.ventas    },
     { label: 'Mi Equipo',      route: '/supervisor/asignar-objetivo',    icon: ICONS.ventas    },
-    { label: 'Ventas',         route: '/supervisor/ventas',    icon: ICONS.seguimien },
-    { label: 'Alertas',        route: '/supervisor/alertas',   icon: ICONS.alertas   },
+    { label: 'Clientes',      route: '/supervisor/clientes',    icon: ICONS.ventas    },
+    { label: 'Reporte',        route: '/supervisor/generar-reporte',      icon: ICONS.alertas   },
   ],
   GERENTE: [
     { label: 'Dashboard',      route: '/gerente/dashboard',    icon: ICONS.dashboard },
+    { label: 'Mis Ventas',     route: '/gerente/ventas',       icon: ICONS.ventas    },
     { label: 'Asignar Supervisor',         route: '/gerente/asignar-supervisor',       icon: ICONS.ventas    },
     { label: 'Crear Campaña',       route: '/gerente/crear-campana',     icon: ICONS.nueva     },
-    { label: 'Ver ventas',  route: '/gerente/ver-ventas-general',       icon: ICONS.alertas   },
+    { label: 'Clientes',      route: '/gerente/clientes',    icon: ICONS.ventas    },
     { label: 'Gestion de Usuarios',  route: '/gerente/gestion-usuarios',       icon: ICONS.alertas   },
+    { label: 'Reporte',        route: '/gerente/generar-reporte',      icon: ICONS.alertas   },
   ],
   BACK_OFFICE: [
     { label: 'Dashboard',      route: '/backoffice/dashboard', icon: ICONS.dashboard },
+    { label: 'Mis Ventas',     route: '/backoffice/ventas',       icon: ICONS.ventas    },
     { label: 'Ventas',         route: '/backoffice/ventas',    icon: ICONS.ventas    },
+    { label: 'CLiente',         route: '/backoffice/clientes',    icon: ICONS.ventas    },
     { label: 'Estados',        route: '/backoffice/estados',   icon: ICONS.seguimien },
     { label: 'Alertas',        route: '/backoffice/alertas',   icon: ICONS.alertas   },
+    { label: 'Reporte',        route: '/backoffice/generar-reporte',      icon: ICONS.alertas   },
   ],
 };
 

@@ -11,7 +11,7 @@ export class ClientesService {
 
   constructor(private http: HttpClient) {}
 
-  listar(q?: string, page = 0, size = 20, sort = 'apellidos'): Observable<PageResponse<Cliente>> {
+  listar(q?: string, page = 0, size = 20, sort = 'apellidoP'): Observable<PageResponse<Cliente>> {
     let params = new HttpParams()
       .set('page', page)
       .set('size', size)

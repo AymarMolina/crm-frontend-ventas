@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { CambioEstadoRequest, PageResponse, Venta, VentaRequest } from '../models/crm.models';
 import { environment } from '../../../environments/environment';
 import { AlertaVenta } from '../../pages/asesor/alerta/alerta';
-import { HistorialEstado } from '../../pages/asesor/ventas/ventas';
+import { HistorialEstado } from '../../shared/components/ventas/ventas';
 
 export interface VentasFiltros {
   campanaId?: string;

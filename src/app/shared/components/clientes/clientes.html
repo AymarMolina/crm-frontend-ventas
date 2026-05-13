@@ -1,0 +1,192 @@
+<div class="vf-page">
+
+  <!-- ===== CABECERA ===== -->
+  <div class="vf-card">
+    <div class="vf-header">
+      <div class="vf-header-left">
+        <h2 class="vf-title">Cartera de Clientes</h2>
+        <p class="vf-subtitle">Gestión completa de clientes</p>
+      </div>
+    </div>
+
+    <!-- Buscador -->
+    <div class="vf-search-bar">
+      <input
+        type="text"
+        [(ngModel)]="busqueda"
+        (ngModelChange)="onBuscar()"
+        placeholder="Buscar por nombre, documento..."
+        class="vf-input vf-search-input"
+      />
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="vf-loading">Cargando clientes...</div>
+
+    <!-- Tabla -->
+    <div class="vf-table-wrapper" *ngIf="!loading">
+      <table class="vf-table">
+        <thead>
+          <tr>
+            <th>Cliente</th>
+            <th>Documento</th>
+            <th>Contacto</th>
+            <th>Ubicación</th>
+            <th style="text-align: center;">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let c of clientes">
+            <td>
+              <div class="vf-cliente-nombre">{{ c.nombre }} {{ c.apellidoP }} {{ c.apellidoM }}</div>
+              <div class="vf-cliente-email">{{ c.email }}</div>
+            </td>
+            <td>
+              <span class="vf-badge">{{ c.tipoDoc }}: {{ c.nroDoc }}</span>
+            </td>
+            <td>
+              <div>{{ c.telefono }}</div>
+              <div *ngIf="c.telefonoAlt" class="vf-cliente-email">Alt: {{ c.telefonoAlt }}</div>
+            </td>
+            <td>{{ c.distrito }}</td>
+            <td style="text-align: center;">
+              <button (click)="abrirEditar(c)" class="vf-btn-icon" title="Editar">✏️</button>
+              <button (click)="eliminar(c.id)" class="vf-btn-icon vf-btn-danger" title="Eliminar">🗑️</button>
+            </td>
+          </tr>
+          <tr *ngIf="clientes.length === 0">
+            <td colspan="5" class="vf-empty">No se encontraron clientes.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Paginación -->
+    <div class="vf-pagination" *ngIf="totalPages > 1">
+      <button class="vf-page-btn" [disabled]="currentPage === 0" (click)="cambiarPagina(currentPage - 1)">‹ Anterior</button>
+      <span class="vf-page-info">Página {{ currentPage + 1 }} de {{ totalPages }}</span>
+      <button class="vf-page-btn" [disabled]="currentPage === totalPages - 1" (click)="cambiarPagina(currentPage + 1)">Siguiente ›</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL CREAR / EDITAR ===== -->
+<div class="vf-modal-overlay" *ngIf="showModal" (click)="onOverlayClick($event)">
+  <div class="vf-modal-content" (click)="$event.stopPropagation()">
+    <div class="vf-modal-header">
+      <h2 class="vf-title">{{ modoEdicion ? 'Editar Cliente' : 'Nuevo Cliente' }}</h2>
+      <button (click)="cerrarModal()" class="vf-close-btn">&times;</button>
+    </div>
+
+    <form [formGroup]="clienteForm" (ngSubmit)="guardarCambios()" class="vf-form">
+
+      <!-- Documento -->
+      <div class="vf-section-label">Identificación</div>
+      <div class="vf-grid-2">
+        <div class="vf-field">
+          <label class="vf-label">Tipo Documento</label>
+          <select formControlName="tipoDoc" class="vf-input">
+            <option value="DNI">DNI</option>
+            <option value="RUC">RUC</option>
+            <option value="CE">Carnet de Extranjería</option>
+            <option value="PASAPORTE">Pasaporte</option>
+          </select>
+          <span class="vf-error" *ngIf="isInvalid('tipoDoc')">Requerido</span>
+        </div>
+        <div class="vf-field">
+          <label class="vf-label">Nro. Documento</label>
+          <input type="text" formControlName="nroDoc" class="vf-input" [readOnly]="modoEdicion">
+          <span class="vf-error" *ngIf="isInvalid('nroDoc')">Requerido</span>
+        </div>
+      </div>
+
+      <!-- Nombres -->
+      <div class="vf-section-label">Datos Personales</div>
+      <div class="vf-grid-3">
+        <div class="vf-field">
+          <label class="vf-label">Nombres</label>
+          <input type="text" formControlName="nombre" class="vf-input">
+          <span class="vf-error" *ngIf="isInvalid('nombre')">Requerido</span>
+        </div>
+        <div class="vf-field">
+          <label class="vf-label">Apellido Paterno</label>
+          <input type="text" formControlName="apellidoP" class="vf-input">
+          <span class="vf-error" *ngIf="isInvalid('apellidoP')">Requerido</span>
+        </div>
+        <div class="vf-field">
+          <label class="vf-label">Apellido Materno</label>
+          <input type="text" formControlName="apellidoM" class="vf-input">
+        </div>
+      </div>
+
+      <!-- Contacto -->
+      <div class="vf-section-label">Contacto</div>
+      <div class="vf-grid-2">
+        <div class="vf-field">
+          <label class="vf-label">Email</label>
+          <input type="email" formControlName="email" class="vf-input">
+          <span class="vf-error" *ngIf="isInvalid('email')">Email inválido</span>
+        </div>
+        <div class="vf-field">
+          <label class="vf-label">Teléfono Principal</label>
+          <input type="text" formControlName="telefono" class="vf-input">
+        </div>
+      </div>
+      <div class="vf-grid-2">
+        <div class="vf-field">
+          <label class="vf-label">Teléfono Alternativo</label>
+          <input type="text" formControlName="telefonoAlt" class="vf-input">
+        </div>
+        <div class="vf-field">
+          <label class="vf-label">Dirección</label>
+          <input type="text" formControlName="direccion" class="vf-input">
+        </div>
+      </div>
+
+      <!-- Ubicación -->
+      <div class="vf-section-label">Ubicación</div>
+      <div class="vf-grid-3">
+        <div class="vf-field">
+          <label class="vf-label">Departamento</label>
+          <input type="text" formControlName="departamento" class="vf-input">
+        </div>
+        <div class="vf-field">
+          <label class="vf-label">Provincia</label>
+          <input type="text" formControlName="provincia" class="vf-input">
+        </div>
+        <div class="vf-field">
+          <label class="vf-label">Distrito</label>
+          <input type="text" formControlName="distrito" class="vf-input">
+        </div>
+      </div>
+
+      <!-- Error global -->
+      <div class="vf-alert-error" *ngIf="errorMsg">{{ errorMsg }}</div>
+
+      <!-- Acciones -->
+      <div class="vf-actions">
+        <button type="submit" class="vf-btn-primary" [disabled]="saving">
+          {{ saving ? 'Guardando...' : (modoEdicion ? 'Actualizar Datos' : 'Crear Cliente') }}
+        </button>
+        <button type="button" (click)="cerrarModal()" class="vf-btn-secondary">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ===== MODAL CONFIRMAR ELIMINAR ===== -->
+<div class="vf-modal-overlay" *ngIf="showDeleteConfirm" (click)="cancelarEliminar()">
+  <div class="vf-modal-content vf-modal-sm" (click)="$event.stopPropagation()">
+    <div class="vf-modal-header">
+      <h2 class="vf-title">Confirmar eliminación</h2>
+      <button (click)="cancelarEliminar()" class="vf-close-btn">&times;</button>
+    </div>
+    <p class="vf-confirm-text">¿Estás seguro de que deseas eliminar este cliente? Esta acción no se puede deshacer.</p>
+    <div class="vf-actions">
+      <button (click)="confirmarEliminar()" class="vf-btn-danger-solid" [disabled]="saving">
+        {{ saving ? 'Eliminando...' : 'Sí, eliminar' }}
+      </button>
+      <button (click)="cancelarEliminar()" class="vf-btn-secondary">Cancelar</button>
+    </div>
+  </div>
+</div>

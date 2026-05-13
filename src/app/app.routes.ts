@@ -38,15 +38,15 @@ export const routes: Routes = [
           },
           {
             path: 'ventas',
-            loadComponent: () => import('./pages/asesor/ventas/ventas').then(m => m.Ventas)
+            loadComponent: () => import('./shared/components/ventas/ventas').then(m => m.Ventas)
           },
           {
             path: 'clientes',
-            loadComponent: () => import('./pages/asesor/clientes/clientes').then(m => m.Clientes)
+            loadComponent: () => import('./shared/components/clientes/clientes').then(m => m.Clientes)
           },
           {
             path: 'seguimiento',
-            loadComponent: () => import('./pages/asesor/ventas/ventas').then(m => m.Ventas)
+            loadComponent: () => import('./shared/components/ventas/ventas').then(m => m.Ventas)
           },
           {
             path: 'alertas',
@@ -54,7 +54,7 @@ export const routes: Routes = [
           },
           {
             path: 'generar-reporte',
-            loadComponent: () => import('./pages/asesor/generar-reporte/generar-reporte').then(m => m.GenerarReporte)
+            loadComponent: () => import('./shared/components/generar-reporte/generar-reporte').then(m => m.GenerarReporte)
           },
         ]
       },
@@ -70,8 +70,20 @@ export const routes: Routes = [
             loadComponent: () => import('./pages/supervisor/dashboard/dashboard').then(m => m.Dashboard) 
           },
           {
+            path: 'ventas',
+            loadComponent: () => import('./shared/components/ventas/ventas').then(m => m.Ventas)
+          },
+          {
+            path: 'clientes',
+            loadComponent: () => import('./shared/components/clientes/clientes').then(m => m.Clientes)
+          },
+          {
             path: 'asignar-objetivo',
             loadComponent: () => import('./pages/supervisor/asignar-objetivo/asignar-objetivo').then(m => m.AsignarObjetivo)
+          },
+          {
+            path: 'generar-reporte',
+            loadComponent: () => import('./shared/components/generar-reporte/generar-reporte').then(m => m.GenerarReporte)
           },
         ]
       },
@@ -87,6 +99,14 @@ export const routes: Routes = [
             loadComponent: () => import('./pages/gerente/dashboard/dashboard').then(m => m.Dashboard) 
           },
           {
+            path: 'ventas',
+            loadComponent: () => import('./shared/components/ventas/ventas').then(m => m.Ventas)
+          },
+          {
+            path: 'clientes',
+            loadComponent: () => import('./shared/components/clientes/clientes').then(m => m.Clientes)
+          },
+          {
             path: 'asignar-supervisor',
             loadComponent: () => import('./pages/gerente/asignar-supervisor/asignar-supervisor').then(m => m.AsignarSupervisor)
           },
@@ -95,12 +115,12 @@ export const routes: Routes = [
             loadComponent: () => import('./pages/gerente/crear-campana/crear-campana').then(m => m.CrearCampana)
           },
           {
-            path: 'ver-ventas-general',
-            loadComponent: () => import('./pages/gerente/ver-ventas-general/ver-ventas-general').then(m => m.VerVentasGeneral)
-          },
-          {
             path: 'gestion-usuarios',
             loadComponent: () => import('./pages/gerente/gestion-usuarios/gestion-usuarios').then(m => m.GestionUsuarios)
+          },
+          {
+            path: 'generar-reporte',
+            loadComponent: () => import('./shared/components/generar-reporte/generar-reporte').then(m => m.GenerarReporte)
           },
         ]
       },
@@ -114,6 +134,18 @@ export const routes: Routes = [
           { 
             path: 'dashboard', 
             loadComponent: () => import('./pages/backoffice/dashboard/dashboard').then(m => m.Dashboard) 
+          },
+          {
+            path: 'ventas',
+            loadComponent: () => import('./shared/components/ventas/ventas').then(m => m.Ventas)
+          },
+          {
+            path: 'clientes',
+            loadComponent: () => import('./shared/components/clientes/clientes').then(m => m.Clientes)
+          },
+          {
+            path: 'generar-reporte',
+            loadComponent: () => import('./shared/components/generar-reporte/generar-reporte').then(m => m.GenerarReporte)
           },
         ]
       },

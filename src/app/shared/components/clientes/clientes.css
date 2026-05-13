@@ -1,0 +1,361 @@
+/* ── Búsqueda ──────────────────────────────────────────────────────────────── */
+.vf-search-bar {
+  margin: 1rem 0;
+}
+
+.vf-search-input {
+  width: 100%;
+  max-width: 420px;
+}
+
+/* ── Tabla ─────────────────────────────────────────────────────────────────── */
+.vf-table-wrapper {
+  overflow-x: auto;
+  margin-top: 1rem;
+}
+
+.vf-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.vf-table thead tr {
+  background: #f8fafc;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.vf-table th {
+  padding: 12px 14px;
+  text-align: left;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.vf-table tbody tr {
+  border-bottom: 1px solid #f1f5f9;
+  transition: background 0.15s;
+}
+
+.vf-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.vf-table td {
+  padding: 12px 14px;
+  font-size: 0.9rem;
+  color: #334155;
+}
+
+.vf-cliente-nombre {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.vf-cliente-email {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+.vf-badge {
+  background: #e0f2fe;
+  color: #0369a1;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.vf-empty {
+  text-align: center;
+  color: #94a3b8;
+  padding: 2rem;
+  font-style: italic;
+}
+
+/* ── Botones de acción en tabla ────────────────────────────────────────────── */
+.vf-btn-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: background 0.15s;
+}
+
+.vf-btn-icon:hover {
+  background: #f1f5f9;
+}
+
+.vf-btn-danger {
+  color: #ef4444;
+}
+
+/* ── Paginación ────────────────────────────────────────────────────────────── */
+.vf-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.vf-page-btn {
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: #475569;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background 0.15s;
+}
+
+.vf-page-btn:hover:not(:disabled) {
+  background: #e2e8f0;
+}
+
+.vf-page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.vf-page-info {
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+/* ── Loading ───────────────────────────────────────────────────────────────── */
+.vf-loading {
+  text-align: center;
+  padding: 2rem;
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+/* ── Modal overlay ─────────────────────────────────────────────────────────── */
+.vf-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(3px);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 2rem 1rem;
+  overflow-y: auto;
+}
+
+.vf-modal-content {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 640px;
+  padding: 1.75rem;
+  animation: slideIn 0.2s ease;
+}
+
+.vf-modal-sm {
+  max-width: 420px;
+}
+
+@keyframes slideIn {
+  from { transform: translateY(-16px); opacity: 0; }
+  to   { transform: translateY(0);     opacity: 1; }
+}
+
+.vf-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.vf-close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #94a3b8;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 4px;
+  transition: color 0.15s;
+}
+
+.vf-close-btn:hover {
+  color: #1e293b;
+}
+
+/* ── Formulario ────────────────────────────────────────────────────────────── */
+.vf-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.vf-section-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #94a3b8;
+  margin: 0.75rem 0 0.25rem;
+}
+
+.vf-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.vf-grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.75rem;
+}
+
+@media (max-width: 540px) {
+  .vf-grid-2,
+  .vf-grid-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.vf-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.vf-label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #475569;
+}
+
+.vf-input {
+  border: 1px solid #e2e8f0;
+  border-radius: 7px;
+  padding: 8px 10px;
+  font-size: 0.9rem;
+  color: #1e293b;
+  background: #fff;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.vf-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.vf-input[readonly],
+.vf-input:disabled {
+  background: #f8fafc;
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+
+.vf-error {
+  font-size: 0.75rem;
+  color: #ef4444;
+}
+
+.vf-alert-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  border-radius: 7px;
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+/* ── Acciones del modal ────────────────────────────────────────────────────── */
+.vf-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.vf-confirm-text {
+  color: #475569;
+  font-size: 0.9rem;
+  margin: 0 0 1.25rem;
+  line-height: 1.5;
+}
+
+/* ── Botones ───────────────────────────────────────────────────────────────── */
+.vf-btn-primary {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 18px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.vf-btn-primary:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+.vf-btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.vf-btn-secondary {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 9px 18px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.vf-btn-secondary:hover {
+  background: #e2e8f0;
+}
+
+.vf-btn-danger-solid {
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 18px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+}
+
+.vf-btn-danger-solid:hover:not(:disabled) {
+  background: #dc2626;
+}
+
+.vf-btn-danger-solid:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

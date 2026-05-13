@@ -194,6 +194,7 @@
       </div>
   </div>
 </div>
+
 <!-- Modal Overlay -->
 <div *ngIf="ventaSeleccionada" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
   
@@ -338,5 +339,17 @@
         </button>
       </div>
     </div>
+    
   </div>
 </div>  
+<div *ngIf="mostrarFormVenta" 
+      class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+      (click)="mostrarFormVenta = false">
+  <div (click)="$event.stopPropagation()" class="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+    <app-venta-form 
+      [isModal]="true"
+      (onSave)="onVentaGuardada($event)"
+      (onClose)="mostrarFormVenta = false">
+    </app-venta-form>
+  </div>
+</div>

@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { VentasService } from '../../../core/services/ventas.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { PageResponse, Venta } from '../../../core/models/crm.models';
+import { VentaForm } from '../../../pages/asesor/venta-form/venta-form';
 
 // Agrega esta interfaz
 export interface HistorialEstado {
@@ -15,7 +16,7 @@ export interface HistorialEstado {
 
 @Component({
   selector: 'app-ventas',
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule,VentaForm],
   templateUrl: './ventas.html',
   styleUrl: './ventas.css',
 })
@@ -65,7 +66,9 @@ export class Ventas implements OnInit {
   motivoCambio: string = '';
   cambiandoEstado = false;
   mensajeExito: string = '';
-
+  onVentaGuardada(venta: any) {
+  this.mostrarFormVenta = false;
+  }
   // Método nuevo
   cambiarEstado(): void {
     if (!this.ventaSeleccionada || !this.nuevoEstado || !this.motivoCambio.trim()) return;

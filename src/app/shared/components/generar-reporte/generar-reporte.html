@@ -102,12 +102,12 @@
           <!-- Rango legible -->
           <div *ngIf="filtrosValidos" class="flex items-end pb-0.5">
             <span class="text-xs text-slate-400 bg-slate-100 px-3 py-2 rounded-xl font-medium">
-              📅 {{ rangoLegible }}
+               {{ rangoLegible }}
             </span>
           </div>
           <div *ngIf="!filtrosValidos && fechaDesde && fechaHasta" class="flex items-end pb-0.5">
             <span class="text-xs text-red-500 bg-red-50 px-3 py-2 rounded-xl font-medium border border-red-100">
-              ⚠ La fecha inicial debe ser menor a la final
+               La fecha inicial debe ser menor a la final
             </span>
           </div>
         </div>
@@ -205,7 +205,6 @@
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
 
           <div class="flex items-center gap-2 bg-slate-50 rounded-xl p-3 border border-slate-100">
-            <span class="text-base">📋</span>
             <div>
               <p class="text-xs font-bold text-slate-700">Ventas</p>
               <p class="text-[10px] text-slate-400">Detalle completo</p>
@@ -213,7 +212,6 @@
           </div>
 
           <div class="flex items-center gap-2 bg-slate-50 rounded-xl p-3 border border-slate-100">
-            <span class="text-base">👤</span>
             <div>
               <p class="text-xs font-bold text-slate-700">Por Asesor</p>
               <p class="text-[10px] text-slate-400">Resumen agrupado</p>
@@ -221,7 +219,6 @@
           </div>
 
           <div class="flex items-center gap-2 bg-slate-50 rounded-xl p-3 border border-slate-100">
-            <span class="text-base">📊</span>
             <div>
               <p class="text-xs font-bold text-slate-700">Por Campaña</p>
               <p class="text-[10px] text-slate-400">Alcance y montos</p>
@@ -229,7 +226,6 @@
           </div>
 
           <div class="flex items-center gap-2 bg-slate-50 rounded-xl p-3 border border-slate-100" *ngIf="!esAsesor">
-            <span class="text-base">⚠️</span>
             <div>
               <p class="text-xs font-bold text-slate-700">Alertas</p>
               <p class="text-[10px] text-slate-400">Ventas observadas</p>
@@ -237,7 +233,6 @@
           </div>
 
           <div class="flex items-center gap-2 bg-emerald-50 rounded-xl p-3 border border-emerald-100">
-            <span class="text-base">🔄</span>
             <div>
               <p class="text-xs font-bold text-emerald-700">Tabla Dinámica</p>
               <p class="text-[10px] text-emerald-500">Instrucciones incluidas</p>

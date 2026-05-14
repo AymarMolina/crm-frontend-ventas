@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
 import { ReporteService, FiltroReporte } from '../../../core/services/reporte.service';
+import { CampanasService } from '../../../core/services/campanas.service';
 
 export type RolReporte = 'AGENTE' | 'SUPERVISOR' | 'GERENTE';
 
@@ -48,21 +49,31 @@ export class GenerarReporte implements OnInit {
   constructor(
     private authService: AuthService,
     private reporteService: ReporteService,
+    private campanasService: CampanasService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
-    // Leer el rol del JWT / AuthService
-    // Ajusta el método según como lo tengas en tu AuthService
     const rol = this.authService.getRol?.() ?? 'ASESOR';
     this.rolUsuario = rol as RolReporte;
-
-    // Poner rango default: primer día del mes actual hasta hoy
     const hoy   = new Date();
     const inicio = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
     this.fechaHasta = this.toInputDate(hoy);
     this.fechaDesde = this.toInputDate(inicio);
+    this.cargarCampanas();
   }
-
+  cargarCampanas() {
+    this.campanasService.listarCampanas().subscribe((res: any) => {
+      if (res.content && Array.isArray(res.content)) {
+        this.campanas = res.content;
+      } else if (Array.isArray(res)) {
+        this.campanas = res;
+      } else {
+        this.campanas = [];
+      }
+      this.cdr.detectChanges();
+    });
+  }
   // ── Descarga principal ─────────────────────────────────────────────────────
   generarReporte(): void {
     if (!this.filtrosValidos) return;
@@ -92,11 +103,13 @@ export class GenerarReporte implements OnInit {
         this.mensajeExito = '¡Reporte descargado correctamente!';
         this.descargando  = false;
         setTimeout(() => this.mensajeExito = '', 4000);
+        this.cdr.detectChanges();
       },
       error: () => {
         this.mensajeError = 'No se pudo generar el reporte. Intenta nuevamente.';
         this.descargando  = false;
         setTimeout(() => this.mensajeError = '', 5000);
+        this.cdr.detectChanges();
       },
     });
   }

@@ -23,13 +23,13 @@ export class AuthService {
     );
   }
   obtenerUsuarioId(): string | null {
-    const token = localStorage.getItem('token'); // O donde guardes tu "autorization"
+    const token = localStorage.getItem('token'); 
     if (!token) return null;
 
     try {
       
       const decoded: any = jwtDecode(token);
-      return decoded.sub; // Aquí sacamos el ID del agente
+      return decoded.sub; 
     } catch (error) {
       return null;
     }

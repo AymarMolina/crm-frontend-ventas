@@ -64,4 +64,11 @@ export class ObjetivoService {
   getMisObjetivos(): Observable<ObjetivoResponse[]> {
     return this.http.get<ObjetivoResponse[]>(`${this.API}/objetivos/mis-objetivos`);
   }
+
+  getObjetivosPorUsuario(usuarioId: string): Observable<ObjetivoResponse[]> {
+    return this.http.get<ObjetivoResponse[]>(
+      `${this.API}/objetivos/por-usuario/${usuarioId}`
+    );
+  }
+ 
 }

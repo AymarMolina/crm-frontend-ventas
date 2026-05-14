@@ -1,1 +1,197 @@
-<p>dashboard works!</p>
+<!-- dashboard-supervisor.component.html -->
+
+<!-- SPINNER -->
+<div *ngIf="loading" class="sv-loading">
+  <div class="sv-spinner"></div>
+  <span>Cargando equipo...</span>
+</div>
+
+<div *ngIf="!loading" class="sv-shell">
+
+  <!-- ══ HERO HEADER ══════════════════════════════════════════ -->
+  <header class="sv-hero">
+    <div class="hero-left">
+      <p class="hero-greeting">Bienvenido, supervisor</p>
+      <h1 class="hero-title">Panel de Equipo</h1>
+    </div>
+    <div class="hero-kpis">
+      <div class="kpi">
+        <span class="kpi-val">{{ equipoData.length }}</span>
+        <span class="kpi-lbl">Asesores</span>
+      </div>
+      <div class="kpi-sep"></div>
+      <div class="kpi">
+        <span class="kpi-val">{{ totalVentasEquipo }}</span>
+        <span class="kpi-lbl">Ventas activas</span>
+      </div>
+      <div class="kpi-sep"></div>
+      <div class="kpi">
+        <span class="kpi-val">{{ promedioEquipo }}%</span>
+        <span class="kpi-lbl">Avance promedio</span>
+      </div>
+      <div class="kpi-sep"></div>
+      <div class="kpi">
+        <span class="kpi-val accent">{{ totalCompletados }}</span>
+        <span class="kpi-lbl">Metas al 100%</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ══ FILA 1: Ranking + Donut equipo ═══════════════════════ -->
+  <div class="sv-row">
+
+    <!-- Ranking de asesores -->
+    <div class="sv-card sv-card--lg">
+      <div class="card-head">
+        <h2 class="card-title">Ranking del Equipo</h2>
+        <span class="card-badge">por avance de meta</span>
+      </div>
+      <div class="ranking-list">
+        <div class="ranking-item"
+             *ngFor="let asesor of rankingAsesores; let i = index">
+          <div class="rank-pos" [class]="getPosClass(i)">{{ i + 1 }}</div>
+          <div class="rank-avatar" [style.background]="getAvatarColor(asesor.agente.nombres)">
+            {{ getInitials(asesor.agente.nombres, asesor.agente.apellidos) }}
+          </div>
+          <div class="rank-info">
+            <span class="rank-nombre">{{ asesor.agente.nombres }} {{ asesor.agente.apellidos }}</span>
+            <div class="rank-bar-track">
+              <div class="rank-bar-fill"
+                   [class]="getBarClass(getPromedio(asesor))"
+                   [style.width]="getPromedio(asesor) + '%'"></div>
+            </div>
+          </div>
+          <div class="rank-pct" [class]="getPctClass(getPromedio(asesor))">
+            {{ getPromedio(asesor) }}%
+          </div>
+          <div class="rank-ventas">
+            <span>{{ asesor.totalVentas }}</span>
+            <small>ventas</small>
+          </div>
+        </div>
+
+        <div class="ranking-empty" *ngIf="rankingAsesores.length === 0">
+          Sin datos de objetivos aún
+        </div>
+      </div>
+    </div>
+
+    <!-- Donut general del equipo -->
+    <div class="sv-card sv-card--sm">
+      <div class="card-head">
+        <h2 class="card-title">Avance del Equipo</h2>
+        <span class="card-badge">promedio global</span>
+      </div>
+      <div class="donut-big-wrap">
+        <canvas id="donutEquipo" width="200" height="200"></canvas>
+        <div class="donut-big-center">
+          <strong>{{ promedioEquipo }}%</strong>
+          <small>completado</small>
+        </div>
+      </div>
+      <div class="donut-legend">
+        <div class="dl-item">
+          <span class="dl-dot" style="background:#6366f1"></span>
+          <span>En progreso</span>
+          <strong>{{ asesorEnProgreso }}</strong>
+        </div>
+        <div class="dl-item">
+          <span class="dl-dot" style="background:#22c55e"></span>
+          <span>Completados</span>
+          <strong>{{ asesorCompletado }}</strong>
+        </div>
+        <div class="dl-item">
+          <span class="dl-dot" style="background:#f59e0b"></span>
+          <span>Inicio</span>
+          <strong>{{ asesorInicio }}</strong>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══ FILA 2: Barras comparativas + Línea de ventas acumuladas ═ -->
+  <div class="sv-row">
+
+    <!-- Barras: ventas vs meta por asesor -->
+    <div class="sv-card sv-card--lg">
+      <div class="card-head">
+        <h2 class="card-title">Ventas vs Meta por Asesor</h2>
+        <span class="card-badge">campaña activa</span>
+      </div>
+      <canvas id="barrasChart" height="90"></canvas>
+    </div>
+
+    <!-- Barras horizontales: contribución al total -->
+    <div class="sv-card sv-card--sm">
+      <div class="card-head">
+        <h2 class="card-title">Contribución al Equipo</h2>
+        <span class="card-badge">% de ventas totales</span>
+      </div>
+      <canvas id="contribucionChart" height="180"></canvas>
+    </div>
+
+  </div>
+
+  <!-- ══ FILA 3: Cards de cada asesor ════════════════════════ -->
+  <div class="card-head" style="margin-bottom: 1rem;">
+    <h2 class="card-title">Detalle por Asesor</h2>
+    <span class="card-badge">objetivos y campañas</span>
+  </div>
+
+  <div class="asesores-grid">
+    <div class="asesor-card"
+         *ngFor="let asesor of equipoData; trackBy: trackById"
+         [class.card--done]="getPromedio(asesor) >= 100">
+
+      <!-- Cabecera -->
+      <div class="ac-top">
+        <div class="ac-avatar" [style.background]="getAvatarColor(asesor.agente.nombres)">
+          {{ getInitials(asesor.agente.nombres, asesor.agente.apellidos) }}
+        </div>
+        <div class="ac-meta">
+          <span class="ac-nombre">{{ asesor.agente.nombres }} {{ asesor.agente.apellidos }}</span>
+          <span class="ac-email">{{ asesor.agente.email }}</span>
+        </div>
+        <div class="ac-badge" [class]="getBadgeClass(asesor)">{{ getBadgeLabel(asesor) }}</div>
+      </div>
+
+      <!-- Sin objetivos -->
+      <div class="ac-empty" *ngIf="asesor.objetivos.length === 0">📋 Sin objetivos</div>
+
+      <!-- Cuerpo -->
+      <div class="ac-body" *ngIf="asesor.objetivos.length > 0">
+        <div class="ac-donut-wrap">
+          <canvas [id]="'minidonut-' + asesor.agente.id" width="90" height="90"></canvas>
+          <div class="ac-donut-lbl">
+            <strong>{{ getPromedio(asesor) }}%</strong>
+          </div>
+        </div>
+        <div class="ac-campanas">
+          <div class="ac-campana" *ngFor="let obj of asesor.objetivos">
+            <div class="ac-camp-top">
+              <span class="ac-camp-nom">{{ obj.campanaNombre }}</span>
+              <span class="ac-camp-num">{{ getVentasActuales(asesor, obj) }}/{{ obj.objetivoVentas }}</span>
+            </div>
+            <div class="ac-bar-track">
+              <div class="ac-bar-fill"
+                   [class]="getBarClassPct(getPorcentaje(asesor, obj))"
+                   [style.width]="getPorcentaje(asesor, obj) + '%'"></div>
+            </div>
+            <div class="ac-camp-foot">
+              <span>S/ {{ obj.montoComision | number:'1.2-2' }}</span>
+              <span>{{ getPorcentaje(asesor, obj) }}%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ac-foot" *ngIf="asesor.objetivos.length > 0">
+        <span>Total ventas activas</span>
+        <strong>{{ asesor.totalVentas }}</strong>
+      </div>
+
+    </div>
+  </div>
+
+</div>

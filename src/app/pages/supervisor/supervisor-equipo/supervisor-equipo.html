@@ -1,0 +1,133 @@
+<!-- mi-equipo.component.html -->
+<div class="equipo-shell">
+
+  <!-- ── HEADER ─────────────────────────────────────────── -->
+  <header class="eq-header">
+    <div>
+      <h1 class="eq-title">Mi Equipo</h1>
+      <p class="eq-sub">Seguimiento de objetivos y ventas por asesor</p>
+    </div>
+
+    <div class="eq-chips" *ngIf="!loading && !error">
+      <div class="chip">
+        <span class="chip-num">{{ equipo.length }}</span>
+        <span class="chip-lbl">asesores</span>
+      </div>
+      <div class="chip chip--accent">
+        <span class="chip-num">{{ totalVentasEquipo }}</span>
+        <span class="chip-lbl">ventas activas</span>
+      </div>
+      <div class="chip chip--green">
+        <span class="chip-num">{{ totalCompletados }}</span>
+        <span class="chip-lbl">metas al 100%</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── SKELETON ───────────────────────────────────────── -->
+  <div class="skeleton-grid" *ngIf="loading">
+    <div class="sk-card" *ngFor="let i of [1,2,3]">
+      <div class="sk-row">
+        <div class="sk sk-avatar"></div>
+        <div class="sk-lines">
+          <div class="sk sk-line" style="width:65%"></div>
+          <div class="sk sk-line" style="width:42%"></div>
+        </div>
+      </div>
+      <div class="sk sk-donut"></div>
+      <div class="sk sk-line" style="width:90%;margin-top:.5rem"></div>
+      <div class="sk sk-line" style="width:75%"></div>
+    </div>
+  </div>
+
+  <!-- ── ERROR ──────────────────────────────────────────── -->
+  <div class="eq-error" *ngIf="error && !loading">
+    <span class="err-icon">⚠</span>
+    <p>No se pudo cargar el equipo.</p>
+    <button class="btn-retry" (click)="cargarEquipo()">Reintentar</button>
+  </div>
+
+  <!-- ── EQUIPO VACÍO ───────────────────────────────────── -->
+  <div class="eq-empty" *ngIf="!loading && !error && equipo.length === 0">
+    <span>👥</span>
+    <p>No tienes asesores asignados aún.</p>
+  </div>
+
+  <!-- ── GRID DE ASESORES ───────────────────────────────── -->
+  <div class="asesores-grid" *ngIf="!loading && !error && equipo.length > 0">
+
+    <div class="asesor-card"
+         *ngFor="let asesor of equipoData; trackBy: trackById"
+         [class.card--done]="getPromedio(asesor) >= 100">
+
+      <!-- CABECERA -->
+      <div class="card-top">
+        <div class="avatar" [style.background]="getAvatarColor(asesor.agente.nombres)">
+          {{ getInitials(asesor.agente.nombres, asesor.agente.apellidos) }}
+        </div>
+        <div class="asesor-meta">
+          <span class="asesor-nombre">
+            {{ asesor.agente.nombres }} {{ asesor.agente.apellidos }}
+          </span>
+          <span class="asesor-email">{{ asesor.agente.email }}</span>
+        </div>
+        <span class="badge" [class]="getBadgeClass(asesor)">
+          {{ getBadgeLabel(asesor) }}
+        </span>
+      </div>
+
+      <!-- SIN OBJETIVOS -->
+      <div class="sin-obj" *ngIf="asesor.objetivos.length === 0">
+        <span>📋</span> Sin objetivos asignados
+      </div>
+
+      <!-- CUERPO: donut + campañas -->
+      <div class="card-body" *ngIf="asesor.objetivos.length > 0">
+
+        <!-- DONUT -->
+        <div class="donut-wrap">
+          <canvas [id]="'donut-' + asesor.agente.id" width="110" height="110"></canvas>
+          <div class="donut-label">
+            <strong>{{ getPromedio(asesor) }}%</strong>
+            <small>promedio</small>
+          </div>
+        </div>
+
+        <!-- LISTA DE CAMPAÑAS -->
+        <div class="campanas">
+          <div class="campana" *ngFor="let obj of asesor.objetivos">
+
+            <div class="campana-top">
+              <span class="camp-nombre">{{ obj.campanaNombre }}</span>
+              <span class="camp-nums">
+                {{ getVentasActuales(asesor, obj) }}&nbsp;/&nbsp;{{ obj.objetivoVentas }}
+              </span>
+            </div>
+
+            <div class="bar-track">
+              <div class="bar-fill"
+                   [class]="getBarClass(asesor, obj)"
+                   [style.width]="getPorcentaje(asesor, obj) + '%'">
+              </div>
+            </div>
+
+            <div class="campana-foot">
+              <span class="comision">S/ {{ obj.montoComision | number:'1.2-2' }} comisión</span>
+              <span class="pct-txt">{{ getPorcentaje(asesor, obj) }}%</span>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- TOTAL VENTAS FOOTER -->
+      <div class="card-foot" *ngIf="asesor.objetivos.length > 0">
+        <span class="foot-lbl">Total ventas activas</span>
+        <span class="foot-val">{{ asesor.totalVentas }}</span>
+      </div>
+
+    </div>
+  </div>
+
+</div>

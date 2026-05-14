@@ -78,6 +78,10 @@ export const routes: Routes = [
             loadComponent: () => import('./shared/components/clientes/clientes').then(m => m.Clientes)
           },
           {
+            path: 'supervisor-equipo',
+            loadComponent: () => import('./pages/supervisor/supervisor-equipo/supervisor-equipo').then(m => m.SupervisorEquipo)
+          },
+          {
             path: 'asignar-objetivo',
             loadComponent: () => import('./pages/supervisor/asignar-objetivo/asignar-objetivo').then(m => m.AsignarObjetivo)
           },

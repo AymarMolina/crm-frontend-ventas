@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-  apiUbi: 'https://apisia.pronis.gob.pe'  // en prod va directo
+  apiUrl: 'https://crm-backend-ventas.onrender.com/api', // Tu URL de Render + /api
+  apiUbi: 'https://apisia.pronis.gob.pe' 
 };

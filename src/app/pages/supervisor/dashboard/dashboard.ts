@@ -41,20 +41,20 @@ export class Dashboard implements OnInit, OnDestroy {
   // ── CICLO DE VIDA ────────────────────────────────────────────
   ngOnInit(): void {
     this.cargarEquipo();
+     this.cdr.detectChanges();
   }
  
   ngOnDestroy(): void {
     Object.values(this.charts).forEach(c => c.destroy());
   }
  
-  // ── CARGA ────────────────────────────────────────────────────
   cargarEquipo(): void {
     this.loading = true;
- 
+
     this.objetivoService.getMiEquipo().pipe(
       switchMap(equipo => {
         if (equipo.length === 0) return of([]);
- 
+
         const requests = equipo.map(agente =>
           forkJoin({
             objetivos: this.objetivoService.getObjetivosPorUsuario(agente.id).pipe(
@@ -70,7 +70,7 @@ export class Dashboard implements OnInit, OnDestroy {
                 acc[v.campanaId] = (acc[v.campanaId] ?? 0) + 1;
                 return acc;
               }, {} as Record<string, number>);
- 
+
               return of({
                 agente,
                 objetivos,
@@ -81,7 +81,7 @@ export class Dashboard implements OnInit, OnDestroy {
             })
           )
         );
- 
+
         return forkJoin(requests);
       }),
       catchError(err => {
@@ -91,18 +91,24 @@ export class Dashboard implements OnInit, OnDestroy {
     ).subscribe(data => {
       this.equipoData = data;
       this.loading = false;
+      
+      // ✅ Forzamos detección de cambios inmediata
       this.cdr.detectChanges();
- 
-      // Dibuja todos los gráficos tras detectChanges
-      requestAnimationFrame(() => {
-        this.initDonutEquipo();
-        this.initBarrasChart();
-        this.initContribucionChart();
-        this.initMiniDonuts();
-      });
+
+      // ✅ Esperamos 2 ciclos: uno para quitar loading, otro para renderizar el DOM completo
+      setTimeout(() => {
+        requestAnimationFrame(() => {
+          this.renderAllCharts();
+        });
+      }, 100); // ← Aumentado de 0 a 100ms para dar margen
     });
   }
- 
+  private renderAllCharts(): void {
+    this.initDonutEquipo();
+    this.initBarrasChart();
+    this.initContribucionChart();
+    this.initMiniDonuts();
+  }
   // ── KPIs GLOBALES ────────────────────────────────────────────
   get totalVentasEquipo(): number {
     return this.equipoData.reduce((s, a) => s + a.totalVentas, 0);

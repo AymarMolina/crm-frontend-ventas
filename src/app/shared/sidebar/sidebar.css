@@ -286,3 +286,8 @@
 .layout-content--collapsed {
   margin-left: 64px;
 }
+.sidebar__item-icon {
+  display: flex;
+  align-items: center;
+  font-size: 1.3rem;
+}

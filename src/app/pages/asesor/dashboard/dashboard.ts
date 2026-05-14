@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { PageResponse, Venta } from '../../../core/models/crm.models';
 import { VentasService } from '../../../core/services/ventas.service';
 import { AuthService } from '../../../core/services/auth.service';
-import { VentaForm } from "../venta-form/venta-form";
+import { VentaForm } from "../../../shared/components/venta-form/venta-form";
 import Chart from 'chart.js/auto';
 import { DashboardService } from '../../../core/services/dashboardasesor.service';
 import { ObjetivoResponse, ObjetivoService } from '../../../core/services/objetivo.service';
@@ -71,6 +71,7 @@ cargarDatos() {
   this.dashboardService.getDashboardData('15d').subscribe({
     next: (data) => {
       this.resumen = data.resumen;
+      console.log(this.resumen);
       this.loading = false;
       this.cdr.detectChanges();
       requestAnimationFrame(() => {
@@ -113,8 +114,9 @@ cargarVentasParaGrafico() {
 
   this.ventasService.listar({
     agenteId: agenteId ?? undefined,
+    estadoCodigo: 'ACTIVO',
     page: 0,
-    size: 1000  // traer todas
+    size: 1000
   }).subscribe({
     next: (res) => {
       this.todasLasVentas = res.content;

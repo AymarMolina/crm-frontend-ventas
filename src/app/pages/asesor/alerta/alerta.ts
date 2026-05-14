@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { VentasService } from '../../../core/services/ventas.service';
 import { AlertasStateService } from '../../../core/services/alertas-state.service';
-import { VentaForm } from '../venta-form/venta-form';
+import { VentaForm } from '../../../shared/components/venta-form/venta-form';
 
 export interface AlertaVenta {
   id: string;

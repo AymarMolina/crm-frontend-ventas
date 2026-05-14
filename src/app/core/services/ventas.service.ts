@@ -45,6 +45,10 @@ export class VentasService {
     return this.http.post<Venta>(this.base, body);
   }
 
+  actualizar(id: string, body: Partial<VentaRequest>): Observable<Venta> {
+    return this.http.put<Venta>(`${this.base}/${id}`, body);
+  }
+
   vincularCliente(ventaId: string, clienteId: string): Observable<Venta> {
     return this.http.patch<Venta>(`${this.base}/${ventaId}/cliente/${clienteId}`, {});
   }

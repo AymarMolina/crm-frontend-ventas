@@ -73,6 +73,7 @@ export interface Venta {
   clienteId?: string;
   clienteNombre: string;
   clienteDoc?: string;
+  agenteNombre?:string;
   clienteTelefono?: string;
   codigoVenta: string;
   fechaVenta: string;

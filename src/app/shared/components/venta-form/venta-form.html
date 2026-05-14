@@ -1,0 +1,346 @@
+<div [ngClass]="{'vf-page': !isModal}">
+  <div class="vf-card">
+
+    <!-- Header -->
+    <div class="vf-header">
+      <div class="vf-header-left">
+        <div class="vf-icon">
+          <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"/>
+          </svg>
+        </div>
+        <div>
+          <h2 class="vf-title">{{ modoEdicion ? 'Editar venta' : 'Registrar nueva venta' }}</h2>
+          <p class="vf-subtitle">{{ modoEdicion ? 'Modifica los datos de la operación' : 'Complete los campos para continuar' }}</p>
+        </div>
+      </div>
+      <button *ngIf="isModal" type="button" (click)="onClose.emit()" class="vf-close-btn">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Form -->
+    <form [formGroup]="ventaForm" (ngSubmit)="guardarVenta()" class="vf-form">
+
+      <!-- SECCIÓN CLIENTE -->
+      <div class="vf-section">
+        <div class="vf-section-header">
+          <span class="vf-section-label">Información del cliente</span>
+          <!-- Ocultar toggle en modo edición -->
+          <button *ngIf="!modoEdicion" type="button" (click)="toggleClienteNuevo()" class="vf-toggle-btn">
+            {{ esClienteNuevo ? '← Buscar existente' : '+ Cliente nuevo' }}
+          </button>
+        </div>
+        <!-- MODO EDICIÓN: cliente bloqueado (solo lectura) -->
+        <div *ngIf="modoEdicion" class="vf-cliente-card">
+          <div class="vf-cliente-header">
+            <span class="vf-cliente-found-label">Cliente</span>
+            <span class="vf-cliente-badge">
+              {{ ventaEditar?.clienteDoc }}
+            </span>
+          </div>
+          <div class="vf-cliente-body">
+            <div class="vf-avatar-row">
+              <div class="vf-avatar">{{ inicialesEdicion }}</div>
+              <div>
+                <p class="vf-cliente-name">{{ ventaEditar?.clienteNombre }}</p>
+                <p class="vf-cliente-sub">{{ ventaEditar?.clienteTelefono }}</p>
+              </div>
+            </div>
+          </div>
+          <p class="vf-hint mt-2">El cliente no puede modificarse en una venta existente.</p>
+        </div>
+        <ng-container *ngIf="!modoEdicion">
+          <!-- Documento -->
+          <div class="vf-grid-doc">
+            <div class="vf-field">
+              <label class="vf-label">Tipo doc.</label>
+              <div class="vf-select-wrap">
+                <select formControlName="tipoDoc" class="vf-select">
+                  <option value="DNI">DNI</option>
+                  <option value="CE">Carnet de Extranjería</option>
+                  <option value="RUC">RUC</option>
+                  <option value="PASAPORTE">Pasaporte</option>
+                </select>
+                <svg class="vf-select-arrow" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M6 9l6 6 6-6"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="vf-field">
+              <label class="vf-label">Número de documento</label>
+              <div class="vf-input-wrap">
+                <input type="text" formControlName="nroDoc"
+                  [placeholder]="placeholderDoc"
+                  class="vf-input vf-input-mono vf-input-with-btn"
+                  [class.border-red-400]="ventaForm.get('nroDoc')?.invalid && ventaForm.get('nroDoc')?.touched"
+                  [style.text-transform]="ventaForm.get('tipoDoc')?.value === 'CE' || ventaForm.get('tipoDoc')?.value === 'PASAPORTE' ? 'uppercase' : 'none'"
+                  (input)="onDocumentoInput($event)">
+                <button type="button" (click)="buscarCliente()" [disabled]="loadingCliente" class="vf-search-btn">
+                  <ng-container *ngIf="!loadingCliente">
+                    <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                      <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                  </ng-container>
+                  <div *ngIf="loadingCliente" class="vf-spinner"></div>
+                </button>
+              </div>
+              <p *ngIf="getError('nroDoc')" class="text-red-500 text-xs mt-1 ml-1">{{ getError('nroDoc') }}</p>
+            </div>
+          </div>
+
+          <!-- Cliente encontrado -->
+          <div *ngIf="ventaForm.get('clienteId')?.value" class="vf-cliente-card">
+            <div class="vf-cliente-header">
+              <span class="vf-cliente-found-label">Cliente encontrado</span>
+              <span class="vf-cliente-badge">
+                {{ ventaForm.get('tipoDoc')?.value }} · {{ ventaForm.get('nroDoc')?.value }}
+              </span>
+            </div>
+            <div class="vf-cliente-body">
+              <div class="vf-avatar-row">
+                <div class="vf-avatar">{{ inicialesCliente }}</div>
+                <div>
+                  <p class="vf-cliente-name">{{ ventaForm.get('nombre')?.value }}</p>
+                  <p class="vf-cliente-sub">{{ ventaForm.get('distrito')?.value }} · {{ ventaForm.get('email')?.value }}</p>
+                </div>
+              </div>
+              <div class="vf-info-grid">
+                <div class="vf-info-box">
+                  <p class="vf-info-label">Teléfono</p>
+                  <p class="vf-info-val">{{ ventaForm.get('telefono')?.value }}</p>
+                </div>
+                <div class="vf-info-box">
+                  <p class="vf-info-label">Alt.</p>
+                  <p class="vf-info-val">{{ ventaForm.get('telefonoAlt')?.value || '—' }}</p>
+                </div>
+                <div class="vf-info-box vf-info-box-full">
+                  <p class="vf-info-label">Dirección</p>
+                  <p class="vf-info-val vf-info-val-text">{{ ventaForm.get('direccion')?.value }}, {{ ventaForm.get('distrito')?.value }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Formulario Cliente Nuevo -->
+          <div *ngIf="esClienteNuevo" class="vf-nuevo-box">
+            <p class="vf-nuevo-title">Datos del nuevo cliente</p>
+
+            <div class="vf-field vf-mb8">
+              <label class="vf-label">Nombres <span class="text-red-400">*</span></label>
+              <input type="text" formControlName="nombre" class="vf-input"
+                    placeholder="Ej. Juan Manuel"
+                    [class.border-red-400]="ventaForm.get('nombre')?.invalid && ventaForm.get('nombre')?.touched">
+              <p *ngIf="getError('nombre')" class="text-red-500 text-xs mt-1 ml-1">{{ getError('nombre') }}</p>
+            </div>
+
+            <div class="vf-grid-2 vf-mb8">
+              <div class="vf-field">
+                <label class="vf-label">Apellido Paterno <span class="text-red-400">*</span></label>
+                <input type="text" formControlName="apellidoP" class="vf-input"
+                      [class.border-red-400]="ventaForm.get('apellidoP')?.invalid && ventaForm.get('apellidoP')?.touched">
+                <p *ngIf="getError('apellidoP')" class="text-red-500 text-xs mt-1 ml-1">{{ getError('apellidoP') }}</p>
+              </div>
+              <div class="vf-field">
+                <label class="vf-label">Apellido Materno</label>
+                <input type="text" formControlName="apellidoM" class="vf-input">
+              </div>
+            </div>
+
+            <div class="vf-grid-2 vf-mb8">
+              <div class="vf-field">
+                <label class="vf-label">Email</label>
+                <input type="email" formControlName="email" class="vf-input"
+                      placeholder="correo@ejemplo.com"
+                      [class.border-red-400]="ventaForm.get('email')?.invalid && ventaForm.get('email')?.touched">
+                <p *ngIf="getError('email')" class="text-red-500 text-xs mt-1 ml-1">{{ getError('email') }}</p>
+              </div>
+              <div class="vf-field">
+                <label class="vf-label">Teléfono</label>
+                <input type="text" formControlName="telefono" class="vf-input"
+                      placeholder="9XXXXXXXX"
+                      [class.border-red-400]="ventaForm.get('telefono')?.invalid && ventaForm.get('telefono')?.touched">
+                <p *ngIf="getError('telefono')" class="text-red-500 text-xs mt-1 ml-1">{{ getError('telefono') }}</p>
+              </div>
+            </div>
+
+            <!-- Ubigeo: Departamento / Provincia / Distrito -->
+            <div class="vf-grid-2 vf-mb8">
+
+              <!-- DEPARTAMENTO -->
+              <div class="vf-field">
+                <label class="vf-label">Departamento</label>
+                <div class="vf-ubigeo-wrap">
+                  <input type="text"
+                        class="vf-input"
+                        placeholder="Buscar departamento..."
+                        [(ngModel)]="deptoFiltro"
+                        [ngModelOptions]="{standalone: true}"
+                        [disabled]="!!ventaForm.get('departamento')?.disabled"
+                        (input)="deptoOpen = true"
+                        (focus)="deptoOpen = true"
+                        (blur)="onBlurDepto()"
+                        [value]="ventaForm.get('departamento')?.value || deptoFiltro">
+                  <ul *ngIf="deptoOpen && departamentosFiltrados.length > 0" class="vf-ubigeo-dropdown">
+                    <li *ngFor="let d of departamentosFiltrados"
+                        (mousedown)="seleccionarDepto(d)">
+                      {{ d }}
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <!-- PROVINCIA -->
+              <div class="vf-field">
+                <label class="vf-label">Provincia</label>
+                <div class="vf-ubigeo-wrap">
+                  <input type="text"
+                  class="vf-input"
+                  placeholder="Buscar provincia..."
+                  [(ngModel)]="provFiltro"
+                  [ngModelOptions]="{standalone: true}"
+                  [disabled]="!provincias.length" 
+                  (input)="provOpen = true"
+                  (focus)="provOpen = true"
+                  (blur)="onBlurProv()"
+                  [value]="ventaForm.get('provincia')?.value || provFiltro">
+                  <ul *ngIf="provOpen && provinciasFiltradas.length > 0" class="vf-ubigeo-dropdown">
+                    <li *ngFor="let p of provinciasFiltradas"
+                        (mousedown)="seleccionarProv(p)">
+                      {{ p }}
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- DISTRITO + DIRECCIÓN (ya existían) -->
+            <div class="vf-grid-2">
+              <div class="vf-field">
+                <label class="vf-label">Distrito</label>
+                <div class="vf-ubigeo-wrap">
+                  <input type="text"
+                        class="vf-input"
+                        placeholder="Buscar distrito..."
+                        [(ngModel)]="distFiltro"
+                        [ngModelOptions]="{standalone: true}"
+                        (input)="distOpen = true"
+                        (focus)="distOpen = true"
+                        (blur)="onBlurDist()"
+                        [value]="ventaForm.get('distrito')?.value || distFiltro">
+                  <ul *ngIf="distOpen && distritosFiltrados.length > 0" class="vf-ubigeo-dropdown">
+                    <li *ngFor="let d of distritosFiltrados"
+                        (mousedown)="seleccionarDist(d)">
+                      {{ d }}
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="vf-field">
+                <label class="vf-label">Dirección</label>
+                <input type="text" formControlName="direccion" class="vf-input" placeholder="Ej. Av. Larco 123">
+              </div>
+            </div>
+          </div>
+        </ng-container>
+        
+      </div>
+
+      <!-- Divider -->
+      <div class="vf-divider"></div>
+
+      <!-- SECCIÓN OPERACIÓN -->
+      <div class="vf-section">
+        <div class="vf-section-header">
+          <span class="vf-section-label">Detalles de la operación</span>
+        </div>
+
+        <!-- Campaña -->
+        <div class="vf-field vf-mb8">
+          <label class="vf-label">Campaña <span class="text-red-400">*</span></label>
+          <div class="vf-select-wrap">
+            <select formControlName="campanaId" class="vf-select"
+                    [class.border-red-400]="ventaForm.get('campanaId')?.invalid && ventaForm.get('campanaId')?.touched">
+              <option value="">Seleccionar campaña...</option>
+              <option *ngFor="let c of campanas" [value]="c.id">{{ c.nombre }}</option>
+            </select>
+            <svg class="vf-select-arrow" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </div>
+          <p *ngIf="getError('campanaId')" class="text-red-500 text-xs mt-1 ml-1">{{ getError('campanaId') }}</p>
+        </div>
+
+        <!-- Producto -->
+        <div class="vf-field vf-mb8"*ngIf="productos.length > 0 || loadingProductos">
+          <label class="vf-label">
+            Producto
+            <span *ngIf="loadingProductos" class="vf-spinner vf-spinner-inline"></span>
+          </label>
+          <div class="vf-select-wrap">
+                <select formControlName="productoId" class="vf-select">
+                  <option [value]="null">Seleccionar producto...</option>
+                  <option *ngFor="let p of productos" [value]="p.id">
+                    {{ p.nombre }} — S/ {{ p.precio | number:'1.2-2' }}
+                  </option>
+                </select>
+            <svg class="vf-select-arrow" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </div>
+          <p class="vf-hint" *ngIf="ventaForm.get('productoId')?.value">
+            El monto se completó automáticamente con el precio del producto.
+          </p>
+        </div>
+
+        <!-- Monto -->
+        <div class="vf-field vf-mb8">
+          <label class="vf-label">Monto <span class="text-red-400">*</span></label>
+          <div class="vf-input-wrap">
+            <span class="vf-prefix" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-weight:bold;">S/</span>
+            <input type="number" formControlName="monto" class="vf-input" style="padding-left:2.5rem;"
+                   placeholder="0.00"
+                   [class.border-red-400]="ventaForm.get('monto')?.invalid && ventaForm.get('monto')?.touched">
+          </div>
+          <p *ngIf="getError('monto')" class="text-red-500 text-xs mt-1 ml-1">{{ getError('monto') }}</p>
+        </div>
+
+        <!-- Observaciones -->
+        <div class="vf-field">
+          <label class="vf-label">Observaciones internas</label>
+          <textarea formControlName="observaciones" rows="3"
+                    placeholder="Notas adicionales... (máx. 500 caracteres)"
+                    class="vf-textarea"
+                    [class.border-red-400]="ventaForm.get('observaciones')?.invalid && ventaForm.get('observaciones')?.touched">
+          </textarea>
+          <p *ngIf="getError('observaciones')" class="text-red-500 text-xs mt-1 ml-1">{{ getError('observaciones') }}</p>
+        </div>
+      </div>
+
+      <div *ngIf="formularioBloqueado" class="mx-6 mb-4 p-3 bg-amber-50 border border-amber-200 rounded-xl flex items-center gap-2">
+        <svg class="w-5 h-5 text-amber-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+        </svg>
+        <p class="text-sm text-amber-700 font-medium">
+          Esta venta está en estado <strong>{{ ventaEditar?.estadoNombre }}</strong> y no puede modificarse.
+        </p>
+      </div>
+
+      <!-- Acciones -->
+      <div class="vf-actions">
+        <button type="submit" [disabled]="submitting || formularioBloqueado" 
+                class="vf-btn-primary disabled:opacity-50 disabled:cursor-not-allowed">
+          {{ submitting ? 'Procesando...' : (modoEdicion ? 'Guardar cambios' : 'Confirmar venta') }}
+        </button>
+        <button type="button" (click)="onClose.emit()" class="vf-btn-secondary">
+          Cancelar
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>

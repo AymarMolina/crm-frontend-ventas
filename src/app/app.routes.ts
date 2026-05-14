@@ -64,7 +64,7 @@ export const routes: Routes = [
         path: 'supervisor',
         canActivate: [roleGuard(['SUPERVISOR', 'GERENTE'])],
         children: [
-          { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+          { path: '', redirectTo: 'supervisor-equipo', pathMatch: 'full' },
           { 
             path: 'dashboard',  
             loadComponent: () => import('./pages/supervisor/dashboard/dashboard').then(m => m.Dashboard) 
@@ -134,11 +134,7 @@ export const routes: Routes = [
         path: 'backoffice',
         canActivate: [roleGuard(['BACK_OFFICE', 'GERENTE'])],
         children: [
-          { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-          { 
-            path: 'dashboard', 
-            loadComponent: () => import('./pages/backoffice/dashboard/dashboard').then(m => m.Dashboard) 
-          },
+          { path: '', redirectTo: 'ventas', pathMatch: 'full' },
           {
             path: 'ventas',
             loadComponent: () => import('./shared/components/ventas/ventas').then(m => m.Ventas)
@@ -146,6 +142,10 @@ export const routes: Routes = [
           {
             path: 'clientes',
             loadComponent: () => import('./shared/components/clientes/clientes').then(m => m.Clientes)
+          },
+          {
+            path: 'estado-venta',
+            loadComponent: () => import('./pages/backoffice/estado-venta/estado-venta').then(m => m.EstadoVenta)
           },
           {
             path: 'generar-reporte',

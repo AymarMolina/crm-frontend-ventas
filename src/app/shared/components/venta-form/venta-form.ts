@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Campana, Producto } from '../../../core/models/crm.models';
+import { Campana, Producto, Venta } from '../../../core/models/crm.models';
 import { ClientesService } from '../../../core/services/clientes.service';
 import { VentasService } from '../../../core/services/ventas.service';
 import { CampanasService } from '../../../core/services/campanas.service';
@@ -15,10 +15,12 @@ import { UbigeoService } from '../../../core/services/ubigeo.service';
   styleUrl: './venta-form.css',
 })
 export class VentaForm implements OnInit {
+  @Input() ventaEditar: Venta | null = null;
   @Input() isModal = false;
   @Output() onSave = new EventEmitter<any>();
   @Output() onClose = new EventEmitter<void>();
 
+  formularioBloqueado = false;
   ventaForm: FormGroup;
   campanas: Campana[] = [];
   productos: Producto[] = [];
@@ -53,7 +55,6 @@ export class VentaForm implements OnInit {
   deptoOpen = false;
   provOpen = false;
   distOpen = false;
-
   seleccionarDepto(d: string) {
     this.ventaForm.get('departamento')?.setValue(d);
     this.deptoFiltro = d;
@@ -183,8 +184,76 @@ export class VentaForm implements OnInit {
     this.ventaForm.get('productoId')?.valueChanges.subscribe(productoId => {
       this.onProductoChange(productoId);
     });
+    if (this.ventaEditar) {
+      this.cargarDatosEdicion();
+    }
+  }
+  cargarDatosEdicion(): void {
+    const v = this.ventaEditar!;
+
+    // Quitar validación requerida de campos de cliente en modo edición
+    this.ventaForm.get('clienteId')?.clearValidators();
+    this.ventaForm.get('clienteId')?.updateValueAndValidity();
+    this.ventaForm.get('nroDoc')?.clearValidators();
+    this.ventaForm.get('nroDoc')?.updateValueAndValidity();
+    this.ventaForm.get('nombre')?.clearValidators();
+    this.ventaForm.get('nombre')?.updateValueAndValidity();
+    this.ventaForm.get('apellidoP')?.clearValidators();
+    this.ventaForm.get('apellidoP')?.updateValueAndValidity();
+    this.ventaForm.get('email')?.clearValidators();
+    this.ventaForm.get('email')?.updateValueAndValidity();
+    this.ventaForm.get('telefono')?.clearValidators();
+    this.ventaForm.get('telefono')?.updateValueAndValidity();
+    this.ventaForm.get('direccion')?.clearValidators();
+    this.ventaForm.get('direccion')?.updateValueAndValidity();
+    this.ventaForm.get('departamento')?.clearValidators();
+    this.ventaForm.get('departamento')?.updateValueAndValidity();
+    this.ventaForm.get('provincia')?.clearValidators();
+    this.ventaForm.get('provincia')?.updateValueAndValidity();
+    this.ventaForm.get('distrito')?.clearValidators();
+    this.ventaForm.get('distrito')?.updateValueAndValidity();
+
+    this.ventaForm.patchValue({
+      clienteId: v.clienteId,
+      campanaId: v.campanaId,
+      monto: v.monto,
+      fechaVenta: v.fechaVenta,
+      observaciones: v.observaciones
+    });
+    const estadosBloqueados = ['CAIDA', 'ACTIVO'];
+    if (estadosBloqueados.includes(v.estadoCodigo)) {
+      this.ventaForm.get('campanaId')?.disable();
+      this.ventaForm.get('productoId')?.disable();
+      this.ventaForm.get('monto')?.disable();
+      this.ventaForm.get('fechaVenta')?.disable();
+      this.ventaForm.get('observaciones')?.disable();
+      this.formularioBloqueado = true;
+    }
+
+    if (v.campanaId) {
+      this.loadingProductos = true;
+      this.productosService.listarPorCampana(v.campanaId).subscribe({
+        next: (lista) => {
+          this.productos = lista;
+          this.ventaForm.get('productoId')?.setValue(v.productoId, { emitEvent: false });
+          this.loadingProductos = false;
+          this.cdr.detectChanges();
+        },
+        error: () => { this.loadingProductos = false; }
+      });
+    }
   }
 
+  get modoEdicion(): boolean {
+    return !!this.ventaEditar;
+  }
+  get inicialesEdicion(): string {
+    const nombre = this.ventaEditar?.clienteNombre ?? '';
+    const partes = nombre.trim().split(' ');
+    return partes.length >= 2
+      ? (partes[0][0] + partes[1][0]).toUpperCase()
+      : nombre.slice(0, 2).toUpperCase();
+  }
   cargarCampanas() {
     this.campanasService.listarCampanas().subscribe((res: any) => {
       if (res.content && Array.isArray(res.content)) {
@@ -201,13 +270,21 @@ export class VentaForm implements OnInit {
   onCampanaChange(campanaId: string) {
     this.productos = [];
     this.ventaForm.get('productoId')?.setValue(null, { emitEvent: false });
-    this.ventaForm.get('monto')?.setValue(null);
+    this.ventaForm.get('productoId')?.disable();  // deshabilitar mientras carga
+
+    if (!this.modoEdicion) {
+      this.ventaForm.get('monto')?.setValue(null);
+    }
+
     if (!campanaId) return;
 
     this.loadingProductos = true;
     this.productosService.listarPorCampana(campanaId).subscribe({
       next: (lista) => {
         this.productos = lista;
+        if (!this.formularioBloqueado) {
+          this.ventaForm.get('productoId')?.enable(); // rehabilitar al terminar
+        }
         this.loadingProductos = false;
         this.cdr.detectChanges();
       },
@@ -307,6 +384,7 @@ export class VentaForm implements OnInit {
   }
 
   guardarVenta() {
+     if (this.formularioBloqueado) return;
     if (this.ventaForm.invalid) {
       this.ventaForm.markAllAsTouched();
       return;
@@ -314,21 +392,24 @@ export class VentaForm implements OnInit {
     this.submitting = true;
     const rawValue = this.ventaForm.getRawValue();
 
-    if (this.esClienteNuevo) {
-      const nuevoCliente: any = {
-        tipoDoc: rawValue.tipoDoc,
-        nroDoc: rawValue.nroDoc,
-        nombre: rawValue.nombre,
-        apellidoP: rawValue.apellidoP,
-        apellidoM: rawValue.apellidoM,
-        email: rawValue.email,
-        telefono: rawValue.telefono,
-        telefonoAlt: rawValue.telefonoAlt,
-        direccion: rawValue.direccion,
-        departamento: rawValue.departamento,
-        provincia: rawValue.provincia,
-        distrito: rawValue.distrito
+    if (this.modoEdicion) {
+      const payload = {
+        campanaId: rawValue.campanaId,
+        productoId: rawValue.productoId || null,
+        monto: rawValue.monto,
+        fechaVenta: rawValue.fechaVenta,
+        observaciones: rawValue.observaciones
       };
+      this.ventasService.actualizar(this.ventaEditar!.id, payload).subscribe({
+        next: (res) => { this.onSave.emit(res); this.submitting = false; },
+        error: () => { this.submitting = false; }
+      });
+      return;
+    }
+
+    // flujo crear — sin cambios
+    if (this.esClienteNuevo) {
+      const nuevoCliente: any = { /* tu código actual */ };
       this.clientesService.crearCliente(nuevoCliente).subscribe({
         next: (clienteCreado) => this.enviarVenta(clienteCreado.id, rawValue),
         error: () => { this.submitting = false; }

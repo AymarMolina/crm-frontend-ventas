@@ -161,13 +161,24 @@
             </td>
 
             <!-- Acciones -->
-            <td class="px-6 py-4">
-               <button (click)="verDetalle(venta)" 
-                  class="p-2 hover:bg-blue-100 rounded-lg text-slate-400 hover:text-blue-600 transition-all">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                  </svg>
+            <td class="px-6 py-4 flex gap-2">
+                <!-- Botón Ver Detalle -->
+                <button (click)="verDetalle(venta)" 
+                        class="p-2 hover:bg-blue-100 rounded-lg text-slate-400 hover:text-blue-600 transition-all"
+                        title="Ver detalle">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                    </svg>
+                </button>
+
+                <!-- Botón Editar Venta -->
+                <button (click)="abrirEdicion(venta)" 
+                        class="p-2 hover:bg-indigo-100 rounded-lg text-slate-400 hover:text-indigo-600 transition-all"
+                        title="Editar venta">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2.828 2.828 0 114 4L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
                 </button>
             </td>
           </tr>
@@ -262,94 +273,18 @@
         </div>
       </div>
     </div>
-
-    <!-- Footer Modal -->
-    <div class="p-6 bg-slate-50 border-t border-slate-100">
-
-      <!-- Cambio de Estado -->
-      <div class="mb-4">
-        <h4 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Cambiar Estado</h4>
-
-        <!-- Mensaje éxito -->
-        <div *ngIf="mensajeExito"
-          class="mb-3 px-4 py-2 bg-emerald-50 border border-emerald-200 rounded-xl text-xs font-semibold text-emerald-700 flex items-center gap-2">
-          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-          </svg>
-          {{ mensajeExito }}
-        </div>
-
-        <div class="flex flex-col gap-2">
-          <!-- Fila selector + input motivo -->
-          <div class="flex flex-col sm:flex-row gap-2">
-            <select [(ngModel)]="nuevoEstado"
-              class="flex-1 px-3 py-2 bg-white border border-slate-200 rounded-xl text-sm text-slate-700 focus:ring-2 focus:ring-blue-500 outline-none">
-              <option *ngFor="let e of estadosDisponibles" [value]="e.codigo">{{ e.nombre }}</option>
-            </select>
-
-            <!-- Motivo SIEMPRE visible -->
-            <input
-              type="text"
-              [(ngModel)]="motivoCambio"
-              placeholder="Motivo del cambio..."
-              class="flex-1 px-3 py-2 bg-white border border-slate-200 rounded-xl text-sm text-slate-700 focus:ring-2 focus:ring-blue-500 outline-none">
-          </div>
-
-          <button (click)="cambiarEstado()"
-            [disabled]="cambiandoEstado || nuevoEstado === ventaSeleccionada?.estadoCodigo || !motivoCambio.trim()"
-            class="w-full px-5 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2">
-            <svg *ngIf="cambiandoEstado" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
-            </svg>
-            {{ cambiandoEstado ? 'Guardando...' : 'Actualizar Estado' }}
-          </button>
-        </div>
-      </div>
-
-      <!-- Historial de estados -->
-      <div class="mb-4" *ngIf="historialEstados.length > 0">
-        <h4 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Historial</h4>
-        <div class="space-y-2 max-h-40 overflow-y-auto pr-1">
-          <div *ngFor="let h of historialEstados"
-            class="flex items-start gap-3 p-2.5 bg-slate-50 rounded-xl border border-slate-100">
-            <div class="w-2 h-2 rounded-full mt-1.5 shrink-0"
-              [ngClass]="{
-                'bg-emerald-500': h.estadoNuevo === 'ACTIVO',
-                'bg-blue-500':    h.estadoNuevo === 'EN_PROCESO',
-                'bg-red-500':     h.estadoNuevo === 'CAIDA',
-                'bg-amber-500':   h.estadoNuevo === 'OBSERVADO'
-              }">
-            </div>
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center justify-between gap-2">
-                <span class="text-xs font-bold text-slate-700">{{ h.estadoAnterior }} → {{ h.estadoNuevo }}</span>
-                <span class="text-[10px] text-slate-400 shrink-0">{{ h.cambiadoEn | date:'dd MMM, HH:mm' }}</span>
-              </div>
-              <p class="text-xs text-slate-500 mt-0.5 truncate">{{ h.motivo || 'Sin motivo' }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="flex justify-end">
-        <button (click)="ventaSeleccionada = null"
-          class="px-6 py-2 bg-slate-900 text-white rounded-xl text-sm font-bold hover:bg-slate-800 transition-all">
-          Cerrar
-        </button>
-      </div>
-    </div>
     
   </div>
 </div>  
-<div *ngIf="mostrarFormVenta" 
-      class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
-      (click)="mostrarFormVenta = false">
+<div *ngIf="mostrarFormEdicion" 
+     class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+     (click)="mostrarFormEdicion = false">
   <div (click)="$event.stopPropagation()" class="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
     <app-venta-form 
       [isModal]="true"
-      (onSave)="onVentaGuardada($event)"
-      (onClose)="mostrarFormVenta = false">
+      [ventaEditar]="ventaSeleccionada1"
+      (onSave)="onVentaActualizada($event)"
+      (onClose)="mostrarFormEdicion = false">
     </app-venta-form>
   </div>
 </div>

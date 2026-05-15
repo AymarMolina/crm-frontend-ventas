@@ -88,7 +88,7 @@ export class Ventas implements OnInit {
     });
   }
   abrirEdicion(venta: Venta): void {
-    this.ventaSeleccionada1 = venta;
+    this.ventaSeleccionada = venta;
     this.mostrarFormEdicion = true;
   }
   cargarTodos(): void {

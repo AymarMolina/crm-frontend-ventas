@@ -1,6 +1,5 @@
-
 export const environment = {
   production: false,
-  apiUrl: 'https://crm-backend-ventas.onrender.com',
-  apiUbi: ''
+  apiUrl:'http://localhost:8080',
+  apiUbi: 'https://apisia.pronis.gob.pe/'
 };

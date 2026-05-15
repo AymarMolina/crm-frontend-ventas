@@ -7,7 +7,7 @@
       </h1>
       <p class="text-slate-500 font-medium">Gestión y seguimiento de operaciones comerciales</p>
           <button 
-            (click)="mostrarFormVenta = true"
+            (click)="mostrarFormEdicion = true"
             class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path d="M12 4v16m8-8H4"/>
@@ -282,7 +282,7 @@
   <div (click)="$event.stopPropagation()" class="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
     <app-venta-form 
       [isModal]="true"
-      [ventaEditar]="ventaSeleccionada1"
+      [ventaEditar]="ventaSeleccionada"
       (onSave)="onVentaActualizada($event)"
       (onClose)="mostrarFormEdicion = false">
     </app-venta-form>

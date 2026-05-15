@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 
 export interface Departamento {
   departamento: string;
@@ -22,8 +22,11 @@ export class UbigeoService {
   constructor(private http: HttpClient) {}
 
   listarDepartamentos(): Observable<Departamento[]> {
-    return this.http.get<Departamento[]>(`${this.base}/ListarDepartamentoProyecto`);
-  }
+  return this.http.get<Departamento[]>('/api-pronis/api/Ubigeo/ListarDepartamentoProyecto')
+    .pipe(
+      tap(response => console.log('¡Datos recibidos en el servicio sin CORS!:', response))
+    );
+}
 
   listarProvincias(departamento: string): Observable<Provincia[]> {
     return this.http.get<Provincia[]>(`${this.base}/ListarProvinciaProyecto`, {

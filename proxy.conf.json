@@ -1,8 +1,11 @@
 {
-  "/api": {
+  "/api-pronis": {
     "target": "https://apisia.pronis.gob.pe",
-    "secure": true,
+    "secure": false,
     "changeOrigin": true,
-    "logLevel": "debug"
+    "logLevel": "debug",
+    "pathRewrite": {
+      "^/api-pronis": ""
+    }
   }
 }

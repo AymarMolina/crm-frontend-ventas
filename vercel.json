@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api-pronis/:path*",
+      "destination": "https://apisia.pronis.gob.pe/:path*"
+    }
+  ]
+}

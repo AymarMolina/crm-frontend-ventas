@@ -21,6 +21,10 @@ export class ResetPassword implements OnInit {
   showPass     = false;
   showConfirm  = false;
 
+  // Coordenadas para la animación del panel izquierdo
+  mouseX = -150;
+  mouseY = -150;
+
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
@@ -46,7 +50,10 @@ export class ResetPassword implements OnInit {
     const b = group.get('confirmPassword')?.value;
     return a === b ? null : { mismatch: true };
   }
-
+  onMouseMove(event: MouseEvent) {
+    this.mouseX = event.clientX - 150;
+    this.mouseY = event.clientY - 150;
+  }
   onSubmit(): void {
     if (this.form.invalid || !this.token) return;
     this.loading  = true;

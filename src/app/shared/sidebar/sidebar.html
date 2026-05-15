@@ -1,8 +1,17 @@
-<aside class="sidebar" [class.sidebar--collapsed]="collapsed">
-    <!-- Header optimizado: Solo el botón de colapso -->
-  <div class="sidebar__header">
-    <!-- El logo se elimina de aquí porque ya está en la Navbar -->
-    <button class="sidebar__collapse-btn" (click)="toggleCollapse()" [title]="collapsed ? 'Expandir' : 'Colapsar'">
+<aside
+  class="fixed top-[60px] left-0 bottom-0 bg-[#f5f5f5] border-r border-[#e2e4e9] flex flex-col overflow-hidden z-[90] transition-[width] duration-[220ms] ease-[cubic-bezier(0.4,0,0.2,1)]"
+  [ngClass]="{'w-[64px]': collapsed, 'w-[232px]': !collapsed}"
+>
+  <!-- Header: Solo el botón de colapso -->
+  <div
+    class="flex items-center h-[60px] transition-all"
+    [ngClass]="{'justify-center px-0': collapsed, 'justify-end px-4': !collapsed}"
+  >
+    <button
+      class="w-7 h-7 rounded-md border border-[#e2e4e9] bg-white flex items-center justify-center cursor-pointer text-[#8b8fa8] transition-all duration-200 hover:bg-[#e0e0e0] hover:text-[#1a1d23] shrink-0"
+      (click)="toggleCollapse()"
+      [title]="collapsed ? 'Expandir' : 'Colapsar'"
+    >
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <polyline *ngIf="!collapsed" points="15 18 9 12 15 6"/>
         <polyline *ngIf="collapsed"  points="9 18 15 12 9 6"/>
@@ -11,38 +20,42 @@
   </div>
 
   <!-- Línea divisora superior -->
-  <div class="sidebar__divider"></div>
+  <div class="h-px bg-[#e2e4e9] mx-[14px] shrink-0"></div>
 
   <!-- Menú nav -->
-  <nav class="sidebar__nav">
-    <p class="sidebar__section-label" *ngIf="!collapsed">Menú</p>
+  <nav class="flex-1 pt-2.5 px-2.5 pb-0 overflow-y-auto overflow-x-hidden custom-scrollbar">
+    <p class="text-[0.67rem] font-semibold uppercase tracking-[0.08em] text-[#8b8fa8] pt-2.5 px-2 pb-1.5" *ngIf="!collapsed">
+      Menú
+    </p>
 
+    <!-- Usamos una clase auxiliar "active-link" junto con las utilidades de Tailwind -->
     <a
-      class="sidebar__item"
+      class="flex items-center gap-2.5 py-[9px] px-2.5 rounded-[10px] no-underline text-gray-600 text-[0.84rem] font-medium mb-[2px] transition-all duration-150 whitespace-nowrap overflow-hidden relative hover:bg-[#ebebeb] hover:text-[#1a1d23] group"
       *ngFor="let item of items"
       [routerLink]="item.route"
-      routerLinkActive="sidebar__item--active"
+      routerLinkActive="!bg-blue-100 !text-blue-600 font-semibold active-link"
       [title]="collapsed ? item.label : ''"
     >
-      <span class="sidebar__item-icon" [innerHTML]="item.icon"></span>
-      <span class="sidebar__item-label" *ngIf="!collapsed">{{ item.label }}</span>
-      <span class="sidebar__item-badge" *ngIf="item.badge && !collapsed">{{ item.badge }}</span>
+      <span class="flex items-center justify-center text-[1.3rem] text-gray-500 shrink-0 icon-wrap" [innerHTML]="item.icon"></span>
+      <span class="flex-1 overflow-hidden text-ellipsis" *ngIf="!collapsed">{{ item.label }}</span>
+      <span class="bg-red-500 text-white text-[10px] font-bold py-[1px] px-1.5 rounded-full shrink-0" *ngIf="item.badge && !collapsed">{{ item.badge }}</span>
     </a>
   </nav>
 
   <!-- Footer sidebar -->
-  <div class="sidebar__footer">
-    <div class="sidebar__divider"></div>
-    <div class="sidebar__user-mini" *ngIf="!collapsed">
-      <div class="sidebar__avatar">{{ auth.nombre.charAt(0) }}</div>
-      <div class="sidebar__user-text">
-        <span class="sidebar__user-name">{{ auth.nombre }}</span>
-        <span class="sidebar__user-ver">v{{ version }}</span>
+  <div class="pb-3 shrink-0">
+    <div class="h-px bg-[#e2e4e9] mx-[14px] shrink-0 mb-1"></div>
+    <div
+      class="flex items-center gap-[9px] pt-3 px-[14px] pb-1 overflow-hidden"
+      [ngClass]="{'justify-center': collapsed}"
+    >
+      <div class="w-[30px] h-[30px] rounded-lg bg-gradient-to-br from-blue-600 to-blue-700 text-white text-xs font-bold flex items-center justify-center shrink-0">
+        {{ auth.nombre.charAt(0) }}
+      </div>
+      <div class="flex flex-col overflow-hidden" *ngIf="!collapsed">
+        <span class="text-[0.78rem] font-semibold text-[#1a1d23] whitespace-nowrap overflow-hidden text-ellipsis">{{ auth.nombre }}</span>
+        <span class="text-[0.68rem] text-[#8b8fa8]">v{{ version }}</span>
       </div>
     </div>
-    <div class="sidebar__user-mini sidebar__user-mini--center" *ngIf="collapsed">
-      <div class="sidebar__avatar">{{ auth.nombre.charAt(0) }}</div>
-    </div>
   </div>
-
 </aside>

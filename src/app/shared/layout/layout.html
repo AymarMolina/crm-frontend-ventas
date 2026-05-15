@@ -1,6 +1,22 @@
+<!-- Navbar fija arriba -->
 <app-navbar></app-navbar>
-<app-sidebar [items]="menuItems"></app-sidebar>
 
-<main class="layout-content">
+<!-- Sidebar pasándole el estado y escuchando su evento de cambio -->
+<app-sidebar 
+  [items]="menuItems" 
+  [collapsed]="isSidebarCollapsed"
+  (collapsedChange)="isSidebarCollapsed = $event">
+</app-sidebar>
+
+<!-- Contenedor principal con Tailwind -->
+<main 
+  class="min-h-[calc(100vh-60px)] p-6 bg-[#f9fafb] transition-[margin-left] duration-[220ms] ease-[cubic-bezier(0.4,0,0.2,1)]"
+  [ngClass]="{
+    'mt-[60px]': true,
+    'ml-[64px]': isSidebarCollapsed, 
+    'ml-[232px]': !isSidebarCollapsed
+  }"
+>
+  <!-- Aquí renderiza Angular las páginas de tus rutas -->
   <router-outlet></router-outlet>
 </main>

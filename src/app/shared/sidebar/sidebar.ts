@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AuthService } from '../../core/services/auth.service';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -18,19 +18,21 @@ export interface NavItem {
 })
 export class Sidebar implements OnInit {
   @Input() items: NavItem[] = [];
- 
-  collapsed = false;
+  @Input() collapsed: boolean = false;
+  @Output() collapsedChange = new EventEmitter<boolean>();
+
+
   version = '1.0.0';
  
   constructor(public auth: AuthService) {}
  
   ngOnInit(): void {}
  
-  toggleCollapse(): void {
-    this.collapsed = !this.collapsed;
-  }
- 
   logout(): void {
     this.auth.logout();
+  }
+    toggleCollapse() {
+    this.collapsed = !this.collapsed;
+    this.collapsedChange.emit(this.collapsed); // Le avisa al padre (AppComponent)
   }
 }

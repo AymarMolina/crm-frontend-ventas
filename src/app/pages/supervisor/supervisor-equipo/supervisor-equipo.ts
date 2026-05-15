@@ -114,6 +114,7 @@ export class SupervisorEquipo implements OnInit, OnDestroy, AfterViewChecked {
       data.forEach(d => {
         if (d.objetivos.length > 0) {
           this.donutsPendientes.add(d.agente.id);
+          this.cdr.detectChanges();
         }
       });
       this.cdr.detectChanges();
@@ -170,9 +171,9 @@ export class SupervisorEquipo implements OnInit, OnDestroy, AfterViewChecked {
  
   getBadgeClass(asesor: AsesorData): string {
     const pct = this.getPromedio(asesor);
-    if (pct >= 100) return 'badge-completado';
-    if (pct >= 50)  return 'badge-progreso';
-    return 'badge-inicio';
+    if (pct >= 100) return 'bg-green-100 text-green-700';
+    if (pct >= 50)  return 'bg-purple-100 text-indigo-500';
+    return 'bg-orange-50 text-orange-700';
   }
  
   getBadgeLabel(asesor: AsesorData): string {
@@ -184,10 +185,10 @@ export class SupervisorEquipo implements OnInit, OnDestroy, AfterViewChecked {
  
   getBarClass(asesor: AsesorData, obj: ObjetivoResponse): string {
     const pct = this.getPorcentaje(asesor, obj);
-    if (pct >= 100) return 'bar-green';
-    if (pct >= 50)  return 'bar-indigo';
-    if (pct >= 25)  return 'bar-amber';
-    return 'bar-red';
+    if (pct >= 100) return 'bg-gradient-to-r from-green-500 to-green-400';
+    if (pct >= 50)  return 'bg-gradient-to-r from-indigo-500 to-indigo-400';
+    if (pct >= 25)  return 'bg-gradient-to-r from-amber-500 to-amber-400';
+    return 'bg-gradient-to-r from-red-500 to-red-400';
   }
  
   trackById(_: number, item: AsesorData): string {

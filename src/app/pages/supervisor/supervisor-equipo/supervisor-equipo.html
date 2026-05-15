@@ -1,119 +1,124 @@
-<!-- mi-equipo.component.html -->
-<div class="equipo-shell">
+<!-- Wrapper principal que reemplaza a :host y .equipo-shell -->
+<div class="block min-h-screen px-4 py-4 sm:px-10 sm:py-8 bg-[#f6f7fb] font-['Outfit',_sans-serif] text-slate-800">
 
   <!-- ── HEADER ─────────────────────────────────────────── -->
-  <header class="eq-header">
+  <header class="flex flex-wrap items-start justify-between gap-4 mb-8">
     <div>
-      <h1 class="eq-title">Mi Equipo</h1>
-      <p class="eq-sub">Seguimiento de objetivos y ventas por asesor</p>
+      <h1 class="m-0 font-['Fraunces',_serif] text-3xl font-bold tracking-tight text-slate-900">Mi Equipo</h1>
+      <p class="mt-1 mb-0 text-sm text-slate-500">Seguimiento de objetivos y ventas por asesor</p>
     </div>
 
-    <div class="eq-chips" *ngIf="!loading && !error">
-      <div class="chip">
-        <span class="chip-num">{{ equipo.length }}</span>
-        <span class="chip-lbl">asesores</span>
+    <div class="flex flex-wrap gap-2.5" *ngIf="!loading && !error">
+      <!-- Chip Normal -->
+      <div class="flex flex-col items-center px-4 py-1.5 bg-white border-[1.5px] border-slate-200 rounded-full shadow-sm">
+        <span class="font-['Fraunces',_serif] text-xl font-bold leading-none text-slate-900">{{ equipo.length }}</span>
+        <span class="text-[0.65rem] font-semibold tracking-wider text-slate-500 uppercase mt-0.5">asesores</span>
       </div>
-      <div class="chip chip--accent">
-        <span class="chip-num">{{ totalVentasEquipo }}</span>
-        <span class="chip-lbl">ventas activas</span>
+      <!-- Chip Accent -->
+      <div class="flex flex-col items-center px-4 py-1.5 bg-indigo-500 border-[1.5px] border-indigo-500 rounded-full shadow-sm text-white">
+        <span class="font-['Fraunces',_serif] text-xl font-bold leading-none">{{ totalVentasEquipo }}</span>
+        <span class="text-[0.65rem] font-semibold tracking-wider uppercase mt-0.5 opacity-90">ventas activas</span>
       </div>
-      <div class="chip chip--green">
-        <span class="chip-num">{{ totalCompletados }}</span>
-        <span class="chip-lbl">metas al 100%</span>
+      <!-- Chip Green -->
+      <div class="flex flex-col items-center px-4 py-1.5 bg-green-600 border-[1.5px] border-green-600 rounded-full shadow-sm text-white">
+        <span class="font-['Fraunces',_serif] text-xl font-bold leading-none">{{ totalCompletados }}</span>
+        <span class="text-[0.65rem] font-semibold tracking-wider uppercase mt-0.5 opacity-90">metas al 100%</span>
       </div>
     </div>
   </header>
 
   <!-- ── SKELETON ───────────────────────────────────────── -->
-  <div class="skeleton-grid" *ngIf="loading">
-    <div class="sk-card" *ngFor="let i of [1,2,3]">
-      <div class="sk-row">
-        <div class="sk sk-avatar"></div>
-        <div class="sk-lines">
-          <div class="sk sk-line" style="width:65%"></div>
-          <div class="sk sk-line" style="width:42%"></div>
+  <div class="grid gap-6 grid-cols-[repeat(auto-fill,minmax(320px,1fr))]" *ngIf="loading">
+    <div class="p-6 bg-white shadow-sm rounded-2xl" *ngFor="let i of [1,2,3]">
+      <div class="flex items-center gap-3 mb-5">
+        <div class="w-11 h-11 bg-slate-200 rounded-full animate-pulse shrink-0"></div>
+        <div class="flex flex-col flex-1 gap-2">
+          <div class="w-[65%] h-3 bg-slate-200 rounded-md animate-pulse"></div>
+          <div class="w-[42%] h-3 bg-slate-200 rounded-md animate-pulse"></div>
         </div>
       </div>
-      <div class="sk sk-donut"></div>
-      <div class="sk sk-line" style="width:90%;margin-top:.5rem"></div>
-      <div class="sk sk-line" style="width:75%"></div>
+      <div class="w-[110px] h-[110px] mx-auto mb-4 bg-slate-200 rounded-full animate-pulse"></div>
+      <div class="w-[90%] h-3 mt-2 bg-slate-200 rounded-md animate-pulse"></div>
+      <div class="w-[75%] h-3 mt-2 bg-slate-200 rounded-md animate-pulse"></div>
     </div>
   </div>
 
   <!-- ── ERROR ──────────────────────────────────────────── -->
-  <div class="eq-error" *ngIf="error && !loading">
-    <span class="err-icon">⚠</span>
-    <p>No se pudo cargar el equipo.</p>
-    <button class="btn-retry" (click)="cargarEquipo()">Reintentar</button>
+  <div class="px-4 py-16 text-center text-slate-400" *ngIf="error && !loading">
+    <span class="block mb-2 text-4xl">⚠</span>
+    <p class="m-0 mb-4 text-sm text-slate-500">No se pudo cargar el equipo.</p>
+    <button class="px-5 py-2 text-sm font-semibold text-white transition-colors border-none rounded-lg cursor-pointer bg-indigo-500 hover:bg-indigo-600 font-inherit" (click)="cargarEquipo()">Reintentar</button>
   </div>
 
   <!-- ── EQUIPO VACÍO ───────────────────────────────────── -->
-  <div class="eq-empty" *ngIf="!loading && !error && equipo.length === 0">
-    <span>👥</span>
-    <p>No tienes asesores asignados aún.</p>
+  <div class="px-4 py-16 text-center text-slate-400" *ngIf="!loading && !error && equipo.length === 0">
+    <span class="block mb-2 text-4xl">👥</span>
+    <p class="m-0 mb-4 text-sm text-slate-500">No tienes asesores asignados aún.</p>
   </div>
 
   <!-- ── GRID DE ASESORES ───────────────────────────────── -->
-  <div class="asesores-grid" *ngIf="!loading && !error && equipo.length > 0">
+  <div class="grid gap-6 grid-cols-[repeat(auto-fill,minmax(330px,1fr))]" *ngIf="!loading && !error && equipo.length > 0">
 
-    <div class="asesor-card"
+    <div class="flex flex-col gap-4 p-[1.4rem] bg-white border-[1.5px] border-[#eef0f5] shadow-[0_2px_10px_rgba(0,0,0,.06)] rounded-[20px] transition-all duration-200 hover:-translate-y-[3px] hover:shadow-[0_10px_28px_rgba(99,102,241,.13)]"
          *ngFor="let asesor of equipoData; trackBy: trackById"
-         [class.card--done]="getPromedio(asesor) >= 100">
+         [ngClass]="{'border-green-200 bg-[linear-gradient(160deg,#fff_60%,#f0fdf4_100%)]': getPromedio(asesor) >= 100}">
 
       <!-- CABECERA -->
-      <div class="card-top">
-        <div class="avatar" [style.background]="getAvatarColor(asesor.agente.nombres)">
+      <div class="flex items-center gap-3">
+        <div class="flex items-center justify-center shrink-0 w-[46px] h-[46px] rounded-full font-['Fraunces',_serif] font-bold text-[0.95rem] text-white tracking-wide" 
+             [style.background]="getAvatarColor(asesor.agente.nombres)">
           {{ getInitials(asesor.agente.nombres, asesor.agente.apellidos) }}
         </div>
-        <div class="asesor-meta">
-          <span class="asesor-nombre">
+        <div class="flex flex-col flex-1 min-w-0">
+          <span class="text-sm font-semibold truncate text-slate-900">
             {{ asesor.agente.nombres }} {{ asesor.agente.apellidos }}
           </span>
-          <span class="asesor-email">{{ asesor.agente.email }}</span>
+          <span class="text-xs truncate text-slate-400">{{ asesor.agente.email }}</span>
         </div>
-        <span class="badge" [class]="getBadgeClass(asesor)">
+        <span class="px-2.5 py-1 text-[0.68rem] font-semibold whitespace-nowrap rounded-full shrink-0" 
+              [class]="getBadgeClass(asesor)">
           {{ getBadgeLabel(asesor) }}
         </span>
       </div>
 
       <!-- SIN OBJETIVOS -->
-      <div class="sin-obj" *ngIf="asesor.objetivos.length === 0">
+      <div class="py-4 text-[0.82rem] text-center text-slate-400" *ngIf="asesor.objetivos.length === 0">
         <span>📋</span> Sin objetivos asignados
       </div>
 
       <!-- CUERPO: donut + campañas -->
-      <div class="card-body" *ngIf="asesor.objetivos.length > 0">
+      <div class="flex items-start gap-4" *ngIf="asesor.objetivos.length > 0">
 
         <!-- DONUT -->
-        <div class="donut-wrap">
-          <canvas [id]="'donut-' + asesor.agente.id" width="110" height="110"></canvas>
-          <div class="donut-label">
-            <strong>{{ getPromedio(asesor) }}%</strong>
-            <small>promedio</small>
+        <div class="relative shrink-0 w-[110px] h-[110px]">
+          <canvas [id]="'donut-' + asesor.agente.id" width="110" height="110" class="block"></canvas>
+          <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+            <strong class="font-['Fraunces',_serif] text-[1.05rem] font-bold leading-none text-slate-900">{{ getPromedio(asesor) }}%</strong>
+            <small class="text-[0.6rem] font-semibold tracking-wider text-slate-400 uppercase mt-0.5">promedio</small>
           </div>
         </div>
 
         <!-- LISTA DE CAMPAÑAS -->
-        <div class="campanas">
-          <div class="campana" *ngFor="let obj of asesor.objetivos">
+        <div class="flex flex-col flex-1 min-w-0 gap-3">
+          <div class="flex flex-col gap-1" *ngFor="let obj of asesor.objetivos">
 
-            <div class="campana-top">
-              <span class="camp-nombre">{{ obj.campanaNombre }}</span>
-              <span class="camp-nums">
+            <div class="flex items-baseline justify-between">
+              <span class="text-[0.78rem] font-semibold text-slate-700 truncate max-w-[58%]">{{ obj.campanaNombre }}</span>
+              <span class="text-[0.74rem] text-slate-500 tabular-nums whitespace-nowrap">
                 {{ getVentasActuales(asesor, obj) }}&nbsp;/&nbsp;{{ obj.objetivoVentas }}
               </span>
             </div>
 
-            <div class="bar-track">
-              <div class="bar-fill"
+            <div class="h-[6px] overflow-hidden rounded-full bg-slate-100">
+              <div class="h-full rounded-full transition-[width] duration-900 ease-[cubic-bezier(0.4,0,0.2,1)]"
                    [class]="getBarClass(asesor, obj)"
                    [style.width]="getPorcentaje(asesor, obj) + '%'">
               </div>
             </div>
 
-            <div class="campana-foot">
-              <span class="comision">S/ {{ obj.montoComision | number:'1.2-2' }} comisión</span>
-              <span class="pct-txt">{{ getPorcentaje(asesor, obj) }}%</span>
+            <div class="flex justify-between">
+              <span class="text-[0.68rem] text-slate-400">S/ {{ obj.montoComision | number:'1.2-2' }} comisión</span>
+              <span class="text-[0.68rem] font-semibold text-slate-600">{{ getPorcentaje(asesor, obj) }}%</span>
             </div>
 
           </div>
@@ -122,9 +127,9 @@
       </div>
 
       <!-- TOTAL VENTAS FOOTER -->
-      <div class="card-foot" *ngIf="asesor.objetivos.length > 0">
-        <span class="foot-lbl">Total ventas activas</span>
-        <span class="foot-val">{{ asesor.totalVentas }}</span>
+      <div class="flex items-center justify-between pt-3 mt-auto border-t border-slate-100" *ngIf="asesor.objetivos.length > 0">
+        <span class="text-xs text-slate-400">Total ventas activas</span>
+        <span class="font-['Fraunces',_serif] text-[1.1rem] font-bold text-indigo-500">{{ asesor.totalVentas }}</span>
       </div>
 
     </div>

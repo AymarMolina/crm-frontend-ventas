@@ -19,7 +19,7 @@ export class VentaForm implements OnInit {
   @Input() isModal = false;
   @Output() onSave = new EventEmitter<any>();
   @Output() onClose = new EventEmitter<void>();
-
+ 
   formularioBloqueado = false;
   ventaForm: FormGroup;
   campanas: Campana[] = [];
@@ -36,7 +36,7 @@ export class VentaForm implements OnInit {
   deptoFiltro = '';
   provFiltro = '';
   distFiltro = '';
-
+ 
   get departamentosFiltrados() {
     return this.departamentos.filter(d =>
       d?.toLowerCase().startsWith(this.deptoFiltro.toLowerCase())
@@ -70,11 +70,11 @@ export class VentaForm implements OnInit {
     this.distFiltro = d;
     this.distOpen = false;
   }
-
+ 
   onBlurDepto() { setTimeout(() => this.deptoOpen = false, 150); }
   onBlurProv() { setTimeout(() => this.provOpen = false, 150); }
   onBlurDist() { setTimeout(() => this.distOpen = false, 150); }
-
+ 
   constructor(
     private fb: FormBuilder,
     private ventasService: VentasService,
@@ -90,11 +90,11 @@ export class VentaForm implements OnInit {
       clienteId: [null, Validators.required],
       nombre: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(2)]],
       apellidoP: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(2)]],
-      apellidoM: [{ value: '', disabled: true }],
+      apellidoM: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(2)]],
       email: [{ value: '', disabled: true }, [Validators.required, Validators.email]],
       telefono: [{ value: '', disabled: true }, [Validators.required, Validators.pattern(/^9\d{8}$/)]],
       telefonoAlt: [{ value: '', disabled: true }, [Validators.pattern(/^9\d{8}$/)]],
-      direccion: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(5)]],
+      direccion: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(5), Validators.maxLength(200)]],
       departamento: [{ value: '', disabled: true }, Validators.required],
       provincia: [{ value: '', disabled: true }, Validators.required],
       distrito: [{ value: '', disabled: true }, Validators.required],
@@ -105,10 +105,10 @@ export class VentaForm implements OnInit {
       observaciones: ['', Validators.maxLength(500)]
     });
   }
-
+ 
   ngOnInit(): void {
     this.cargarCampanas();
-
+ 
     this.ubigeoService.listarDepartamentos().subscribe({
       next: (res: any) => {
         this.departamentos = res
@@ -117,7 +117,7 @@ export class VentaForm implements OnInit {
         this.cdr.detectChanges();
       }
     });
-
+ 
     this.ventaForm.get('departamento')?.valueChanges.subscribe(dep => {
       this.ventaForm.get('provincia')?.setValue('', { emitEvent: false });
       this.ventaForm.get('distrito')?.setValue('', { emitEvent: false });
@@ -126,43 +126,43 @@ export class VentaForm implements OnInit {
       this.provinciaHabilitada = false;
       this.distritoHabilitado = false;
       if (!dep) return;
-
+ 
       this.ubigeoService.listarProvincias(dep).subscribe((res: any) => {
         this.provincias = res
           .filter((r: any) => r.IdUbigeo > 0)
           .map((r: any) => r.Descripcion);
-
+ 
         this.provinciaHabilitada = true;
         this.ventaForm.get('provincia')?.enable();
         this.cdr.detectChanges();
       });
     });
-
+ 
     this.ventaForm.get('provincia')?.valueChanges.subscribe(prov => {
       this.ventaForm.get('distrito')?.setValue('', { emitEvent: false });
       this.distFiltro = '';
       this.distritos = [];
       this.distritoHabilitado = false;
-
+ 
       const dep = this.ventaForm.get('departamento')?.value;
       if (!dep || !prov) {
         this.ventaForm.get('distrito')?.disable();
         return;
       }
-
+ 
       this.ubigeoService.listarDistritos(dep, prov).subscribe({
         next: (res: any) => {
           this.distritos = res
             .filter((r: any) => r.IdUbigeo > 0)
             .map((r: any) => r.Descripcion);
-
+ 
           if (this.distritos.length > 0) {
             this.distritoHabilitado = true;
             this.ventaForm.get('distrito')?.enable();
           } else {
             this.ventaForm.get('distrito')?.disable();
           }
-
+ 
           this.cdr.detectChanges();
         },
         error: () => {
@@ -172,15 +172,15 @@ export class VentaForm implements OnInit {
         }
       });
     });
-
+ 
     this.ventaForm.get('tipoDoc')?.valueChanges.subscribe(tipo => {
       this.actualizarValidacionDoc(tipo);
     });
-
+ 
     this.ventaForm.get('campanaId')?.valueChanges.subscribe(campanaId => {
       this.onCampanaChange(campanaId);
     });
-
+ 
     this.ventaForm.get('productoId')?.valueChanges.subscribe(productoId => {
       this.onProductoChange(productoId);
     });
@@ -190,7 +190,7 @@ export class VentaForm implements OnInit {
   }
   cargarDatosEdicion(): void {
     const v = this.ventaEditar!;
-
+ 
     // Quitar validación requerida de campos de cliente en modo edición
     this.ventaForm.get('clienteId')?.clearValidators();
     this.ventaForm.get('clienteId')?.updateValueAndValidity();
@@ -212,7 +212,7 @@ export class VentaForm implements OnInit {
     this.ventaForm.get('provincia')?.updateValueAndValidity();
     this.ventaForm.get('distrito')?.clearValidators();
     this.ventaForm.get('distrito')?.updateValueAndValidity();
-
+ 
     this.ventaForm.patchValue({
       clienteId: v.clienteId,
       campanaId: v.campanaId,
@@ -229,7 +229,7 @@ export class VentaForm implements OnInit {
       this.ventaForm.get('observaciones')?.disable();
       this.formularioBloqueado = true;
     }
-
+ 
     if (v.campanaId) {
       this.loadingProductos = true;
       this.productosService.listarPorCampana(v.campanaId).subscribe({
@@ -243,7 +243,7 @@ export class VentaForm implements OnInit {
       });
     }
   }
-
+ 
   get modoEdicion(): boolean {
     return !!this.ventaEditar;
   }
@@ -266,18 +266,18 @@ export class VentaForm implements OnInit {
       this.cdr.detectChanges();
     });
   }
-
+ 
   onCampanaChange(campanaId: string) {
     this.productos = [];
     this.ventaForm.get('productoId')?.setValue(null, { emitEvent: false });
     this.ventaForm.get('productoId')?.disable();  // deshabilitar mientras carga
-
+ 
     if (!this.modoEdicion) {
       this.ventaForm.get('monto')?.setValue(null);
     }
-
+ 
     if (!campanaId) return;
-
+ 
     this.loadingProductos = true;
     this.productosService.listarPorCampana(campanaId).subscribe({
       next: (lista) => {
@@ -294,7 +294,7 @@ export class VentaForm implements OnInit {
       }
     });
   }
-
+ 
   onDocumentoInput(event: any) {
     const tipo = this.ventaForm.get('tipoDoc')?.value;
     if (tipo === 'CE' || tipo === 'PASAPORTE') {
@@ -302,7 +302,7 @@ export class VentaForm implements OnInit {
       this.ventaForm.get('nroDoc')?.setValue(upperValue, { emitEvent: false });
     }
   }
-
+ 
   onProductoChange(productoId: string) {
     if (!productoId) return;
     const producto = this.productos.find(p => p.id === productoId);
@@ -310,12 +310,12 @@ export class VentaForm implements OnInit {
       this.ventaForm.get('monto')?.setValue(producto.precio);
     }
   }
-
+ 
   buscarCliente() {
     const { tipoDoc, nroDoc } = this.ventaForm.getRawValue();
     if (!nroDoc || this.loadingCliente) return;
     this.loadingCliente = true;
-
+ 
     this.clientesService.buscarPorDocumento(tipoDoc, nroDoc).subscribe({
       next: (cliente) => {
         if (cliente) {
@@ -345,21 +345,21 @@ export class VentaForm implements OnInit {
       }
     });
   }
-
+ 
   toggleClienteNuevo() {
     this.esClienteNuevo = !this.esClienteNuevo;
     const campos = ['nombre', 'apellidoP', 'apellidoM', 'email',
       'telefono', 'telefonoAlt', 'direccion',
       'distrito', 'departamento', 'provincia'];
-
+ 
     if (this.esClienteNuevo) {
       // Habilitamos los campos base
       campos.forEach(c => this.ventaForm.get(c)?.enable());
-
+ 
       // Como aún no hay provincia elegida, deshabilitar dependientes
       this.ventaForm.get('provincia')?.disable();
       this.ventaForm.get('distrito')?.disable();
-
+ 
       this.ventaForm.get('clienteId')?.setValue(null);
       this.ventaForm.get('clienteId')?.clearValidators();
     } else {
@@ -374,7 +374,7 @@ export class VentaForm implements OnInit {
     }
     this.ventaForm.get('clienteId')?.updateValueAndValidity();
   }
-
+ 
   get inicialesCliente(): string {
     const nombre = this.ventaForm.get('nombre')?.value as string ?? '';
     const partes = nombre.trim().split(' ');
@@ -382,16 +382,40 @@ export class VentaForm implements OnInit {
       ? (partes[0][0] + partes[1][0]).toUpperCase()
       : nombre.slice(0, 2).toUpperCase();
   }
-
+ 
   guardarVenta() {
-     if (this.formularioBloqueado) return;
+    if (this.formularioBloqueado) return;
+    
+    // Validar que los campos de ubigeo estén seleccionados cuando es cliente nuevo
+    if (this.esClienteNuevo) {
+      const dept = this.ventaForm.get('departamento')?.value;
+      const prov = this.ventaForm.get('provincia')?.value;
+      const dist = this.ventaForm.get('distrito')?.value;
+      
+      // Validar que el departamento seleccionado esté en la lista
+      if (dept && !this.departamentos.includes(dept)) {
+        this.ventaForm.get('departamento')?.setErrors({ invalid: true });
+      }
+      
+      // Validar que la provincia seleccionada esté en la lista
+      if (prov && !this.provincias.includes(prov)) {
+        this.ventaForm.get('provincia')?.setErrors({ invalid: true });
+      }
+      
+      // Validar que el distrito seleccionado esté en la lista
+      if (dist && !this.distritos.includes(dist)) {
+        this.ventaForm.get('distrito')?.setErrors({ invalid: true });
+      }
+    }
+    
     if (this.ventaForm.invalid) {
       this.ventaForm.markAllAsTouched();
       return;
     }
+    
     this.submitting = true;
     const rawValue = this.ventaForm.getRawValue();
-
+ 
     if (this.modoEdicion) {
       const payload = {
         campanaId: rawValue.campanaId,
@@ -406,10 +430,23 @@ export class VentaForm implements OnInit {
       });
       return;
     }
-
-    // flujo crear — sin cambios
+ 
+    // flujo crear
     if (this.esClienteNuevo) {
-      const nuevoCliente: any = { /* tu código actual */ };
+      const nuevoCliente: any = {
+        tipoDoc: rawValue.tipoDoc,
+        nroDoc: rawValue.nroDoc,
+        nombre: rawValue.nombre,
+        apellidoP: rawValue.apellidoP,
+        apellidoM: rawValue.apellidoM,
+        email: rawValue.email,
+        telefono: rawValue.telefono,
+        telefonoAlt: rawValue.telefonoAlt,
+        direccion: rawValue.direccion,
+        departamento: rawValue.departamento,
+        provincia: rawValue.provincia,
+        distrito: rawValue.distrito
+      };
       this.clientesService.crearCliente(nuevoCliente).subscribe({
         next: (clienteCreado) => this.enviarVenta(clienteCreado.id, rawValue),
         error: () => { this.submitting = false; }
@@ -418,7 +455,7 @@ export class VentaForm implements OnInit {
       this.enviarVenta(rawValue.clienteId, rawValue);
     }
   }
-
+ 
   private enviarVenta(clienteId: string, formValues: any) {
     const payloadVenta = {
       campanaId: formValues.campanaId,
@@ -436,7 +473,7 @@ export class VentaForm implements OnInit {
       error: () => { this.submitting = false; }
     });
   }
-
+ 
   actualizarValidacionDoc(tipo: string) {
     const nroDoc = this.ventaForm.get('nroDoc');
     switch (tipo) {
@@ -476,7 +513,7 @@ export class VentaForm implements OnInit {
     nroDoc?.reset('');
     nroDoc?.updateValueAndValidity();
   }
-
+ 
   get placeholderDoc(): string {
     const tipo = this.ventaForm.get('tipoDoc')?.value;
     switch (tipo) {
@@ -487,17 +524,22 @@ export class VentaForm implements OnInit {
       default: return 'Número de documento';
     }
   }
-
+ 
   getError(campo: string): string {
     const control = this.ventaForm.get(campo);
     if (!control || !control.invalid || !control.touched) return '';
-
+ 
     if (control.hasError('required')) return 'Este campo es obligatorio';
     if (control.hasError('email')) return 'Ingresa un correo válido (ej. nombre@correo.com)';
     if (control.hasError('min')) return 'El monto debe ser mayor a 0';
     if (control.hasError('maxlength')) return `Máximo ${control.errors?.['maxlength'].requiredLength} caracteres`;
     if (control.hasError('minlength')) return `Mínimo ${control.errors?.['minlength'].requiredLength} caracteres`;
-
+    if (control.hasError('invalid')) {
+      if (campo === 'departamento') return 'Debes seleccionar un departamento válido de la lista';
+      if (campo === 'provincia') return 'Debes seleccionar una provincia válida de la lista';
+      if (campo === 'distrito') return 'Debes seleccionar un distrito válido de la lista';
+    }
+ 
     if (control.hasError('pattern')) {
       if (campo === 'telefono' || campo === 'telefonoAlt')
         return 'Debe ser un celular peruano (9 dígitos, empieza en 9)';

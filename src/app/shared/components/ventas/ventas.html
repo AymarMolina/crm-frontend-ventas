@@ -1,27 +1,21 @@
 <div class="min-h-screen bg-slate-50 p-4 md:p-8">
-  <!-- Header -->
+  
   <header class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
     <div>
       <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">
         Mis Ventas
       </h1>
       <p class="text-slate-500 font-medium">Gestión y seguimiento de operaciones comerciales</p>
-          <button 
-            (click)="mostrarFormEdicion = true"
-            class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path d="M12 4v16m8-8H4"/>
-            </svg>
-            Nueva venta
-          </button>
     </div>
     
-    <!-- Resumen rápido (Opcional) -->
-    <div class="flex gap-4">
+    <!-- Contenedor de Métricas y Acción -->
+    <div class="flex flex-wrap items-center gap-4 md:ml-auto">
       <!-- Card Monto Total -->
       <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center gap-3">
         <div class="p-2 bg-blue-100 rounded-lg">
-          <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
         </div>
         <div>
           <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Vendido (Hoy)</p>
@@ -29,44 +23,68 @@
         </div>
       </div>
 
-      <!-- Card Comisiones (NUEVO) -->
+      <!-- Card Comisiones -->
       <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center gap-3">
         <div class="p-2 bg-emerald-100 rounded-lg">
-          <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
         </div>
         <div>
           <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Mi Comisión (Hoy)</p>
           <p class="text-xl font-bold text-emerald-600">S/ {{ calcularComisionHoy() | number:'1.2-2' }}</p>
         </div>
       </div>
+
+      <!-- Botón Nueva Venta (Reposicionado y estilizado) -->
+      <button 
+        (click)="mostrarFormEdicion = true"
+        class="h-full px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold shadow-lg shadow-indigo-200 hover:shadow-indigo-300 transition-all flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+        </svg>
+        Nueva venta
+      </button>
     </div>
   </header>
+
   <div class="mb-6 bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-wrap items-end gap-4">
     <!-- Desde -->
-    <div class="flex flex-col gap-1.5">
+    <div class="flex flex-col gap-1.5 flex-1 min-w-[160px] sm:flex-none">
       <label class="text-xs font-bold text-slate-500 uppercase ml-1">Desde</label>
       <div class="relative">
-        <input type="date" [(ngModel)]="fechaInicio" 
-          class="pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all text-slate-700">
+        <input type="date" 
+               [(ngModel)]="fechaInicio" 
+               (ngModelChange)="validarFechas()"
+               class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all text-slate-700">
         <div class="absolute left-3 top-2.5 text-slate-400">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
         </div>
       </div>
     </div>
 
     <!-- Hasta -->
-    <div class="flex flex-col gap-1.5">
+    <div class="flex flex-col gap-1.5 flex-1 min-w-[160px] sm:flex-none">
       <label class="text-xs font-bold text-slate-500 uppercase ml-1">Hasta</label>
       <div class="relative">
-        <input type="date" [(ngModel)]="fechaFin"
-          class="pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all text-slate-700">
+        <input type="date" 
+               [(ngModel)]="fechaFin"
+               [min]="fechaInicio" 
+               (ngModelChange)="validarFechas()"
+               class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all text-slate-700"
+               [class.border-red-400]="fechaFin && fechaInicio && fechaFin < fechaInicio">
         <div class="absolute left-3 top-2.5 text-slate-400">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
         </div>
       </div>
     </div>
-    <!-- Texto de búsqueda -->
-    <div class="flex flex-col gap-1.5">
+
+    <!-- Buscar -->
+    <div class="flex flex-col gap-1.5 flex-1 min-w-[240px] sm:flex-none">
       <label class="text-xs font-bold text-slate-500 uppercase ml-1">Buscar</label>
       <div class="relative">
         <input
@@ -74,22 +92,22 @@
           [(ngModel)]="textoBusqueda"
           (ngModelChange)="onTextoBusquedaChange()"
           placeholder="Código, cliente o campaña..."
-          class="pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm
-                focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all
-                text-slate-700 w-64">
+          class="w-full sm:w-64 pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all text-slate-700">
         <div class="absolute left-3 top-2.5 text-slate-400">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
           </svg>
         </div>
       </div>
     </div>
+
     <!-- Botones de Acción -->
-    <div class="flex gap-2">
+    <div class="flex gap-2 w-full sm:w-auto justify-end">
       <button (click)="filtrar()"
         class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-bold shadow-lg shadow-blue-200 transition-all flex items-center gap-2">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
         Filtrar
       </button>
       
@@ -98,8 +116,13 @@
         Limpiar
       </button>
     </div>
+
+    <!-- Error Crítico Fechas -->
+    <span *ngIf="fechaFin && fechaInicio && fechaFin < fechaInicio" class="text-xs text-red-500 w-full ml-1 block -mt-2">
+      La fecha fin no puede ser menor a la fecha de inicio.
+    </span>
   </div>
-  <!-- Tabla Principal -->
+
   <div class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
     <div class="overflow-x-auto">
       <table class="w-full text-left">
@@ -110,7 +133,7 @@
             <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Campaña / Línea</th>
             <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Monto</th>
             <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Estado</th>
-            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Acciones</th>
+            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Acciones</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-slate-100">
@@ -131,8 +154,8 @@
               <div class="flex flex-col">
                 <span class="text-sm font-semibold text-slate-700">{{ venta.clienteNombre }}</span>
                 <div class="flex items-center gap-2 mt-1">
-                   <span class="text-xs text-slate-400">{{ venta.clienteDoc }}</span>
-                   <span *ngIf="venta.clienteTelefono" class="text-[10px] bg-slate-100 px-1.5 py-0.5 rounded text-slate-500">{{ venta.clienteTelefono }}</span>
+                   <span class="text-xs text-slate-400 font-mono">{{ venta.clienteDoc }}</span>
+                   <span *ngIf="venta.clienteTelefono" class="text-[10px] bg-slate-100 px-1.5 py-0.5 rounded text-slate-500 font-medium">{{ venta.clienteTelefono }}</span>
                 </div>
               </div>
             </td>
@@ -140,7 +163,7 @@
             <!-- Campaña -->
             <td class="px-6 py-4 text-sm">
               <span class="text-slate-700 block font-medium">{{ venta.campanaNombre }}</span>
-              <span class="text-[11px] text-blue-500 font-bold uppercase tracking-tighter">{{ venta.lineaNombre }}</span>
+              <span class="text-[11px] text-blue-500 font-bold uppercase tracking-tight">{{ venta.lineaNombre }}</span>
             </td>
 
             <!-- Monto -->
@@ -155,16 +178,17 @@
                 'bg-blue-100 text-blue-700 border-blue-200':   venta.estadoCodigo === 'EN_PROCESO',
                 'bg-red-100 text-red-700 border-red-200':       venta.estadoCodigo === 'CAIDA',
                 'bg-amber-100 text-amber-700 border-amber-200': venta.estadoCodigo !== 'ACTIVO' && venta.estadoCodigo !== 'EN_PROCESO' && venta.estadoCodigo !== 'CAIDA'
-              }" class="px-3 py-1 rounded-full text-[11px] font-bold border uppercase">
+              }" class="px-3 py-1 rounded-full text-[11px] font-bold border uppercase tracking-wide">
                 {{ venta.estadoNombre }}
               </span>
             </td>
 
             <!-- Acciones -->
-            <td class="px-6 py-4 flex gap-2">
+            <td class="px-6 py-4 text-right">
+              <div class="flex items-center justify-end gap-1">
                 <!-- Botón Ver Detalle -->
                 <button (click)="verDetalle(venta)" 
-                        class="p-2 hover:bg-blue-100 rounded-lg text-slate-400 hover:text-blue-600 transition-all"
+                        class="p-2 hover:bg-blue-50 rounded-lg text-slate-400 hover:text-blue-600 transition-all"
                         title="Ver detalle">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -174,90 +198,92 @@
 
                 <!-- Botón Editar Venta -->
                 <button (click)="abrirEdicion(venta)" 
-                        class="p-2 hover:bg-indigo-100 rounded-lg text-slate-400 hover:text-indigo-600 transition-all"
+                        class="p-2 hover:bg-indigo-50 rounded-lg text-slate-400 hover:text-indigo-600 transition-all"
                         title="Editar venta">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2.828 2.828 0 114 4L11.828 15H9v-2.828l8.586-8.586z" />
                     </svg>
                 </button>
+              </div>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <!-- Paginación Modernizada -->
+    <!-- Paginación -->
     <div class="px-6 py-4 bg-slate-50 flex items-center justify-between border-t border-slate-200">
-        <p class="text-sm text-slate-500">
-          Página <span class="font-bold text-slate-900">{{ paginaActual + 1 }}</span> de {{ totalPages }}
-          &nbsp;·&nbsp; {{ ventasFiltradas.length }} resultado(s)
-        </p>
-        <div class="inline-flex shadow-sm rounded-md">
-          <button (click)="irAPagina(paginaActual - 1)" [disabled]="paginaActual === 0"
-            class="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-l-lg hover:bg-slate-50 disabled:opacity-50">
-            Anterior
-          </button>
-          <button (click)="irAPagina(paginaActual + 1)" [disabled]="esUltimaPagina"
-            class="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-r-lg hover:bg-slate-50 disabled:opacity-50">
-            Siguiente
-          </button>
-        </div>
+      <p class="text-sm text-slate-500">
+        Página <span class="font-bold text-slate-900">{{ paginaActual + 1 }}</span> de {{ totalPages }}
+        &nbsp;·&nbsp; {{ ventasFiltradas.length }} resultado(s)
+      </p>
+      <div class="inline-flex shadow-sm rounded-xl overflow-hidden border border-slate-200">
+        <button (click)="irAPagina(paginaActual - 1)" [disabled]="paginaActual === 0"
+          class="px-4 py-2 text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-50 transition-colors border-r border-slate-200">
+          Anterior
+        </button>
+        <button (click)="irAPagina(paginaActual + 1)" [disabled]="esUltimaPagina"
+          class="px-4 py-2 text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-50 transition-colors">
+          Siguiente
+        </button>
       </div>
+    </div>
   </div>
 </div>
 
-<!-- Modal Overlay -->
-<div *ngIf="ventaSeleccionada" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+<!-- ══ MODAL DETALLE OPERACIÓN (Tailwind Native Animation) ════ -->
+<div *ngIf="ventaSeleccionada" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity duration-300">
   
-  <!-- Modal Content -->
-  <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
-    
+  <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden transform transition-all scale-100 duration-200">
     <!-- Header Modal -->
     <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
       <div>
         <h3 class="text-xl font-bold text-slate-900">Detalle de Operación</h3>
-        <p class="text-xs text-slate-500 font-medium">ID: {{ ventaSeleccionada.id }}</p>
+        <p class="text-xs text-slate-500 font-mono mt-0.5">ID: {{ ventaSeleccionada.id }}</p>
       </div>
-      <button (click)="ventaSeleccionada = null" class="p-2 hover:bg-slate-200 rounded-full transition-colors">
-        <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      <button (click)="ventaSeleccionada = null" class="p-2 hover:bg-slate-200 rounded-full text-slate-400 hover:text-slate-600 transition-colors">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
       </button>
     </div>
 
+    <!-- Cuerpo Modal -->
     <div class="p-6 max-h-[70vh] overflow-y-auto">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        
-        <!-- Sección 1: Información del Cliente -->
-        <div class="space-y-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Datos del Cliente -->
+        <div class="space-y-3">
           <h4 class="text-xs font-bold text-blue-600 uppercase tracking-widest">Datos del Cliente</h4>
           <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
-            <p class="text-xs text-slate-400 mb-1">Nombre Completo</p>
+            <p class="text-xs text-slate-400 mb-0.5">Nombre Completo</p>
             <p class="text-sm font-bold text-slate-800 mb-3">{{ ventaSeleccionada.clienteNombre }}</p>
             
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <p class="text-xs text-slate-400 mb-1">Documento</p>
-                <p class="text-sm font-semibold text-slate-700">{{ ventaSeleccionada.clienteDoc }}</p>
+                <p class="text-xs text-slate-400 mb-0.5">Documento</p>
+                <p class="text-sm font-semibold text-slate-700 font-mono">{{ ventaSeleccionada.clienteDoc }}</p>
               </div>
               <div>
-                <p class="text-xs text-slate-400 mb-1">Teléfono</p>
+                <p class="text-xs text-slate-400 mb-0.5">Teléfono</p>
                 <p class="text-sm font-semibold text-slate-700">{{ ventaSeleccionada.clienteTelefono || 'No registrado' }}</p>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Sección 2: Resumen Económico -->
-        <div class="space-y-4">
+        <!-- Liquidación -->
+        <div class="space-y-3">
           <h4 class="text-xs font-bold text-emerald-600 uppercase tracking-widest">Liquidación</h4>
-          <div class="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100">
+          <div class="bg-emerald-50/40 p-4 rounded-2xl border border-emerald-100">
             <div class="flex justify-between items-center mb-2">
               <p class="text-xs text-slate-500 font-medium">Monto de Venta</p>
               <p class="text-sm font-bold text-slate-900">S/ {{ ventaSeleccionada.monto | number:'1.2-2' }}</p>
             </div>
             <div class="flex justify-between items-center mb-2">
+              <p class="text-xs text-slate-500 font-medium">Comisión Generada</p>
               <p class="text-sm font-bold text-emerald-600">
                 S/ {{ ventaSeleccionada.comisionGenerada | number:'1.2-2' }}
-                <span class="text-slate-400 font-normal">
+                <span class="text-slate-400 font-normal text-xs">
                   ({{ ((ventaSeleccionada.comisionPorcentaje ?? 0) * 100) | number:'1.0-2' }}%)
                 </span>
               </p>
@@ -265,7 +291,7 @@
             <hr class="my-2 border-emerald-100">
             <div class="flex justify-between items-center">
               <p class="text-xs font-bold text-slate-600">Estado</p>
-              <span class="px-2 py-0.5 rounded-lg bg-white text-[10px] font-black border border-emerald-200 text-emerald-700">
+              <span class="px-2.5 py-0.5 rounded-lg bg-white text-[10px] font-black border border-emerald-200 text-emerald-700 uppercase">
                 {{ ventaSeleccionada.estadoNombre }}
               </span>
             </div>
@@ -273,13 +299,13 @@
         </div>
       </div>
     </div>
-    
   </div>
 </div>  
+
 <div *ngIf="mostrarFormEdicion" 
-     class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+     class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-all duration-300"
      (click)="mostrarFormEdicion = false">
-  <div (click)="$event.stopPropagation()" class="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+  <div (click)="$event.stopPropagation()" class="w-full max-w-2xl max-h-[90vh] overflow-y-auto transform scale-100 transition-transform">
     <app-venta-form 
       [isModal]="true"
       [ventaEditar]="ventaSeleccionada"

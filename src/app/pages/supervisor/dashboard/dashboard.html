@@ -1,109 +1,112 @@
-<!-- dashboard-supervisor.component.html -->
-
 <!-- SPINNER -->
-<div *ngIf="loading" class="sv-loading">
-  <div class="sv-spinner"></div>
+<div *ngIf="loading" class="flex flex-col items-center justify-center min-h-[60vh] gap-4 text-[0.9rem] text-slate-500">
+  <div class="w-[36px] h-[36px] border-[3px] border-indigo-100 border-t-indigo-600 rounded-full animate-spin"></div>
   <span>Cargando equipo...</span>
 </div>
 
-<div *ngIf="!loading" class="sv-shell">
+<div *ngIf="!loading" class="min-h-screen p-4 sm:px-10 sm:py-8 bg-slate-50 text-slate-800">
 
   <!-- ══ HERO HEADER ══════════════════════════════════════════ -->
-  <header class="sv-hero">
-    <div class="hero-left">
-      <p class="hero-greeting">Bienvenido, supervisor</p>
-      <h1 class="hero-title">Panel de Equipo</h1>
+  <header class="relative flex flex-wrap items-center justify-between gap-6 px-[2.2rem] py-8 mb-7 overflow-hidden bg-gradient-to-br from-[#5b5ef4] via-[#7c6cf8] to-[#a78bfa] rounded-[22px] shadow-[0_8px_32px_rgba(91,94,244,.28)]">
+    <!-- Círculos decorativos de fondo -->
+    <div class="absolute -top-[60px] -right-[60px] w-[220px] h-[220px] bg-white/10 rounded-full pointer-events-none"></div>
+    <div class="absolute -bottom-[40px] left-[30%] w-[160px] h-[160px] bg-white/5 rounded-full pointer-events-none"></div>
+
+    <div class="relative z-10">
+      <p class="m-0 mb-[0.3rem] text-[0.75rem] font-semibold tracking-[0.12em] uppercase text-white/65">Bienvenido, supervisor</p>
+      <h1 class="m-0 font-serif text-[2rem] leading-[1.1] tracking-[-0.01em] text-white">Panel de Equipo</h1>
     </div>
-    <div class="hero-kpis">
-      <div class="kpi">
-        <span class="kpi-val">{{ equipoData.length }}</span>
-        <span class="kpi-lbl">Asesores</span>
+    
+    <div class="relative z-10 flex flex-wrap items-center gap-6">
+      <div class="flex flex-col items-center gap-[0.1rem]">
+        <span class="font-serif text-[1.75rem] leading-none text-white">{{ equipoData.length }}</span>
+        <span class="text-[0.62rem] font-semibold tracking-[0.08em] uppercase text-white/55">Asesores</span>
       </div>
-      <div class="kpi-sep"></div>
-      <div class="kpi">
-        <span class="kpi-val">{{ totalVentasEquipo }}</span>
-        <span class="kpi-lbl">Ventas activas</span>
+      <div class="w-px h-8 bg-white/20"></div>
+      <div class="flex flex-col items-center gap-[0.1rem]">
+        <span class="font-serif text-[1.75rem] leading-none text-white">{{ totalVentasEquipo }}</span>
+        <span class="text-[0.62rem] font-semibold tracking-[0.08em] uppercase text-white/55">Ventas activas</span>
       </div>
-      <div class="kpi-sep"></div>
-      <div class="kpi">
-        <span class="kpi-val">{{ promedioEquipo }}%</span>
-        <span class="kpi-lbl">Avance promedio</span>
+      <div class="w-px h-8 bg-white/20"></div>
+      <div class="flex flex-col items-center gap-[0.1rem]">
+        <span class="font-serif text-[1.75rem] leading-none text-white">{{ promedioEquipo }}%</span>
+        <span class="text-[0.62rem] font-semibold tracking-[0.08em] uppercase text-white/55">Avance promedio</span>
       </div>
-      <div class="kpi-sep"></div>
-      <div class="kpi">
-        <span class="kpi-val accent">{{ totalCompletados }}</span>
-        <span class="kpi-lbl">Metas al 100%</span>
+      <div class="w-px h-8 bg-white/20"></div>
+      <div class="flex flex-col items-center gap-[0.1rem]">
+        <span class="font-serif text-[1.75rem] leading-none text-[#fde68a]">{{ totalCompletados }}</span>
+        <span class="text-[0.62rem] font-semibold tracking-[0.08em] uppercase text-white/55">Metas al 100%</span>
       </div>
     </div>
   </header>
 
   <!-- ══ FILA 1: Ranking + Donut equipo ═══════════════════════ -->
-  <div class="sv-row">
+  <div class="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-[1.4rem] mb-[1.4rem]">
 
     <!-- Ranking de asesores -->
-    <div class="sv-card sv-card--lg">
-      <div class="card-head">
-        <h2 class="card-title">Ranking del Equipo</h2>
-        <span class="card-badge">por avance de meta</span>
+    <div class="p-[1.6rem] bg-white border border-slate-200 rounded-2xl shadow-sm transition-shadow hover:shadow-md">
+      <div class="flex items-center justify-between mb-[1.3rem]">
+        <h2 class="m-0 font-serif text-[1.05rem] tracking-[-0.01em] text-slate-800">Ranking del Equipo</h2>
+        <span class="px-3 py-1 text-[0.65rem] font-semibold tracking-[0.07em] uppercase border rounded-full text-slate-500 bg-slate-50 border-slate-200">por avance de meta</span>
       </div>
-      <div class="ranking-list">
-        <div class="ranking-item"
+      <div class="flex flex-col gap-[0.85rem]">
+        <div class="flex items-center gap-[0.85rem] px-[0.9rem] py-[0.7rem] bg-slate-50 rounded-lg transition-colors hover:bg-[#eeeffe]"
              *ngFor="let asesor of rankingAsesores; let i = index">
-          <div class="rank-pos" [class]="getPosClass(i)">{{ i + 1 }}</div>
-          <div class="rank-avatar" [style.background]="getAvatarColor(asesor.agente.nombres)">
+          <div class="flex items-center justify-center shrink-0 w-6 h-6 text-[0.7rem] font-bold rounded-full bg-slate-200 text-slate-500" [class]="getPosClass(i)">{{ i + 1 }}</div>
+          <div class="flex items-center justify-center shrink-0 w-[34px] h-[34px] font-serif text-[0.82rem] text-white rounded-full" [style.background]="getAvatarColor(asesor.agente.nombres)">
             {{ getInitials(asesor.agente.nombres, asesor.agente.apellidos) }}
           </div>
-          <div class="rank-info">
-            <span class="rank-nombre">{{ asesor.agente.nombres }} {{ asesor.agente.apellidos }}</span>
-            <div class="rank-bar-track">
-              <div class="rank-bar-fill"
+          <div class="flex-1 min-w-0">
+            <span class="block mb-[0.35rem] text-[0.8rem] font-semibold truncate text-slate-800">{{ asesor.agente.nombres }} {{ asesor.agente.apellidos }}</span>
+            <div class="h-[5px] bg-black/5 rounded-full overflow-hidden">
+              <div class="h-full transition-all duration-1000 rounded-full ease-[cubic-bezier(.4,0,.2,1)]"
                    [class]="getBarClass(getPromedio(asesor))"
                    [style.width]="getPromedio(asesor) + '%'"></div>
             </div>
           </div>
-          <div class="rank-pct" [class]="getPctClass(getPromedio(asesor))">
+          <div class="shrink-0 min-w-[40px] text-right font-serif text-[0.95rem]" [class]="getPctClass(getPromedio(asesor))">
             {{ getPromedio(asesor) }}%
           </div>
-          <div class="rank-ventas">
-            <span>{{ asesor.totalVentas }}</span>
-            <small>ventas</small>
+          <div class="flex flex-col items-center shrink-0 min-w-[34px]">
+            <span class="text-[0.88rem] font-bold leading-none text-slate-800">{{ asesor.totalVentas }}</span>
+            <small class="text-[0.58rem] tracking-[0.04em] uppercase text-slate-400">ventas</small>
           </div>
         </div>
 
-        <div class="ranking-empty" *ngIf="rankingAsesores.length === 0">
+        <div class="p-8 text-[0.85rem] text-center text-slate-400" *ngIf="rankingAsesores.length === 0">
           Sin datos de objetivos aún
         </div>
       </div>
     </div>
 
     <!-- Donut general del equipo -->
-    <div class="sv-card sv-card--sm">
-      <div class="card-head">
-        <h2 class="card-title">Avance del Equipo</h2>
-        <span class="card-badge">promedio global</span>
+    <div class="p-[1.6rem] bg-white border border-slate-200 rounded-2xl shadow-sm transition-shadow hover:shadow-md">
+      <div class="flex items-center justify-between mb-[1.3rem]">
+        <h2 class="m-0 font-serif text-[1.05rem] tracking-[-0.01em] text-slate-800">Avance del Equipo</h2>
+        <span class="px-3 py-1 text-[0.65rem] font-semibold tracking-[0.07em] uppercase border rounded-full text-slate-500 bg-slate-50 border-slate-200">promedio global</span>
       </div>
-      <div class="donut-big-wrap">
-        <canvas id="donutEquipo" width="200" height="200"></canvas>
-        <div class="donut-big-center">
-          <strong>{{ promedioEquipo }}%</strong>
-          <small>completado</small>
+      <div class="relative w-[200px] h-[200px] mx-auto mb-[1.3rem]">
+        <canvas id="donutEquipo" width="200" height="200" class="block"></canvas>
+        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+          <strong class="font-serif text-[1.9rem] leading-none text-slate-800">{{ promedioEquipo }}%</strong>
+          <small class="text-[0.62rem] font-semibold tracking-[0.08em] uppercase text-slate-500">completado</small>
         </div>
       </div>
-      <div class="donut-legend">
-        <div class="dl-item">
-          <span class="dl-dot" style="background:#6366f1"></span>
+      <div class="flex flex-col gap-[0.55rem]">
+        <div class="flex items-center gap-[0.55rem] px-2.5 py-1.5 text-sm bg-slate-50 rounded-lg text-slate-500">
+          <span class="shrink-0 w-2 h-2 rounded-full bg-[#6366f1]"></span>
           <span>En progreso</span>
-          <strong>{{ asesorEnProgreso }}</strong>
+          <strong class="ml-auto font-bold text-slate-800">{{ asesorEnProgreso }}</strong>
         </div>
-        <div class="dl-item">
-          <span class="dl-dot" style="background:#22c55e"></span>
+        <div class="flex items-center gap-[0.55rem] px-2.5 py-1.5 text-sm bg-slate-50 rounded-lg text-slate-500">
+          <span class="shrink-0 w-2 h-2 rounded-full bg-[#22c55e]"></span>
           <span>Completados</span>
-          <strong>{{ asesorCompletado }}</strong>
+          <strong class="ml-auto font-bold text-slate-800">{{ asesorCompletado }}</strong>
         </div>
-        <div class="dl-item">
-          <span class="dl-dot" style="background:#f59e0b"></span>
+        <div class="flex items-center gap-[0.55rem] px-2.5 py-1.5 text-sm bg-slate-50 rounded-lg text-slate-500">
+          <span class="shrink-0 w-2 h-2 rounded-full bg-[#f59e0b]"></span>
           <span>Inicio</span>
-          <strong>{{ asesorInicio }}</strong>
+          <strong class="ml-auto font-bold text-slate-800">{{ asesorInicio }}</strong>
         </div>
       </div>
     </div>
@@ -111,22 +114,22 @@
   </div>
 
   <!-- ══ FILA 2: Barras comparativas + Línea de ventas acumuladas ═ -->
-  <div class="sv-row">
+  <div class="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-[1.4rem] mb-[1.4rem]">
 
     <!-- Barras: ventas vs meta por asesor -->
-    <div class="sv-card sv-card--lg">
-      <div class="card-head">
-        <h2 class="card-title">Ventas vs Meta por Asesor</h2>
-        <span class="card-badge">campaña activa</span>
+    <div class="p-[1.6rem] bg-white border border-slate-200 rounded-2xl shadow-sm transition-shadow hover:shadow-md">
+      <div class="flex items-center justify-between mb-[1.3rem]">
+        <h2 class="m-0 font-serif text-[1.05rem] tracking-[-0.01em] text-slate-800">Ventas vs Meta por Asesor</h2>
+        <span class="px-3 py-1 text-[0.65rem] font-semibold tracking-[0.07em] uppercase border rounded-full text-slate-500 bg-slate-50 border-slate-200">campaña activa</span>
       </div>
       <canvas id="barrasChart" height="90"></canvas>
     </div>
 
     <!-- Barras horizontales: contribución al total -->
-    <div class="sv-card sv-card--sm">
-      <div class="card-head">
-        <h2 class="card-title">Contribución al Equipo</h2>
-        <span class="card-badge">% de ventas totales</span>
+    <div class="p-[1.6rem] bg-white border border-slate-200 rounded-2xl shadow-sm transition-shadow hover:shadow-md">
+      <div class="flex items-center justify-between mb-[1.3rem]">
+        <h2 class="m-0 font-serif text-[1.05rem] tracking-[-0.01em] text-slate-800">Contribución al Equipo</h2>
+        <span class="px-3 py-1 text-[0.65rem] font-semibold tracking-[0.07em] uppercase border rounded-full text-slate-500 bg-slate-50 border-slate-200">% de ventas totales</span>
       </div>
       <canvas id="contribucionChart" height="180"></canvas>
     </div>
@@ -134,61 +137,61 @@
   </div>
 
   <!-- ══ FILA 3: Cards de cada asesor ════════════════════════ -->
-  <div class="card-head" style="margin-bottom: 1rem;">
-    <h2 class="card-title">Detalle por Asesor</h2>
-    <span class="card-badge">objetivos y campañas</span>
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="m-0 font-serif text-[1.05rem] tracking-[-0.01em] text-slate-800">Detalle por Asesor</h2>
+    <span class="px-3 py-1 text-[0.65rem] font-semibold tracking-[0.07em] uppercase border rounded-full text-slate-500 bg-slate-50 border-slate-200">objetivos y campañas</span>
   </div>
 
-  <div class="asesores-grid">
-    <div class="asesor-card"
+  <div class="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-[1.3rem] mb-8">
+    <div class="flex flex-col gap-[0.9rem] p-[1.3rem] bg-white border border-slate-200 rounded-2xl shadow-sm transition-all hover:-translate-y-[3px] hover:shadow-lg"
          *ngFor="let asesor of equipoData; trackBy: trackById"
-         [class.card--done]="getPromedio(asesor) >= 100">
+         [ngClass]="{'border-green-200 bg-gradient-to-br from-white via-white to-green-50': getPromedio(asesor) >= 100}">
 
       <!-- Cabecera -->
-      <div class="ac-top">
-        <div class="ac-avatar" [style.background]="getAvatarColor(asesor.agente.nombres)">
+      <div class="flex items-center gap-[0.7rem]">
+        <div class="flex items-center justify-center shrink-0 w-10 h-10 font-serif text-[0.88rem] text-white rounded-full" [style.background]="getAvatarColor(asesor.agente.nombres)">
           {{ getInitials(asesor.agente.nombres, asesor.agente.apellidos) }}
         </div>
-        <div class="ac-meta">
-          <span class="ac-nombre">{{ asesor.agente.nombres }} {{ asesor.agente.apellidos }}</span>
-          <span class="ac-email">{{ asesor.agente.email }}</span>
+        <div class="flex flex-col flex-1 min-w-0">
+          <span class="text-[0.84rem] font-bold truncate text-slate-800">{{ asesor.agente.nombres }} {{ asesor.agente.apellidos }}</span>
+          <span class="text-[0.7rem] truncate text-slate-500">{{ asesor.agente.email }}</span>
         </div>
-        <div class="ac-badge" [class]="getBadgeClass(asesor)">{{ getBadgeLabel(asesor) }}</div>
+        <div class="shrink-0 px-2.5 py-1 text-[0.63rem] font-bold tracking-[0.02em] whitespace-nowrap rounded-full" [class]="getBadgeClass(asesor)">{{ getBadgeLabel(asesor) }}</div>
       </div>
 
       <!-- Sin objetivos -->
-      <div class="ac-empty" *ngIf="asesor.objetivos.length === 0">📋 Sin objetivos</div>
+      <div class="py-[0.8rem] text-[0.8rem] text-center text-slate-500" *ngIf="asesor.objetivos.length === 0">📋 Sin objetivos</div>
 
       <!-- Cuerpo -->
-      <div class="ac-body" *ngIf="asesor.objetivos.length > 0">
-        <div class="ac-donut-wrap">
-          <canvas [id]="'minidonut-' + asesor.agente.id" width="90" height="90"></canvas>
-          <div class="ac-donut-lbl">
-            <strong>{{ getPromedio(asesor) }}%</strong>
+      <div class="flex items-start gap-[0.9rem]" *ngIf="asesor.objetivos.length > 0">
+        <div class="relative shrink-0 w-[88px] h-[88px]">
+          <canvas [id]="'minidonut-' + asesor.agente.id" width="90" height="90" class="block"></canvas>
+          <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <strong class="font-serif text-[0.95rem] text-slate-800">{{ getPromedio(asesor) }}%</strong>
           </div>
         </div>
-        <div class="ac-campanas">
-          <div class="ac-campana" *ngFor="let obj of asesor.objetivos">
-            <div class="ac-camp-top">
-              <span class="ac-camp-nom">{{ obj.campanaNombre }}</span>
-              <span class="ac-camp-num">{{ getVentasActuales(asesor, obj) }}/{{ obj.objetivoVentas }}</span>
+        <div class="flex flex-col flex-1 min-w-0 gap-[0.65rem]">
+          <div class="flex flex-col gap-[0.22rem]" *ngFor="let obj of asesor.objetivos">
+            <div class="flex items-baseline justify-between">
+              <span class="text-[0.74rem] font-semibold truncate text-slate-700 max-w-[55%]">{{ obj.campanaNombre }}</span>
+              <span class="text-[0.68rem] tabular-nums text-slate-500">{{ getVentasActuales(asesor, obj) }}/{{ obj.objetivoVentas }}</span>
             </div>
-            <div class="ac-bar-track">
-              <div class="ac-bar-fill"
+            <div class="h-[5px] bg-[#f0f0f4] rounded-full overflow-hidden">
+              <div class="h-full transition-all duration-1000 rounded-full ease-[cubic-bezier(.4,0,.2,1)]"
                    [class]="getBarClassPct(getPorcentaje(asesor, obj))"
                    [style.width]="getPorcentaje(asesor, obj) + '%'"></div>
             </div>
-            <div class="ac-camp-foot">
+            <div class="flex justify-between text-[0.64rem] text-slate-400">
               <span>S/ {{ obj.montoComision | number:'1.2-2' }}</span>
-              <span>{{ getPorcentaje(asesor, obj) }}%</span>
+              <span class="font-semibold text-slate-600">{{ getPorcentaje(asesor, obj) }}%</span>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="ac-foot" *ngIf="asesor.objetivos.length > 0">
+      <div class="flex items-center justify-between pt-[0.75rem] border-t border-slate-200 text-[0.74rem] text-slate-500" *ngIf="asesor.objetivos.length > 0">
         <span>Total ventas activas</span>
-        <strong>{{ asesor.totalVentas }}</strong>
+        <strong class="font-serif text-[1.05rem] text-indigo-600">{{ asesor.totalVentas }}</strong>
       </div>
 
     </div>

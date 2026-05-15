@@ -3,6 +3,7 @@ import { Navbar } from "../navbar/navbar";
 import { NavItem, Sidebar } from "../sidebar/sidebar";
 import { RouterModule } from "@angular/router";
 import { AuthService } from '../../core/services/auth.service';
+import { CommonModule } from '@angular/common';
 const ICONS = {
   dashboard: `<i class='bx bxs-dashboard'></i>`,
   ventas:    `<i class='bx bx-receipt'></i>`,
@@ -54,14 +55,14 @@ const MENUS: Record<string, NavItem[]> = {
 
 @Component({
   selector: 'app-layout',
-  imports: [Navbar, Sidebar, RouterModule],
+  imports: [Navbar, Sidebar, RouterModule,CommonModule],
   templateUrl: './layout.html',
   styleUrl: './layout.css',
 })
 export class Layout implements OnInit {
   
   menuItems: NavItem[] = [];
- 
+  isSidebarCollapsed = false; // Estado inicial expandido
   constructor(private auth: AuthService) {}
  
   ngOnInit(): void {

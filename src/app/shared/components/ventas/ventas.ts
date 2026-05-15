@@ -71,6 +71,15 @@ export class Ventas implements OnInit {
   this.mostrarFormVenta = false;
   }
 
+  validarFechas() {
+    if (this.fechaInicio && this.fechaFin) {
+      // Si la fecha fin es menor que la de inicio, la igualamos a la de inicio
+      if (this.fechaFin < this.fechaInicio) {
+        this.fechaFin = this.fechaInicio; 
+        // O si prefieres, puedes resetearla: this.fechaFin = '';
+      }
+    }
+  }
   // Modifica verDetalle para inicializar el selector
   verDetalle(venta: Venta): void {
     this.ventaSeleccionada = venta;

@@ -1,332 +1,359 @@
-<div class="min-h-screen bg-slate-50 p-4 md:p-8">
-  <!-- Header -->
-  <header class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+<div class="min-h-screen bg-slate-50 p-4 md:p-8 text-slate-800">
+  
+  <!-- ── HERO HEADER CORPORATIVO ────────────────────────────────────────── -->
+  <header class="mb-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 pb-5 border-b border-slate-200">
     <div>
-      <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">
-        Mis Ventas
+      <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">
+        Módulo Operativo
+      </span>
+      <h1 class="text-2xl font-bold text-slate-900 tracking-tight mb-1">
+        Cambio de Estados de Ventas
       </h1>
-      <p class="text-slate-500 font-medium">Gestión y seguimiento de operaciones comerciales</p>
-          <button 
-            (click)="mostrarFormVenta = true"
-            class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path d="M12 4v16m8-8H4"/>
-            </svg>
-            Nueva venta
-          </button>
+      <p class="text-xs text-slate-500 font-medium">Gestión, auditoría y seguimiento de operaciones comerciales</p>
     </div>
     
-    <!-- Resumen rápido (Opcional) -->
-    <div class="flex gap-4">
-      <!-- Card Monto Total -->
-      <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center gap-3">
-        <div class="p-2 bg-blue-100 rounded-lg">
-          <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+    <!-- Bloque de Métricas e Inserción Directa -->
+    <div class="flex flex-wrap items-center gap-4">
+      
+      <!-- Card: Vendido Hoy -->
+      <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm flex items-center gap-3 min-w-[170px]">
+        <div class="p-2 bg-slate-100 border border-slate-200/40 rounded-lg text-slate-600 shrink-0">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
         </div>
         <div>
-          <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Vendido (Hoy)</p>
-          <p class="text-xl font-bold text-slate-800">S/ {{ calcularTotalHoy() | number:'1.2-2' }}</p>
+          <p class="text-[9px] text-slate-400 uppercase font-bold tracking-wider">Vendido (Hoy)</p>
+          <p class="text-base font-bold text-slate-800 tabular-nums">S/ {{ calcularTotalHoy() | number:'1.2-2' }}</p>
         </div>
       </div>
 
-      <!-- Card Comisiones (NUEVO) -->
-      <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center gap-3">
-        <div class="p-2 bg-emerald-100 rounded-lg">
-          <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+      <!-- Card: Mi Comisión Hoy -->
+      <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm flex items-center gap-3 min-w-[170px]">
+        <div class="p-2 bg-emerald-50 border border-emerald-100 rounded-lg text-emerald-600 shrink-0">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
         </div>
         <div>
-          <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Mi Comisión (Hoy)</p>
-          <p class="text-xl font-bold text-emerald-600">S/ {{ calcularComisionHoy() | number:'1.2-2' }}</p>
+          <p class="text-[9px] text-emerald-600 uppercase font-bold tracking-wider">Mi Comisión (Hoy)</p>
+          <p class="text-base font-bold text-emerald-700 tabular-nums">S/ {{ calcularComisionHoy() | number:'1.2-2' }}</p>
         </div>
       </div>
+
+      <!-- Botón de Registro de Venta Unificado -->
+      <button 
+        (click)="mostrarFormEdicion = true"
+        class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2 shadow-sm transition-colors border border-teal-700/10">
+        <svg class="w-4 h-4 stroke-current fill-none stroke-[2.5]" viewBox="0 0 24 24">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        <span>Nueva venta</span>
+      </button>
+
     </div>
   </header>
-  <div class="mb-6 bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-wrap items-end gap-4">
+
+  <!-- ── SECCIÓN DE FILTROS AVANZADOS DE AUDITORÍA ──────────────────────── -->
+  <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200/80 flex flex-wrap items-end gap-4">
+    
     <!-- Desde -->
-    <div class="flex flex-col gap-1.5">
-      <label class="text-xs font-bold text-slate-500 uppercase ml-1">Desde</label>
+    <div class="flex flex-col gap-1">
+      <label class="text-[10px] font-bold text-slate-400 uppercase ml-0.5 tracking-wide">Desde</label>
       <div class="relative">
         <input type="date" [(ngModel)]="fechaInicio" 
-          class="pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all text-slate-700">
-        <div class="absolute left-3 top-2.5 text-slate-400">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          class="pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium text-slate-700 outline-none focus:border-slate-400 focus:bg-white transition-colors w-40">
+        <div class="absolute left-3 top-2 text-slate-400 pointer-events-none">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
         </div>
       </div>
     </div>
 
     <!-- Hasta -->
-    <div class="flex flex-col gap-1.5">
-      <label class="text-xs font-bold text-slate-500 uppercase ml-1">Hasta</label>
+    <div class="flex flex-col gap-1">
+      <label class="text-[10px] font-bold text-slate-400 uppercase ml-0.5 tracking-wide">Hasta</label>
       <div class="relative">
         <input type="date" [(ngModel)]="fechaFin"
-          class="pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all text-slate-700">
-        <div class="absolute left-3 top-2.5 text-slate-400">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          class="pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium text-slate-700 outline-none focus:border-slate-400 focus:bg-white transition-colors w-40">
+        <div class="absolute left-3 top-2 text-slate-400 pointer-events-none">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
         </div>
       </div>
     </div>
-    <!-- Texto de búsqueda -->
-    <div class="flex flex-col gap-1.5">
-      <label class="text-xs font-bold text-slate-500 uppercase ml-1">Buscar</label>
+
+    <!-- Buscador de Texto Completo -->
+    <div class="flex flex-col gap-1 flex-1 min-w-[240px]">
+      <label class="text-[10px] font-bold text-slate-400 uppercase ml-0.5 tracking-wide">Buscar registro</label>
       <div class="relative">
         <input
           type="text"
           [(ngModel)]="textoBusqueda"
           (ngModelChange)="onTextoBusquedaChange()"
-          placeholder="Código, cliente o campaña..."
-          class="pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm
-                focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all
-                text-slate-700 w-64">
-        <div class="absolute left-3 top-2.5 text-slate-400">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          placeholder="Código, cliente, documento o campaña..."
+          class="pl-9 pr-4 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium text-slate-700 outline-none focus:border-slate-400 focus:bg-white transition-colors w-full">
+        <div class="absolute left-3 top-2 text-slate-400 pointer-events-none">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
           </svg>
         </div>
       </div>
     </div>
-    <!-- Botones de Acción -->
-    <div class="flex gap-2">
+
+    <!-- Botones Operativos de Consulta -->
+    <div class="flex gap-2 shrink-0 w-full sm:w-auto">
       <button (click)="filtrar()"
-        class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-bold shadow-lg shadow-blue-200 transition-all flex items-center gap-2">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        class="flex-1 sm:flex-initial px-4 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-bold shadow-sm transition-colors flex items-center justify-center gap-1.5">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
         Filtrar
       </button>
       
       <button (click)="limpiarFiltros()" 
-        class="px-5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-sm font-bold transition-all">
+        class="flex-1 sm:flex-initial px-4 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-xs font-bold transition-colors border border-slate-200/50">
         Limpiar
       </button>
     </div>
+
   </div>
-  <!-- Tabla Principal -->
-  <div class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
+
+  <!-- ── TABLA PRINCIPAL DE CONTROL DE VENTAS ────────────────────────────── -->
+  <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
     <div class="overflow-x-auto">
-      <table class="w-full text-left">
-        <thead class="bg-slate-50 border-b border-slate-200">
-          <tr>
-            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Venta / Fecha</th>
-            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Cliente</th>
-            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Campaña / Línea</th>
-            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Monto</th>
-            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Agente</th>
-            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Estado</th>
-            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Acciones</th>
+      <table class="w-full text-left text-xs border-collapse">
+        <thead>
+          <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider">
+            <th class="px-5 py-3">Venta / Fecha</th>
+            <th class="px-5 py-3">Cliente</th>
+            <th class="px-5 py-3">Campaña / Línea</th>
+            <th class="px-5 py-3 text-right">Monto</th>
+            <th class="px-5 py-3">Agente</th>
+            <th class="px-5 py-3 text-center">Estado</th>
+            <th class="px-5 py-3 text-right">Acciones</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-slate-100">
-          <tr *ngFor="let venta of ventasPagina" class="hover:bg-slate-50/80 transition-all duration-200">
-            <!-- Código y Fecha -->
-            <td class="px-6 py-4">
-              <div class="flex items-center gap-3">
-                <div *ngIf="venta.tieneAlerta" class="w-2 h-2 rounded-full bg-red-500 animate-pulse" [title]="venta.alertaDetalle"></div>
+          <tr *ngFor="let venta of ventasPagina" class="hover:bg-slate-50/50 transition-colors">
+            
+            <!-- Código Identificador y Alerta Semántica -->
+            <td class="px-5 py-3.5">
+              <div class="flex items-center gap-2.5">
+                <div *ngIf="venta.tieneAlerta" class="w-2 h-2 rounded-full bg-red-500 shrink-0" [title]="venta.alertaDetalle"></div>
                 <div>
-                  <div class="text-sm font-bold text-slate-900">{{ venta.codigoVenta }}</div>
-                  <div class="text-xs text-slate-400">{{ venta.fechaVenta | date:'dd MMM, yyyy' }}</div>
+                  <div class="text-xs font-bold text-slate-900 tracking-tight">{{ venta.codigoVenta }}</div>
+                  <div class="text-[10px] text-slate-400 font-bold tracking-wide mt-0.5 tabular-nums">{{ venta.fechaVenta | date:'dd MMM, yyyy' }}</div>
                 </div>
               </div>
             </td>
 
-            <!-- Cliente -->
-            <td class="px-6 py-4">
+            <!-- Entidad Cliente -->
+            <td class="px-5 py-3.5">
               <div class="flex flex-col">
-                <span class="text-sm font-semibold text-slate-700">{{ venta.clienteNombre }}</span>
-                <div class="flex items-center gap-2 mt-1">
-                   <span class="text-xs text-slate-400">{{ venta.clienteDoc }}</span>
-                   <span *ngIf="venta.clienteTelefono" class="text-[10px] bg-slate-100 px-1.5 py-0.5 rounded text-slate-500">{{ venta.clienteTelefono }}</span>
+                <span class="font-semibold text-slate-800">{{ venta.clienteNombre }}</span>
+                <div class="flex items-center gap-2 mt-1 font-medium text-[11px]">
+                   <span class="text-slate-400 font-bold tabular-nums">{{ venta.clienteDoc }}</span>
+                   <span *ngIf="venta.clienteTelefono" class="bg-slate-50 px-1.5 py-0.5 rounded border border-slate-200 text-slate-500 text-[10px] tabular-nums">{{ venta.clienteTelefono }}</span>
                 </div>
               </div>
             </td>
 
-            <!-- Campaña -->
-            <td class="px-6 py-4 text-sm">
-              <span class="text-slate-700 block font-medium">{{ venta.campanaNombre }}</span>
-              <span class="text-[11px] text-blue-500 font-bold uppercase tracking-tighter">{{ venta.lineaNombre }}</span>
+            <!-- Campaña / Vertical de Negocio -->
+            <td class="px-5 py-3.5">
+              <span class="text-slate-700 block font-semibold">{{ venta.campanaNombre }}</span>
+              <span class="text-[10px] text-teal-600 font-bold uppercase tracking-wide block mt-0.5">{{ venta.lineaNombre }}</span>
             </td>   
             
-            <!-- Monto -->
-            <td class="px-6 py-4">
-              <span class="text-sm font-bold text-slate-900">S/ {{ venta.monto | number:'1.2-2' }}</span>
+            <!-- Estructura Financiera -->
+            <td class="px-5 py-3.5 text-right font-bold text-slate-900 tabular-nums">
+              S/ {{ venta.monto | number:'1.2-2' }}
             </td>
-            <td class="px-6 py-4">
-              <span class="text-sm font-semibold text-slate-700">{{ venta.agenteNombre }}</span>
+
+            <!-- Propietario / Agente -->
+            <td class="px-5 py-3.5 text-slate-600 font-medium">
+              {{ venta.agenteNombre }}
             </td>
-            <!-- Estado con Badge Dinámico -->
-            <td class="px-6 py-4 text-center">
+
+            <!-- Badge de Estado Estricto Institucional -->
+            <td class="px-5 py-3.5 text-center">
               <span [ngClass]="{
-                'bg-emerald-100 text-emerald-700 border-emerald-200': venta.estadoCodigo === 'ACTIVO',
-                'bg-blue-100 text-blue-700 border-blue-200':   venta.estadoCodigo === 'EN_PROCESO',
-                'bg-red-100 text-red-700 border-red-200':       venta.estadoCodigo === 'CAIDA',
-                'bg-amber-100 text-amber-700 border-amber-200': venta.estadoCodigo !== 'ACTIVO' && venta.estadoCodigo !== 'EN_PROCESO' && venta.estadoCodigo !== 'CAIDA'
-              }" class="px-3 py-1 rounded-full text-[11px] font-bold border uppercase">
+                'bg-emerald-50 text-emerald-700 border-emerald-200': venta.estadoCodigo === 'ACTIVO',
+                'bg-blue-50 text-blue-700 border-blue-200':   venta.estadoCodigo === 'EN_PROCESO',
+                'bg-red-50 text-red-700 border-red-200':       venta.estadoCodigo === 'CAIDA',
+                'bg-amber-50 text-amber-700 border-amber-200': venta.estadoCodigo !== 'ACTIVO' && venta.estadoCodigo !== 'EN_PROCESO' && venta.estadoCodigo !== 'CAIDA'
+              }" class="px-2 py-0.5 rounded border text-[10px] font-bold uppercase tracking-wider inline-block">
                 {{ venta.estadoNombre }}
               </span>
             </td>
 
-            <!-- Acciones -->
-            <td class="px-6 py-4 flex gap-2">
-                <!-- Botón Ver Detalle -->
+            <!-- Panel de Acciones en Fila -->
+            <td class="px-5 py-3.5 text-right whitespace-nowrap">
+              <div class="flex items-center justify-end gap-1">
                 <button (click)="verDetalle(venta)" 
-                        class="p-2 hover:bg-blue-100 rounded-lg text-slate-400 hover:text-blue-600 transition-all"
-                        title="Ver detalle">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                        class="p-1.5 hover:bg-slate-100 border border-transparent hover:border-slate-200 rounded-md text-slate-400 hover:text-slate-700 transition-colors"
+                        title="Ver auditoría de detalle">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                     </svg>
                 </button>
 
-                <!-- Botón Editar Venta -->
                 <button (click)="abrirEdicion(venta)" 
-                        class="p-2 hover:bg-indigo-100 rounded-lg text-slate-400 hover:text-indigo-600 transition-all"
-                        title="Editar venta">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2.828 2.828 0 114 4L11.828 15H9v-2.828l8.586-8.586z" />
+                        class="p-1.5 hover:bg-slate-100 border border-transparent hover:border-slate-200 rounded-md text-slate-400 hover:text-slate-700 transition-colors"
+                        title="Editar parámetros de venta">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2.828 2.828 0 114 4L11.828 15H9v-2.828l8.586-8.586z" />
                     </svg>
                 </button>
+              </div>
+            </td>
+
+          </tr>
+
+          <!-- State: Vacío -->
+          <tr *ngIf="ventasFiltradas.length === 0">
+            <td colspan="7" class="px-5 py-12 text-center text-slate-400 font-medium italic bg-slate-50/20">
+              No se localizaron registros comerciales con los criterios de búsqueda provistos.
             </td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <!-- Paginación Modernizada -->
-    <div class="px-6 py-4 bg-slate-50 flex items-center justify-between border-t border-slate-200">
-        <p class="text-sm text-slate-500">
-          Página <span class="font-bold text-slate-900">{{ paginaActual + 1 }}</span> de {{ totalPages }}
-          &nbsp;·&nbsp; {{ ventasFiltradas.length }} resultado(s)
-        </p>
-        <div class="inline-flex shadow-sm rounded-md">
-          <button (click)="irAPagina(paginaActual - 1)" [disabled]="paginaActual === 0"
-            class="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-l-lg hover:bg-slate-50 disabled:opacity-50">
-            Anterior
-          </button>
-          <button (click)="irAPagina(paginaActual + 1)" [disabled]="esUltimaPagina"
-            class="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-r-lg hover:bg-slate-50 disabled:opacity-50">
-            Siguiente
-          </button>
-        </div>
+    <!-- Paginación Corporativa Plana -->
+    <div class="px-5 py-3.5 bg-slate-50 flex items-center justify-between border-t border-slate-200 text-xs font-medium text-slate-500">
+      <p>
+        Página <span class="font-bold text-slate-900">{{ paginaActual + 1 }}</span> de {{ totalPages }}
+        &nbsp;·&nbsp; <span class="tabular-nums font-bold text-slate-700">{{ ventasFiltradas.length }}</span> registros consolidados
+      </p>
+      
+      <div class="inline-flex rounded-lg border border-slate-200 bg-white overflow-hidden shadow-sm">
+        <button (click)="irAPagina(paginaActual - 1)" [disabled]="paginaActual === 0"
+          class="px-3 py-1.5 text-slate-700 border-r border-slate-200 hover:bg-slate-50 disabled:opacity-40 disabled:bg-slate-50 font-bold transition-colors">
+          Anterior
+        </button>
+        <button (click)="irAPagina(paginaActual + 1)" [disabled]="esUltimaPagina"
+          class="px-3 py-1.5 text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:bg-slate-50 font-bold transition-colors">
+          Siguiente
+        </button>
       </div>
+    </div>
+
   </div>
 </div>
 
-<!-- Modal Overlay -->
-<div *ngIf="ventaSeleccionada" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+<!-- ── MODAL OVERLAY: DETALLE Y CONTROL DE AUDITORÍA ──────────────────── -->
+<div *ngIf="ventaSeleccionada" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs">
   
-  <!-- Modal Content -->
-  <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+  <div class="bg-white rounded-xl shadow-xl border border-slate-200 w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]">
     
-    <!-- Header Modal -->
-    <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+    <!-- Cabecera del Modal -->
+    <div class="px-5 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
       <div>
-        <h3 class="text-xl font-bold text-slate-900">Detalle de Operación</h3>
-        <p class="text-xs text-slate-500 font-medium">ID: {{ ventaSeleccionada.id }}</p>
+        <h3 class="text-sm font-bold text-slate-800">Auditoría Detallada de Operación</h3>
+        <p class="text-[10px] text-slate-400 font-bold uppercase mt-0.5 tracking-wide">ID Interno: {{ ventaSeleccionada.id }}</p>
       </div>
-      <button (click)="ventaSeleccionada = null" class="p-2 hover:bg-slate-200 rounded-full transition-colors">
-        <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      <button (click)="ventaSeleccionada = null" class="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-200/60 rounded-md transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
     </div>
 
-    <div class="p-6 max-h-[70vh] overflow-y-auto">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <!-- Cuerpo del Modal (Scrollable) -->
+    <div class="p-5 overflow-y-auto space-y-5 text-xs">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
         
-        <!-- Sección 1: Información del Cliente -->
-        <div class="space-y-4">
-          <h4 class="text-xs font-bold text-blue-600 uppercase tracking-widest">Datos del Cliente</h4>
-          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
-            <p class="text-xs text-slate-400 mb-1">Nombre Completo</p>
-            <p class="text-sm font-bold text-slate-800 mb-3">{{ ventaSeleccionada.clienteNombre }}</p>
+        <!-- Bloque: Datos del Tarjetahabiente / Cliente -->
+        <div class="space-y-2">
+          <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Ficha de Cliente</h4>
+          <div class="bg-slate-50 p-4 rounded-xl border border-slate-200/60 space-y-3">
+            <div>
+              <p class="text-[10px] text-slate-400 font-medium mb-0.5">Nombre Completo / Razón Social</p>
+              <p class="font-bold text-slate-800">{{ ventaSeleccionada.clienteNombre }}</p>
+            </div>
             
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-200/40">
               <div>
-                <p class="text-xs text-slate-400 mb-1">Documento</p>
-                <p class="text-sm font-semibold text-slate-700">{{ ventaSeleccionada.clienteDoc }}</p>
+                <p class="text-[10px] text-slate-400 font-medium mb-0.5">Documento Identidad</p>
+                <p class="font-bold text-slate-700 tabular-nums">{{ ventaSeleccionada.clienteDoc }}</p>
               </div>
               <div>
-                <p class="text-xs text-slate-400 mb-1">Teléfono</p>
-                <p class="text-sm font-semibold text-slate-700">{{ ventaSeleccionada.clienteTelefono || 'No registrado' }}</p>
+                <p class="text-[10px] text-slate-400 font-medium mb-0.5">Teléfono de Contacto</p>
+                <p class="font-bold text-slate-700 tabular-nums">{{ ventaSeleccionada.clienteTelefono || '—' }}</p>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Sección 2: Resumen Económico -->
-        <div class="space-y-4">
-          <h4 class="text-xs font-bold text-emerald-600 uppercase tracking-widest">Liquidación</h4>
-          <div class="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100">
-            <div class="flex justify-between items-center mb-2">
-              <p class="text-xs text-slate-500 font-medium">Monto de Venta</p>
-              <p class="text-sm font-bold text-slate-900">S/ {{ ventaSeleccionada.monto | number:'1.2-2' }}</p>
+        <!-- Bloque: Liquidación Comercial -->
+        <div class="space-y-2">
+          <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Liquidación Económica</h4>
+          <div class="bg-slate-50 p-4 rounded-xl border border-slate-200/60 flex flex-col justify-between h-[106px]">
+            <div class="flex justify-between items-center">
+              <span class="text-slate-500 font-medium">Monto Bruto Operación</span>
+              <strong class="font-bold text-slate-800 tabular-nums">S/ {{ ventaSeleccionada.monto | number:'1.2-2' }}</strong>
             </div>
-            <div class="flex justify-between items-center mb-2">
-              <p class="text-sm font-bold text-emerald-600">
+            
+            <div class="flex justify-between items-center pt-2 border-t border-slate-200/40">
+              <span class="text-slate-500 font-medium">Comisión Generada</span>
+              <strong class="font-bold text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded tabular-nums">
                 S/ {{ ventaSeleccionada.comisionGenerada | number:'1.2-2' }}
-                <span class="text-slate-400 font-normal">
+                <span class="text-emerald-500 font-medium text-[10px]">
                   ({{ ((ventaSeleccionada.comisionPorcentaje ?? 0) * 100) | number:'1.0-2' }}%)
                 </span>
-              </p>
-            </div>
-            <hr class="my-2 border-emerald-100">
-            <div class="flex justify-between items-center">
-              <p class="text-xs font-bold text-slate-600">Estado</p>
-              <span class="px-2 py-0.5 rounded-lg bg-white text-[10px] font-black border border-emerald-200 text-emerald-700">
-                {{ ventaSeleccionada.estadoNombre }}
-              </span>
+              </strong>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Footer Modal -->
-    <div class="p-6 bg-slate-50 border-t border-slate-100">
-      <!-- Cambio de Estado -->
-      <div class="mb-4">
-        <h4 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Cambiar Estado</h4>
+      <hr class="border-slate-100">
 
-        <!-- Mensaje éxito -->
+      <!-- Bloque Transaccional: Mutación de Estados -->
+      <div class="space-y-3 bg-slate-50 p-4 rounded-xl border border-slate-200/60">
+        <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Flujo de Modificación de Estado</h4>
+
+        <!-- Alerta de Éxito Controlada -->
         <div *ngIf="mensajeExito"
-          class="mb-3 px-4 py-2 bg-emerald-50 border border-emerald-200 rounded-xl text-xs font-semibold text-emerald-700 flex items-center gap-2">
-          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+          class="px-3 py-2 bg-emerald-50 border border-emerald-200 text-emerald-700 font-semibold rounded-lg flex items-center gap-2">
+          <svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
           </svg>
-          {{ mensajeExito }}
+          <span class="text-[11px]">{{ mensajeExito }}</span>
         </div>
 
         <div class="flex flex-col gap-2">
-          <!-- Fila selector + input motivo -->
           <div class="flex flex-col sm:flex-row gap-2">
+            <!-- Selector Corporativo -->
             <select [(ngModel)]="nuevoEstado"
-              class="flex-1 px-3 py-2 bg-white border border-slate-200 rounded-xl text-sm text-slate-700 focus:ring-2 focus:ring-blue-500 outline-none">
+              class="flex-1 px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs font-medium text-slate-700 outline-none focus:border-slate-400 transition-colors">
               <option *ngFor="let e of estadosDisponibles" [value]="e.codigo">{{ e.nombre }}</option>
             </select>
 
-            <!-- Motivo SIEMPRE visible -->
+            <!-- Input de Justificación Obligatoria -->
             <input
               type="text"
               [(ngModel)]="motivoCambio"
-              placeholder="Motivo del cambio..."
-              class="flex-1 px-3 py-2 bg-white border border-slate-200 rounded-xl text-sm text-slate-700 focus:ring-2 focus:ring-blue-500 outline-none">
+              placeholder="Justificación obligatoria del cambio..."
+              class="flex-1 px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs font-medium text-slate-700 outline-none focus:border-slate-400 transition-colors">
           </div>
 
           <button (click)="cambiarEstado()"
             [disabled]="cambiandoEstado || nuevoEstado === ventaSeleccionada.estadoCodigo || !motivoCambio.trim()"
-            class="w-full px-5 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2">
-            <svg *ngIf="cambiandoEstado" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+            class="w-full px-4 py-2 bg-slate-900 hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-xl font-bold transition-colors flex items-center justify-center gap-2 border border-slate-950">
+            <svg *ngIf="cambiandoEstado" class="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
             </svg>
-            {{ cambiandoEstado ? 'Guardando...' : 'Actualizar Estado' }}
+            {{ cambiandoEstado ? 'Sincronizando estado...' : 'Actualizar Estado Operativo' }}
           </button>
         </div>
       </div>
 
-      <!-- Historial de estados -->
-      <div class="mb-4" *ngIf="historialEstados.length > 0">
-        <h4 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Historial</h4>
-        <div class="space-y-2 max-h-40 overflow-y-auto pr-1">
+      <!-- Bitácora / Historial Cronológico de Estados -->
+      <div class="space-y-2" *ngIf="historialEstados.length > 0">
+        <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider pl-0.5">Historial de Auditoría de Estados</h4>
+        <div class="space-y-2 max-h-36 overflow-y-auto pr-1 border border-slate-100 p-2 rounded-lg bg-slate-50/40">
           <div *ngFor="let h of historialEstados"
-            class="flex items-start gap-3 p-2.5 bg-slate-50 rounded-xl border border-slate-100">
-            <div class="w-2 h-2 rounded-full mt-1.5 shrink-0"
+            class="flex items-start gap-2.5 p-2 bg-white rounded-lg border border-slate-200 text-[11px]">
+            <div class="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0"
               [ngClass]="{
                 'bg-emerald-500': h.estadoNuevo === 'ACTIVO',
                 'bg-blue-500':    h.estadoNuevo === 'EN_PROCESO',
@@ -334,31 +361,35 @@
                 'bg-amber-500':   h.estadoNuevo === 'OBSERVADO'
               }">
             </div>
-            <div class="flex-1 min-w-0">
+            <div class="flex-1 min-w-0 font-medium">
               <div class="flex items-center justify-between gap-2">
-                <span class="text-xs font-bold text-slate-700">{{ h.estadoAnterior }} → {{ h.estadoNuevo }}</span>
-                <span class="text-[10px] text-slate-400 shrink-0">{{ h.cambiadoEn | date:'dd MMM, HH:mm' }}</span>
+                <span class="font-bold text-slate-700">{{ h.estadoAnterior }} → {{ h.estadoNuevo }}</span>
+                <span class="text-[10px] text-slate-400 font-bold tabular-nums">{{ h.cambiadoEn | date:'dd MMM, HH:mm' }}</span>
               </div>
-              <p class="text-xs text-slate-500 mt-0.5 truncate">{{ h.motivo || 'Sin motivo' }}</p>
+              <p class="text-slate-500 mt-0.5 truncate">{{ h.motivo || 'Sin comentarios registrados' }}</p>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="flex justify-end">
-        <button (click)="ventaSeleccionada = null"
-          class="px-6 py-2 bg-slate-900 text-white rounded-xl text-sm font-bold hover:bg-slate-800 transition-all">
-          Cerrar
-        </button>
-      </div>
+    </div>
+
+    <!-- Cierre del Modal -->
+    <div class="p-4 bg-slate-50 border-t border-slate-200 flex justify-end">
+      <button (click)="ventaSeleccionada = null"
+        class="px-4 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg text-xs font-bold transition-colors border border-slate-300/40">
+        Cerrar ventana
+      </button>
     </div>
     
   </div>
-</div>  
+</div>
+
+<!-- ── MODAL OVERLAY: FORMULARIO DE EDICIÓN AVANZADA ──────────────────── -->
 <div *ngIf="mostrarFormEdicion" 
-     class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+     class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 flex items-center justify-center p-4"
      (click)="mostrarFormEdicion = false">
-  <div (click)="$event.stopPropagation()" class="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+  <div (click)="$event.stopPropagation()" class="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white rounded-xl shadow-xl border border-slate-200">
     <app-venta-form 
       [isModal]="true"
       [ventaEditar]="ventaSeleccionada1"

@@ -1,192 +1,304 @@
-<div class="vf-page">
+<!-- ===== CONTENEDOR PRINCIPAL ===== -->
+<div class="p-6 bg-slate-50 min-h-screen">
+  
+  <div class="max-w-6xl mx-auto mb-6">
+    <!-- ===== CABECERA Y BUSCADOR ===== -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-5 rounded-xl border border-slate-200/60 shadow-sm">
+      <div>
+        <h1 class="text-xl font-bold text-slate-800 tracking-tight">Cartera de Clientes</h1>
+        <p class="text-xs text-slate-500">Gestión completa y actualización de información de clientes</p>
+      </div>
 
-  <!-- ===== CABECERA ===== -->
-  <div class="vf-card">
-    <div class="vf-header">
-      <div class="vf-header-left">
-        <h2 class="vf-title">Cartera de Clientes</h2>
-        <p class="vf-subtitle">Gestión completa de clientes</p>
+      <!-- Buscador e Interacciones de Cabecera -->
+      <div class="flex items-center gap-3 w-full md:w-auto">
+        <div class="relative flex-1 md:w-72">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </span>
+          <input
+            type="text"
+            [(ngModel)]="busqueda"
+            (ngModelChange)="onBuscar()"
+            placeholder="Buscar por nombre, documento..."
+            class="w-full border border-slate-200 rounded-lg pl-9 pr-3.5 py-2 text-sm bg-slate-50 text-slate-800 focus:outline-none focus:border-slate-900 focus:ring-[3px] focus:ring-indigo-500/10 transition-all placeholder:text-slate-400"
+          />
+        </div>
+        
+        <!-- Botón para abrir creación (Asumiendo funcionalidad para agregar nuevo) -->
+        <button (click)="modoEdicion = false; showModal = true" 
+                class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2 shadow-sm transition-colors border border-teal-700/10">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+          </svg>
+          Nuevo
+        </button>
       </div>
     </div>
+  </div>
 
-    <!-- Buscador -->
-    <div class="vf-search-bar">
-      <input
-        type="text"
-        [(ngModel)]="busqueda"
-        (ngModelChange)="onBuscar()"
-        placeholder="Buscar por nombre, documento..."
-        class="vf-input vf-search-input"
-      />
-    </div>
+  <!-- ===== ESTADO DE CARGA (SPINNER) ===== -->
+@if (loading) {
+  <div class="flex justify-center items-center min-h-screen bg-[#0d0f14]/10">
+    <span class="w-10 h-10 border-4 border-white/90 border-t-[#63c896] rounded-full animate-spin"></span>
+  </div>
+}
 
-    <!-- Loading -->
-    <div *ngIf="loading" class="vf-loading">Cargando clientes...</div>
 
-    <!-- Tabla -->
-    <div class="vf-table-wrapper" *ngIf="!loading">
-      <table class="vf-table">
+  <!-- ===== TABLA DE CLIENTES ===== -->
+  <div class="max-w-6xl mx-auto bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden" *ngIf="!loading">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
         <thead>
-          <tr>
-            <th>Cliente</th>
-            <th>Documento</th>
-            <th>Contacto</th>
-            <th>Ubicación</th>
-            <th style="text-align: center;">Acciones</th>
+          <tr class="bg-slate-50/75 border-b border-slate-200 text-slate-600 text-xs font-bold uppercase tracking-wider">
+            <th class="py-3.5 px-5">Cliente</th>
+            <th class="py-3.5 px-5">Documento</th>
+            <th class="py-3.5 px-5">Contacto</th>
+            <th class="py-3.5 px-5">Ubicación</th>
+            <th class="py-3.5 px-5 text-center">Acciones</th>
           </tr>
         </thead>
-        <tbody>
-          <tr *ngFor="let c of clientes">
-            <td>
-              <div class="vf-cliente-nombre">{{ c.nombre }} {{ c.apellidoP }} {{ c.apellidoM }}</div>
-              <div class="vf-cliente-email">{{ c.email }}</div>
+        <tbody class="divide-y divide-slate-100 text-slate-700 text-sm">
+          <tr *ngFor="let c of clientes" class="hover:bg-slate-50/40 transition-colors">
+            <!-- Datos de Identidad -->
+            <td class="py-3.5 px-5">
+              <div class="font-bold text-slate-800">{{ c.nombre }} {{ c.apellidoP }} {{ c.apellidoM }}</div>
+              <div class="text-xs text-slate-400 mt-0.5 flex items-center gap-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+                </svg>
+                {{ c.email }}
+              </div>
             </td>
-            <td>
-              <span class="vf-badge">{{ c.tipoDoc }}: {{ c.nroDoc }}</span>
+            <!-- Documento Badge -->
+            <td class="py-3.5 px-5 whitespace-nowrap">
+              <span class="inline-flex items-center text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200/60 px-2.5 py-0.5 rounded-md uppercase tracking-wide">
+                {{ c.tipoDoc }}: {{ c.nroDoc }}
+              </span>
             </td>
-            <td>
-              <div>{{ c.telefono }}</div>
-              <div *ngIf="c.telefonoAlt" class="vf-cliente-email">Alt: {{ c.telefonoAlt }}</div>
+            <!-- Datos Telefónicos -->
+            <td class="py-3.5 px-5">
+              <div class="font-medium text-slate-700 flex items-center gap-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                </svg>
+                {{ c.telefono }}
+              </div>
+              <div *ngIf="c.telefonoAlt" class="text-xs text-slate-400 mt-0.5 pl-5">
+                <span class="font-medium text-slate-400/80">Alt:</span> {{ c.telefonoAlt }}
+              </div>
             </td>
-            <td>{{ c.distrito }}</td>
-            <td style="text-align: center;">
-              <button (click)="abrirEditar(c)" class="vf-btn-icon" title="Editar">✏️</button>
-              <button (click)="eliminar(c.id)" class="vf-btn-icon vf-btn-danger" title="Eliminar">🗑️</button>
+            <!-- Ubicación -->
+            <td class="py-3.5 px-5 text-slate-600 font-medium">
+              {{ c.distrito }}
+            </td>
+            <!-- Control de Acciones -->
+            <td class="py-3.5 px-5 whitespace-nowrap">
+              <div class="flex items-center justify-center gap-1.5">
+                <button (click)="abrirEditar(c)" 
+                        class="p-1.5 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all" 
+                        title="Editar cliente">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                  </svg>
+                </button>
+                <button (click)="eliminar(c.id)" 
+                        class="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all" 
+                        title="Eliminar cliente">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
+              </div>
             </td>
           </tr>
+          <!-- Estado Vacío -->
           <tr *ngIf="clientes.length === 0">
-            <td colspan="5" class="vf-empty">No se encontraron clientes.</td>
+            <td colspan="5" class="py-12 text-center text-sm font-medium text-slate-400 bg-slate-50/20">
+              <div class="flex flex-col items-center justify-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0a2 2 0 01-2 2H6a2 2 0 01-2-2m16 0l-3.586-3.586a2 2 0 00-2.828 0L16 11m-7.071 1.071l1.414-1.414a2 2 0 012.828 0L14 12" />
+                </svg>
+                No se encontraron registros de clientes.
+              </div>
+            </td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <!-- Paginación -->
-    <div class="vf-pagination" *ngIf="totalPages > 1">
-      <button class="vf-page-btn" [disabled]="currentPage === 0" (click)="cambiarPagina(currentPage - 1)">‹ Anterior</button>
-      <span class="vf-page-info">Página {{ currentPage + 1 }} de {{ totalPages }}</span>
-      <button class="vf-page-btn" [disabled]="currentPage === totalPages - 1" (click)="cambiarPagina(currentPage + 1)">Siguiente ›</button>
+    <!-- Paginación Inferior -->
+    <div class="p-4 bg-slate-50/50 border-t border-slate-100 flex items-center justify-between gap-4" *ngIf="totalPages > 1">
+      <button class="px-3 py-1.5 text-xs font-semibold border border-slate-200 rounded-lg bg-white text-slate-700 hover:bg-slate-50 transition-colors disabled:opacity-40 disabled:pointer-events-none shadow-sm flex items-center gap-1" 
+              [disabled]="currentPage === 0" 
+              (click)="cambiarPagina(currentPage - 1)">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+        Anterior
+      </button>
+      <span class="text-xs font-semibold text-slate-500 tracking-wide">Página {{ currentPage + 1 }} de {{ totalPages }}</span>
+      <button class="px-3 py-1.5 text-xs font-semibold border border-slate-200 rounded-lg bg-white text-slate-700 hover:bg-slate-50 transition-colors disabled:opacity-40 disabled:pointer-events-none shadow-sm flex items-center gap-1" 
+              [disabled]="currentPage === totalPages - 1" 
+              (click)="cambiarPagina(currentPage + 1)">
+        Siguiente
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
     </div>
   </div>
 </div>
 
-<!-- ===== MODAL CREAR / EDITAR ===== -->
-<div class="vf-modal-overlay" *ngIf="showModal" (click)="onOverlayClick($event)">
-  <div class="vf-modal-content" (click)="$event.stopPropagation()">
-    <div class="vf-modal-header">
-      <h2 class="vf-title">{{ modoEdicion ? 'Editar Cliente' : 'Nuevo Cliente' }}</h2>
-      <button (click)="cerrarModal()" class="vf-close-btn">&times;</button>
+<!-- ===== MODAL FORMULARIO: CREAR / EDITAR ===== -->
+<div class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex justify-center items-center p-4 overflow-y-auto" *ngIf="showModal" (click)="onOverlayClick($event)">
+  <div class="w-full max-w-2xl bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden transform transition-all" (click)="$event.stopPropagation()">
+    <!-- Cabecera del Formulario -->
+    <div class="p-4 border-b border-slate-100 bg-slate-50/70 flex justify-between items-center">
+      <h2 class="font-bold text-base text-slate-800 tracking-tight">{{ modoEdicion ? 'Editar Registro de Cliente' : 'Registrar Nuevo Cliente' }}</h2>
+      <button (click)="cerrarModal()" class="p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors text-xl leading-none">&times;</button>
     </div>
 
-    <form [formGroup]="clienteForm" (ngSubmit)="guardarCambios()" class="vf-form">
+    <!-- Cuerpo del Formulario -->
+    <form [formGroup]="clienteForm" (ngSubmit)="guardarCambios()" class="p-6 space-y-5">
 
-      <!-- Documento -->
-      <div class="vf-section-label">Identificación</div>
-      <div class="vf-grid-2">
-        <div class="vf-field">
-          <label class="vf-label">Tipo Documento</label>
-          <select formControlName="tipoDoc" class="vf-input">
-            <option value="DNI">DNI</option>
-            <option value="RUC">RUC</option>
-            <option value="CE">Carnet de Extranjería</option>
-            <option value="PASAPORTE">Pasaporte</option>
-          </select>
-          <span class="vf-error" *ngIf="isInvalid('tipoDoc')">Requerido</span>
-        </div>
-        <div class="vf-field">
-          <label class="vf-label">Nro. Documento</label>
-          <input type="text" formControlName="nroDoc" class="vf-input" [readOnly]="modoEdicion">
-          <span class="vf-error" *ngIf="isInvalid('nroDoc')">Requerido</span>
+      <!-- Sección Identificación -->
+      <div>
+        <div class="text-[11px] font-bold text-indigo-600 uppercase tracking-wider mb-2.5">1. Identificación oficial</div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1.5">Tipo Documento</label>
+            <div class="relative">
+              <select formControlName="tipoDoc" class="appearance-none w-full border border-slate-200 rounded-lg px-3.5 py-2 text-sm bg-white text-slate-800 focus:outline-none focus:border-slate-900 focus:ring-[3px] focus:ring-indigo-500/10 transition-all pr-10">
+                <option value="DNI">DNI</option>
+                <option value="RUC">RUC</option>
+                <option value="CE">Carnet de Extranjería</option>
+                <option value="PASAPORTE">Pasaporte</option>
+              </select>
+              <svg class="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M6 9l6 6 6-6"/>
+              </svg>
+            </div>
+            <span class="text-[11px] font-semibold text-red-500 block mt-1" *ngIf="isInvalid('tipoDoc')">Este campo es requerido</span>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1.5">Nro. Documento</label>
+            <input type="text" formControlName="nroDoc" placeholder="Ej: 74213589" class="w-full border border-slate-200 rounded-lg px-3.5 py-2 text-sm bg-white text-slate-800 focus:outline-none focus:border-slate-900 focus:ring-[3px] focus:ring-indigo-500/10 transition-all disabled:bg-slate-100 disabled:text-slate-500" [readOnly]="modoEdicion">
+            <span class="text-[11px] font-semibold text-red-500 block mt-1" *ngIf="isInvalid('nroDoc')">Este campo es requerido</span>
+          </div>
         </div>
       </div>
 
-      <!-- Nombres -->
-      <div class="vf-section-label">Datos Personales</div>
-      <div class="vf-grid-3">
-        <div class="vf-field">
-          <label class="vf-label">Nombres</label>
-          <input type="text" formControlName="nombre" class="vf-input">
-          <span class="vf-error" *ngIf="isInvalid('nombre')">Requerido</span>
-        </div>
-        <div class="vf-field">
-          <label class="vf-label">Apellido Paterno</label>
-          <input type="text" formControlName="apellidoP" class="vf-input">
-          <span class="vf-error" *ngIf="isInvalid('apellidoP')">Requerido</span>
-        </div>
-        <div class="vf-field">
-          <label class="vf-label">Apellido Materno</label>
-          <input type="text" formControlName="apellidoM" class="vf-input">
-        </div>
-      </div>
-
-      <!-- Contacto -->
-      <div class="vf-section-label">Contacto</div>
-      <div class="vf-grid-2">
-        <div class="vf-field">
-          <label class="vf-label">Email</label>
-          <input type="email" formControlName="email" class="vf-input">
-          <span class="vf-error" *ngIf="isInvalid('email')">Email inválido</span>
-        </div>
-        <div class="vf-field">
-          <label class="vf-label">Teléfono Principal</label>
-          <input type="text" formControlName="telefono" class="vf-input">
-        </div>
-      </div>
-      <div class="vf-grid-2">
-        <div class="vf-field">
-          <label class="vf-label">Teléfono Alternativo</label>
-          <input type="text" formControlName="telefonoAlt" class="vf-input">
-        </div>
-        <div class="vf-field">
-          <label class="vf-label">Dirección</label>
-          <input type="text" formControlName="direccion" class="vf-input">
+      <!-- Sección Datos Personales -->
+      <div>
+        <div class="text-[11px] font-bold text-indigo-600 uppercase tracking-wider mb-2.5">2. Datos de Filiación</div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1.5">Nombres</label>
+            <input type="text" formControlName="nombre" placeholder="Ej: Carlos Alberto" class="w-full border border-slate-200 rounded-lg px-3.5 py-2 text-sm bg-white text-slate-800 focus:outline-none focus:border-slate-900 focus:ring-[3px] focus:ring-indigo-500/10 transition-all">
+            <span class="text-[11px] font-semibold text-red-500 block mt-1" *ngIf="isInvalid('nombre')">Este campo es requerido</span>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1.5">Apellido Paterno</label>
+            <input type="text" formControlName="apellidoP" placeholder="Ej: Mendoza" class="w-full border border-slate-200 rounded-lg px-3.5 py-2 text-sm bg-white text-slate-800 focus:outline-none focus:border-slate-900 focus:ring-[3px] focus:ring-indigo-500/10 transition-all">
+            <span class="text-[11px] font-semibold text-red-500 block mt-1" *ngIf="isInvalid('apellidoP')">Este campo es requerido</span>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1.5">Apellido Materno</label>
+            <input type="text" formControlName="apellidoM" placeholder="Ej: Quispe" class="w-full border border-slate-200 rounded-lg px-3.5 py-2 text-sm bg-white text-slate-800 focus:outline-none focus:border-slate-900 focus:ring-[3px] focus:ring-indigo-500/10 transition-all">
+          </div>
         </div>
       </div>
 
-      <!-- Ubicación -->
-      <div class="vf-section-label">Ubicación</div>
-      <div class="vf-grid-3">
-        <div class="vf-field">
-          <label class="vf-label">Departamento</label>
-          <input type="text" formControlName="departamento" class="vf-input">
+      <!-- Sección Contacto -->
+      <div>
+        <div class="text-[11px] font-bold text-indigo-600 uppercase tracking-wider mb-2.5">3. Medios de Contacto y Domicilio</div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1.5">Email institucional / personal</label>
+            <input type="email" formControlName="email" placeholder="ejemplo@correo.com" class="w-full border border-slate-200 rounded-lg px-3.5 py-2 text-sm bg-white text-slate-800 focus:outline-none focus:border-slate-900 focus:ring-[3px] focus:ring-indigo-500/10 transition-all">
+            <span class="text-[11px] font-semibold text-red-500 block mt-1" *ngIf="isInvalid('email')">Formato de correo electrónico inválido</span>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1.5">Teléfono Principal</label>
+            <input type="text" formControlName="telefono" placeholder="Ej: 987654321" class="w-full border border-slate-200 rounded-lg px-3.5 py-2 text-sm bg-white text-slate-800 focus:outline-none focus:border-slate-900 focus:ring-[3px] focus:ring-indigo-500/10 transition-all">
+          </div>
         </div>
-        <div class="vf-field">
-          <label class="vf-label">Provincia</label>
-          <input type="text" formControlName="provincia" class="vf-input">
-        </div>
-        <div class="vf-field">
-          <label class="vf-label">Distrito</label>
-          <input type="text" formControlName="distrito" class="vf-input">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1.5">Teléfono Alternativo</label>
+            <input type="text" formControlName="telefonoAlt" placeholder="Opcional" class="w-full border border-slate-200 rounded-lg px-3.5 py-2 text-sm bg-white text-slate-800 focus:outline-none focus:border-slate-900 focus:ring-[3px] focus:ring-indigo-500/10 transition-all">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1.5">Dirección de Residencia</label>
+            <input type="text" formControlName="direccion" placeholder="Ej: Av. Larco 123 Int 4" class="w-full border border-slate-200 rounded-lg px-3.5 py-2 text-sm bg-white text-slate-800 focus:outline-none focus:border-slate-900 focus:ring-[3px] focus:ring-indigo-500/10 transition-all">
+          </div>
         </div>
       </div>
 
-      <!-- Error global -->
-      <div class="vf-alert-error" *ngIf="errorMsg">{{ errorMsg }}</div>
+      <!-- Sección Ubicación -->
+      <div>
+        <div class="text-[11px] font-bold text-indigo-600 uppercase tracking-wider mb-2.5">4. Ubicación Geográfica</div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1.5">Departamento</label>
+            <input type="text" formControlName="departamento" placeholder="Ej: Lima" class="w-full border border-slate-200 rounded-lg px-3.5 py-2 text-sm bg-white text-slate-800 focus:outline-none focus:border-slate-900 focus:ring-[3px] focus:ring-indigo-500/10 transition-all">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1.5">Provincia</label>
+            <input type="text" formControlName="provincia" placeholder="Ej: Lima" class="w-full border border-slate-200 rounded-lg px-3.5 py-2 text-sm bg-white text-slate-800 focus:outline-none focus:border-slate-900 focus:ring-[3px] focus:ring-indigo-500/10 transition-all">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1.5">Distrito</label>
+            <input type="text" formControlName="distrito" placeholder="Ej: Miraflores" class="w-full border border-slate-200 rounded-lg px-3.5 py-2 text-sm bg-white text-slate-800 focus:outline-none focus:border-slate-900 focus:ring-[3px] focus:ring-indigo-500/10 transition-all">
+          </div>
+        </div>
+      </div>
 
-      <!-- Acciones -->
-      <div class="vf-actions">
-        <button type="submit" class="vf-btn-primary" [disabled]="saving">
-          {{ saving ? 'Guardando...' : (modoEdicion ? 'Actualizar Datos' : 'Crear Cliente') }}
+      <!-- Alerta Global de Servidor / Validación -->
+      <div class="bg-red-50 border border-red-200 text-red-700 text-xs px-4 py-3 rounded-lg font-medium" *ngIf="errorMsg">
+        {{ errorMsg }}
+      </div>
+
+      <!-- Footer de Acciones del Formulario -->
+      <div class="pt-3 border-t border-slate-100 flex items-center justify-end gap-3">
+        <button type="button" (click)="cerrarModal()" class="px-4 py-2 text-sm font-semibold border border-slate-200 rounded-lg bg-white text-slate-700 hover:bg-slate-50 transition-colors shadow-sm">
+          Cancelar
         </button>
-        <button type="button" (click)="cerrarModal()" class="vf-btn-secondary">Cancelar</button>
+        <button type="submit" class="bg-slate-900 text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-slate-800 transition-colors shadow-sm disabled:opacity-50 disabled:pointer-events-none" [disabled]="saving">
+          {{ saving ? 'Guardando cambios...' : (modoEdicion ? 'Actualizar Datos' : 'Registrar Cliente') }}
+        </button>
       </div>
     </form>
   </div>
 </div>
 
-<!-- ===== MODAL CONFIRMAR ELIMINAR ===== -->
-<div class="vf-modal-overlay" *ngIf="showDeleteConfirm" (click)="cancelarEliminar()">
-  <div class="vf-modal-content vf-modal-sm" (click)="$event.stopPropagation()">
-    <div class="vf-modal-header">
-      <h2 class="vf-title">Confirmar eliminación</h2>
-      <button (click)="cancelarEliminar()" class="vf-close-btn">&times;</button>
+<!-- ===== MODAL: CONFIRMAR ELIMINACIÓN (PEQUEÑO) ===== -->
+<div class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex justify-center items-center p-4" *ngIf="showDeleteConfirm" (click)="cancelarEliminar()">
+  <div class="w-full max-w-sm bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden transform transition-all" (click)="$event.stopPropagation()">
+    <!-- Encabezado Crítico -->
+    <div class="p-4 border-b border-slate-100 bg-red-50/40 flex justify-between items-center">
+      <h2 class="font-bold text-sm text-red-700 uppercase tracking-wider flex items-center gap-1.5">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+        Confirmar remoción
+      </h2>
+      <button (click)="cancelarEliminar()" class="p-1 text-slate-400 hover:text-slate-700 text-xl leading-none">&times;</button>
     </div>
-    <p class="vf-confirm-text">¿Estás seguro de que deseas eliminar este cliente? Esta acción no se puede deshacer.</p>
-    <div class="vf-actions">
-      <button (click)="confirmarEliminar()" class="vf-btn-danger-solid" [disabled]="saving">
-        {{ saving ? 'Eliminando...' : 'Sí, eliminar' }}
+    <!-- Contenido descriptivo -->
+    <div class="p-5">
+      <p class="text-sm text-slate-600 leading-relaxed font-medium">¿Estás completamente seguro de eliminar este registro? Esta operación purgará permanentemente al cliente de la base de datos.</p>
+    </div>
+    <!-- Botonera -->
+    <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-2.5">
+      <button (click)="cancelarEliminar()" class="px-3.5 py-1.5 text-xs font-semibold border border-slate-200 rounded-lg bg-white text-slate-700 hover:bg-slate-50 transition-colors shadow-sm">
+        No, cancelar
       </button>
-      <button (click)="cancelarEliminar()" class="vf-btn-secondary">Cancelar</button>
+      <button (click)="confirmarEliminar()" class="bg-red-600 text-white text-xs font-bold px-3.5 py-1.5 rounded-lg hover:bg-red-700 transition-colors shadow-sm disabled:opacity-50 disabled:pointer-events-none" [disabled]="saving">
+        {{ saving ? 'Eliminando...' : 'Sí, remover de cartera' }}
+      </button>
     </div>
   </div>
 </div>

@@ -1,65 +1,72 @@
-<div class="min-h-screen bg-slate-50 p-4 md:p-8">
+<div class="min-h-screen bg-gray-50 p-4 md:p-8 font-['DM_Sans',sans-serif]">
   
-  <header class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+  <header class="mb-8 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
     <div>
-      <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">
+      <h1 class="font-['DM_Serif_Display',serif] text-3xl text-[#0d0f14]">
         Mis Ventas
       </h1>
-      <p class="text-slate-500 font-medium">Gestión y seguimiento de operaciones comerciales</p>
+      <p class="text-[14px] text-[#888] mt-1">Gestión y seguimiento de operaciones comerciales</p>
     </div>
     
     <!-- Contenedor de Métricas y Acción -->
-    <div class="flex flex-wrap items-center gap-4 md:ml-auto">
+    <div class="flex flex-wrap items-center gap-4 lg:ml-auto">
       <!-- Card Monto Total -->
-      <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center gap-3">
-        <div class="p-2 bg-blue-100 rounded-lg">
-          <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      <div class="bg-white p-4 rounded-[10px] border-[1.5px] border-[#e8e8e8] flex items-center gap-3.5 min-w-[180px]">
+        <div class="w-9 h-9 bg-[#0d0f14]/[0.03] border border-[#e8e8e8] rounded-lg flex items-center justify-center text-[#0d0f14]">
+          <svg class="w-5 h-5 stroke-current fill-none stroke-2" viewBox="0 0 24 24">
+            <line x1="12" y1="1" x2="12" y2="23"></line>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
           </svg>
         </div>
         <div>
-          <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Vendido (Hoy)</p>
-          <p class="text-xl font-bold text-slate-800">S/ {{ calcularTotalHoy() | number:'1.2-2' }}</p>
+          <p class="text-[11px] text-[#888] uppercase font-bold tracking-[.6px]">Vendido (Hoy)</p>
+          <p class="text-lg font-bold text-[#0d0f14]">S/ {{ calcularTotalHoy() | number:'1.2-2' }}</p>
         </div>
       </div>
 
       <!-- Card Comisiones -->
-      <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center gap-3">
-        <div class="p-2 bg-emerald-100 rounded-lg">
-          <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      <div class="bg-white p-4 rounded-[10px] border-[1.5px] border-[#e8e8e8] flex items-center gap-3.5 min-w-[180px]">
+        <div class="w-9 h-9 bg-[#d1fae5] rounded-lg flex items-center justify-center text-[#059669]">
+          <svg class="w-5 h-5 stroke-current fill-none stroke-2" viewBox="0 0 24 24">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
           </svg>
         </div>
         <div>
-          <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Mi Comisión (Hoy)</p>
-          <p class="text-xl font-bold text-emerald-600">S/ {{ calcularComisionHoy() | number:'1.2-2' }}</p>
+          <p class="text-[11px] text-[#888] uppercase font-bold tracking-[.6px]">Mi Comisión (Hoy)</p>
+          <p class="text-lg font-bold text-[#059669]">S/ {{ calcularComisionHoy() | number:'1.2-2' }}</p>
         </div>
       </div>
 
-      <!-- Botón Nueva Venta (Reposicionado y estilizado) -->
+      <!-- Botón Nueva Venta -->
       <button 
         (click)="mostrarFormEdicion = true"
-        class="h-full px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold shadow-lg shadow-indigo-200 hover:shadow-indigo-300 transition-all flex items-center gap-2">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+        class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2 shadow-sm transition-colors border border-teal-700/10">
+        <svg class="w-4 h-4 stroke-current fill-none stroke-[2.5]" viewBox="0 0 24 24">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
         </svg>
-        Nueva venta
+        <span>Nueva venta</span>
       </button>
     </div>
   </header>
 
-  <div class="mb-6 bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-wrap items-end gap-4">
+  <!-- Filtros superiores -->
+  <div class="mb-6 bg-white p-5 rounded-[10px] border-[1.5px] border-[#e8e8e8] flex flex-wrap items-end gap-4">
     <!-- Desde -->
     <div class="flex flex-col gap-1.5 flex-1 min-w-[160px] sm:flex-none">
-      <label class="text-xs font-bold text-slate-500 uppercase ml-1">Desde</label>
+      <label class="text-[11px] font-bold text-[#444] tracking-[.6px] uppercase ml-1">Desde</label>
       <div class="relative">
         <input type="date" 
                [(ngModel)]="fechaInicio" 
                (ngModelChange)="validarFechas()"
-               class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all text-slate-700">
-        <div class="absolute left-3 top-2.5 text-slate-400">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+               class="w-full h-[44px] pl-10 pr-4 bg-white border-[1.5px] border-[#e8e8e8] rounded-[10px] text-[14px] text-[#0d0f14] outline-none transition-colors focus:border-[#0d0f14]">
+        <div class="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#aaa]">
+          <svg class="w-4 h-4 stroke-current fill-none stroke-2" viewBox="0 0 24 24">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
           </svg>
         </div>
       </div>
@@ -67,17 +74,20 @@
 
     <!-- Hasta -->
     <div class="flex flex-col gap-1.5 flex-1 min-w-[160px] sm:flex-none">
-      <label class="text-xs font-bold text-slate-500 uppercase ml-1">Hasta</label>
+      <label class="text-[11px] font-bold text-[#444] tracking-[.6px] uppercase ml-1">Hasta</label>
       <div class="relative">
         <input type="date" 
                [(ngModel)]="fechaFin"
                [min]="fechaInicio" 
                (ngModelChange)="validarFechas()"
-               class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all text-slate-700"
-               [class.border-red-400]="fechaFin && fechaInicio && fechaFin < fechaInicio">
-        <div class="absolute left-3 top-2.5 text-slate-400">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+               class="w-full h-[44px] pl-10 pr-4 bg-white border-[1.5px] border-[#e8e8e8] rounded-[10px] text-[14px] text-[#0d0f14] outline-none transition-colors focus:border-[#0d0f14]"
+               [class.!border-[#e24b4a]]="fechaFin && fechaInicio && fechaFin < fechaInicio">
+        <div class="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#aaa]">
+          <svg class="w-4 h-4 stroke-current fill-none stroke-2" viewBox="0 0 24 24">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
           </svg>
         </div>
       </div>
@@ -85,66 +95,69 @@
 
     <!-- Buscar -->
     <div class="flex flex-col gap-1.5 flex-1 min-w-[240px] sm:flex-none">
-      <label class="text-xs font-bold text-slate-500 uppercase ml-1">Buscar</label>
+      <label class="text-[11px] font-bold text-[#444] tracking-[.6px] uppercase ml-1">Buscar</label>
       <div class="relative">
         <input
           type="text"
           [(ngModel)]="textoBusqueda"
           (ngModelChange)="onTextoBusquedaChange()"
           placeholder="Código, cliente o campaña..."
-          class="w-full sm:w-64 pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all text-slate-700">
-        <div class="absolute left-3 top-2.5 text-slate-400">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          class="w-full sm:w-64 h-[44px] pl-10 pr-4 bg-white border-[1.5px] border-[#e8e8e8] rounded-[10px] text-[14px] text-[#0d0f14] outline-none transition-colors focus:border-[#0d0f14]">
+        <div class="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#aaa]">
+          <svg class="w-4 h-4 stroke-current fill-none stroke-2" viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
         </div>
       </div>
     </div>
 
-    <!-- Botones de Acción -->
+    <!-- Botones de Acción de Filtro -->
     <div class="flex gap-2 w-full sm:w-auto justify-end">
       <button (click)="filtrar()"
-        class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-bold shadow-lg shadow-blue-200 transition-all flex items-center gap-2">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-        </svg>
-        Filtrar
+        class="px-5 h-[44px] bg-[#0d0f14] hover:bg-[#1a1d24] text-white rounded-[10px] text-[14px] font-medium transition-colors flex items-center gap-2">
+        <span>Filtrar</span>
       </button>
       
       <button (click)="limpiarFiltros()" 
-        class="px-5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-sm font-bold transition-all">
+        class="px-5 h-[44px] bg-slate-100 hover:bg-slate-200 text-[#555] rounded-[10px] text-[14px] font-medium transition-colors">
         Limpiar
       </button>
     </div>
 
     <!-- Error Crítico Fechas -->
-    <span *ngIf="fechaFin && fechaInicio && fechaFin < fechaInicio" class="text-xs text-red-500 w-full ml-1 block -mt-2">
-      La fecha fin no puede ser menor a la fecha de inicio.
-    </span>
+    @if (fechaFin && fechaInicio && fechaFin < fechaInicio) {
+      <span class="text-[12px] text-[#e24b4a] w-full ml-1 block -mt-2">
+        La fecha fin no puede ser menor a la fecha de inicio.
+      </span>
+    }
   </div>
 
-  <div class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
+  <!-- Tabla de Datos -->
+  <div class="bg-white rounded-[10px] border-[1.5px] border-[#e8e8e8] overflow-hidden">
     <div class="overflow-x-auto">
-      <table class="w-full text-left">
-        <thead class="bg-slate-50 border-b border-slate-200">
+      <table class="w-full text-left text-[14px]">
+        <thead class="bg-[#0d0f14]/[0.02] border-b border-[#e8e8e8]">
           <tr>
-            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Venta / Fecha</th>
-            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Cliente</th>
-            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Campaña / Línea</th>
-            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Monto</th>
-            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Estado</th>
-            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Acciones</th>
+            <th class="px-6 py-4 text-[11px] font-bold text-[#444] tracking-[.8px] uppercase">Venta / Fecha</th>
+            <th class="px-6 py-4 text-[11px] font-bold text-[#444] tracking-[.8px] uppercase">Cliente</th>
+            <th class="px-6 py-4 text-[11px] font-bold text-[#444] tracking-[.8px] uppercase">Campaña / Línea</th>
+            <th class="px-6 py-4 text-[11px] font-bold text-[#444] tracking-[.8px] uppercase">Monto</th>
+            <th class="px-6 py-4 text-[11px] font-bold text-[#444] tracking-[.8px] uppercase text-center">Estado</th>
+            <th class="px-6 py-4 text-[11px] font-bold text-[#444] tracking-[.8px] uppercase text-right">Acciones</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-slate-100">
-          <tr *ngFor="let venta of ventasPagina" class="hover:bg-slate-50/80 transition-all duration-200">
+        <tbody class="divide-y divide-[#e8e8e8]">
+          <tr *ngFor="let venta of ventasPagina" class="hover:bg-[#0d0f14]/[0.01] transition-colors">
             <!-- Código y Fecha -->
             <td class="px-6 py-4">
               <div class="flex items-center gap-3">
-                <div *ngIf="venta.tieneAlerta" class="w-2 h-2 rounded-full bg-red-500 animate-pulse" [title]="venta.alertaDetalle"></div>
+                @if (venta.tieneAlerta) {
+                  <div class="w-2 h-2 rounded-full bg-[#e24b4a] animate-pulse" [title]="venta.alertaDetalle"></div>
+                }
                 <div>
-                  <div class="text-sm font-bold text-slate-900">{{ venta.codigoVenta }}</div>
-                  <div class="text-xs text-slate-400">{{ venta.fechaVenta | date:'dd MMM, yyyy' }}</div>
+                  <div class="font-bold text-[#0d0f14]">{{ venta.codigoVenta }}</div>
+                  <div class="text-[12px] text-[#888]">{{ venta.fechaVenta | date:'dd MMM, yyyy' }}</div>
                 </div>
               </div>
             </td>
@@ -152,33 +165,35 @@
             <!-- Cliente -->
             <td class="px-6 py-4">
               <div class="flex flex-col">
-                <span class="text-sm font-semibold text-slate-700">{{ venta.clienteNombre }}</span>
+                <span class="font-medium text-[#0d0f14]">{{ venta.clienteNombre }}</span>
                 <div class="flex items-center gap-2 mt-1">
-                   <span class="text-xs text-slate-400 font-mono">{{ venta.clienteDoc }}</span>
-                   <span *ngIf="venta.clienteTelefono" class="text-[10px] bg-slate-100 px-1.5 py-0.5 rounded text-slate-500 font-medium">{{ venta.clienteTelefono }}</span>
+                   <span class="text-[11px] text-[#888] font-mono tracking-tight">{{ venta.clienteDoc }}</span>
+                   @if (venta.clienteTelefono) {
+                     <span class="text-[10px] bg-slate-100 px-1.5 py-0.5 rounded text-[#555] font-medium">{{ venta.clienteTelefono }}</span>
+                   }
                 </div>
               </div>
             </td>
 
             <!-- Campaña -->
-            <td class="px-6 py-4 text-sm">
-              <span class="text-slate-700 block font-medium">{{ venta.campanaNombre }}</span>
-              <span class="text-[11px] text-blue-500 font-bold uppercase tracking-tight">{{ venta.lineaNombre }}</span>
+            <td class="px-6 py-4">
+              <span class="text-[#0d0f14] block font-medium">{{ venta.campanaNombre }}</span>
+              <span class="text-[11px] text-[#63c896] font-bold uppercase tracking-wide">{{ venta.lineaNombre }}</span>
             </td>
 
             <!-- Monto -->
             <td class="px-6 py-4">
-              <span class="text-sm font-bold text-slate-900">S/ {{ venta.monto | number:'1.2-2' }}</span>
+              <span class="font-bold text-[#0d0f14]">S/ {{ venta.monto | number:'1.2-2' }}</span>
             </td>
 
-            <!-- Estado con Badge Dinámico -->
+            <!-- Estado -->
             <td class="px-6 py-4 text-center">
               <span [ngClass]="{
-                'bg-emerald-100 text-emerald-700 border-emerald-200': venta.estadoCodigo === 'ACTIVO',
-                'bg-blue-100 text-blue-700 border-blue-200':   venta.estadoCodigo === 'EN_PROCESO',
-                'bg-red-100 text-red-700 border-red-200':       venta.estadoCodigo === 'CAIDA',
-                'bg-amber-100 text-amber-700 border-amber-200': venta.estadoCodigo !== 'ACTIVO' && venta.estadoCodigo !== 'EN_PROCESO' && venta.estadoCodigo !== 'CAIDA'
-              }" class="px-3 py-1 rounded-full text-[11px] font-bold border uppercase tracking-wide">
+                'bg-[#d1fae5] text-[#059669] border-[#34d399]/30': venta.estadoCodigo === 'ACTIVO',
+                'bg-blue-50 text-blue-600 border-blue-200':   venta.estadoCodigo === 'EN_PROCESO',
+                'bg-[#fef2f2] text-[#991b1b] border-[#fca5a5]/40':       venta.estadoCodigo === 'CAIDA',
+                'bg-[#fffbeb] text-[#b45309] border-[#fef3c7]': venta.estadoCodigo !== 'ACTIVO' && venta.estadoCodigo !== 'EN_PROCESO' && venta.estadoCodigo !== 'CAIDA'
+              }" class="px-2.5 py-1 rounded-full text-[11px] font-semibold border inline-block tracking-wide">
                 {{ venta.estadoNombre }}
               </span>
             </td>
@@ -186,23 +201,24 @@
             <!-- Acciones -->
             <td class="px-6 py-4 text-right">
               <div class="flex items-center justify-end gap-1">
-                <!-- Botón Ver Detalle -->
+                <!-- Ver Detalle -->
                 <button (click)="verDetalle(venta)" 
-                        class="p-2 hover:bg-blue-50 rounded-lg text-slate-400 hover:text-blue-600 transition-all"
+                        class="p-2 hover:bg-[#0d0f14]/[0.03] rounded-lg text-[#aaa] hover:text-[#0d0f14] transition-colors"
                         title="Ver detalle">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                    </svg>
+                  <svg class="w-5 h-5 stroke-current fill-none stroke-2" viewBox="0 0 24 24">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
                 </button>
 
-                <!-- Botón Editar Venta -->
+                <!-- Editar Venta -->
                 <button (click)="abrirEdicion(venta)" 
-                        class="p-2 hover:bg-indigo-50 rounded-lg text-slate-400 hover:text-indigo-600 transition-all"
+                        class="p-2 hover:bg-[#0d0f14]/[0.03] rounded-lg text-[#aaa] hover:text-[#0d0f14] transition-colors"
                         title="Editar venta">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2.828 2.828 0 114 4L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
+                  <svg class="w-5 h-5 stroke-current fill-none stroke-2" viewBox="0 0 24 24">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                  </svg>
                 </button>
               </div>
             </td>
@@ -212,18 +228,18 @@
     </div>
 
     <!-- Paginación -->
-    <div class="px-6 py-4 bg-slate-50 flex items-center justify-between border-t border-slate-200">
-      <p class="text-sm text-slate-500">
-        Página <span class="font-bold text-slate-900">{{ paginaActual + 1 }}</span> de {{ totalPages }}
+    <div class="px-6 py-4 bg-[#0d0f14]/[0.02] flex items-center justify-between border-t border-[#e8e8e8]">
+      <p class="text-[13px] text-[#888]">
+        Página <span class="font-medium text-[#0d0f14]">{{ paginaActual + 1 }}</span> de {{ totalPages }}
         &nbsp;·&nbsp; {{ ventasFiltradas.length }} resultado(s)
       </p>
-      <div class="inline-flex shadow-sm rounded-xl overflow-hidden border border-slate-200">
+      <div class="inline-flex rounded-lg overflow-hidden border border-[#e8e8e8]">
         <button (click)="irAPagina(paginaActual - 1)" [disabled]="paginaActual === 0"
-          class="px-4 py-2 text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-50 transition-colors border-r border-slate-200">
+          class="px-4 py-2 text-[13px] font-medium text-[#555] bg-white hover:bg-slate-50 disabled:opacity-40 transition-colors border-r border-[#e8e8e8] disabled:cursor-not-allowed">
           Anterior
         </button>
         <button (click)="irAPagina(paginaActual + 1)" [disabled]="esUltimaPagina"
-          class="px-4 py-2 text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-50 transition-colors">
+          class="px-4 py-2 text-[13px] font-medium text-[#555] bg-white hover:bg-slate-50 disabled:opacity-40 transition-colors disabled:cursor-not-allowed">
           Siguiente
         </button>
       </div>
@@ -231,86 +247,92 @@
   </div>
 </div>
 
-<!-- ══ MODAL DETALLE OPERACIÓN (Tailwind Native Animation) ════ -->
-<div *ngIf="ventaSeleccionada" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity duration-300">
-  
-  <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden transform transition-all scale-100 duration-200">
-    <!-- Header Modal -->
-    <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-      <div>
-        <h3 class="text-xl font-bold text-slate-900">Detalle de Operación</h3>
-        <p class="text-xs text-slate-500 font-mono mt-0.5">ID: {{ ventaSeleccionada.id }}</p>
+<!-- ══ MODAL DETALLE OPERACIÓN ════ -->
+@if (ventaSeleccionada) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0d0f14]/40 backdrop-blur-sm">
+    <div class="bg-white rounded-[10px] border border-[#e8e8e8] shadow-2xl w-full max-w-2xl overflow-hidden transform scale-100 transition-all">
+      
+      <!-- Header Modal -->
+      <div class="px-6 py-4 border-b border-[#e8e8e8] flex justify-between items-center bg-[#0d0f14]/[0.02]">
+        <div>
+          <h3 class="font-['DM_Serif_Display',serif] text-[20px] text-[#0d0f14]">Detalle de Operación</h3>
+          <p class="text-[11px] text-[#888] font-mono mt-0.5">ID: {{ ventaSeleccionada.id }}</p>
+        </div>
+        <button (click)="ventaSeleccionada = null" class="p-1.5 hover:bg-slate-200 rounded-lg text-[#aaa] hover:text-[#555] transition-colors">
+          <svg class="w-5 h-5 stroke-current fill-none stroke-2" viewBox="0 0 24 24">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
       </div>
-      <button (click)="ventaSeleccionada = null" class="p-2 hover:bg-slate-200 rounded-full text-slate-400 hover:text-slate-600 transition-colors">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-        </svg>
-      </button>
-    </div>
 
-    <!-- Cuerpo Modal -->
-    <div class="p-6 max-h-[70vh] overflow-y-auto">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Datos del Cliente -->
-        <div class="space-y-3">
-          <h4 class="text-xs font-bold text-blue-600 uppercase tracking-widest">Datos del Cliente</h4>
-          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
-            <p class="text-xs text-slate-400 mb-0.5">Nombre Completo</p>
-            <p class="text-sm font-bold text-slate-800 mb-3">{{ ventaSeleccionada.clienteNombre }}</p>
-            
-            <div class="grid grid-cols-2 gap-4">
-              <div>
-                <p class="text-xs text-slate-400 mb-0.5">Documento</p>
-                <p class="text-sm font-semibold text-slate-700 font-mono">{{ ventaSeleccionada.clienteDoc }}</p>
-              </div>
-              <div>
-                <p class="text-xs text-slate-400 mb-0.5">Teléfono</p>
-                <p class="text-sm font-semibold text-slate-700">{{ ventaSeleccionada.clienteTelefono || 'No registrado' }}</p>
+      <!-- Cuerpo Modal -->
+      <div class="p-6 max-h-[70vh] overflow-y-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          
+          <!-- Datos del Cliente -->
+          <div class="space-y-3">
+            <h4 class="text-[11px] font-bold text-[#0d0f14] uppercase tracking-[.8px]">Datos del Cliente</h4>
+            <div class="bg-white p-4 rounded-[10px] border-[1.5px] border-[#e8e8e8]">
+              <p class="text-[11px] text-[#888] mb-0.5">Nombre Completo</p>
+              <p class="text-[14px] font-semibold text-[#0d0f14] mb-3.5">{{ ventaSeleccionada.clienteNombre }}</p>
+              
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <p class="text-[11px] text-[#888] mb-0.5">Documento</p>
+                  <p class="text-[13px] font-medium text-[#444] font-mono tracking-tight">{{ ventaSeleccionada.clienteDoc }}</p>
+                </div>
+                <div>
+                  <p class="text-[11px] text-[#888] mb-0.5">Teléfono</p>
+                  <p class="text-[13px] font-medium text-[#444]">{{ ventaSeleccionada.clienteTelefono || 'No registrado' }}</p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Liquidación -->
-        <div class="space-y-3">
-          <h4 class="text-xs font-bold text-emerald-600 uppercase tracking-widest">Liquidación</h4>
-          <div class="bg-emerald-50/40 p-4 rounded-2xl border border-emerald-100">
-            <div class="flex justify-between items-center mb-2">
-              <p class="text-xs text-slate-500 font-medium">Monto de Venta</p>
-              <p class="text-sm font-bold text-slate-900">S/ {{ ventaSeleccionada.monto | number:'1.2-2' }}</p>
-            </div>
-            <div class="flex justify-between items-center mb-2">
-              <p class="text-xs text-slate-500 font-medium">Comisión Generada</p>
-              <p class="text-sm font-bold text-emerald-600">
-                S/ {{ ventaSeleccionada.comisionGenerada | number:'1.2-2' }}
-                <span class="text-slate-400 font-normal text-xs">
-                  ({{ ((ventaSeleccionada.comisionPorcentaje ?? 0) * 100) | number:'1.0-2' }}%)
+          <!-- Liquidación -->
+          <div class="space-y-3">
+            <h4 class="text-[11px] font-bold text-[#0d0f14] uppercase tracking-[.8px]">Liquidación</h4>
+            <div class="bg-white p-4 rounded-[10px] border-[1.5px] border-[#e8e8e8]">
+              <div class="flex justify-between items-center mb-2.5">
+                <p class="text-[13px] text-[#555]">Monto de Venta</p>
+                <p class="text-[14px] font-bold text-[#0d0f14]">S/ {{ ventaSeleccionada.monto | number:'1.2-2' }}</p>
+              </div>
+              <div class="flex justify-between items-center mb-2.5">
+                <p class="text-[13px] text-[#555]">Comisión Generada</p>
+                <p class="text-[14px] font-bold text-[#059669]">
+                  S/ {{ ventaSeleccionada.comisionGenerada | number:'1.2-2' }}
+                  <span class="text-[#888] font-normal text-[12px]">
+                    ({{ ((ventaSeleccionada.comisionPorcentaje ?? 0) * 100) | number:'1.0-2' }}%)
+                  </span>
+                </p>
+              </div>
+              <hr class="my-3 border-[#e8e8e8]">
+              <div class="flex justify-between items-center">
+                <p class="text-[13px] font-medium text-[#555]">Estado</p>
+                <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold border bg-[#d1fae5] text-[#059669] border-[#34d399]/20 uppercase">
+                  {{ ventaSeleccionada.estadoNombre }}
                 </span>
-              </p>
-            </div>
-            <hr class="my-2 border-emerald-100">
-            <div class="flex justify-between items-center">
-              <p class="text-xs font-bold text-slate-600">Estado</p>
-              <span class="px-2.5 py-0.5 rounded-lg bg-white text-[10px] font-black border border-emerald-200 text-emerald-700 uppercase">
-                {{ ventaSeleccionada.estadoNombre }}
-              </span>
+              </div>
             </div>
           </div>
+
         </div>
       </div>
     </div>
   </div>
-</div>  
+}
 
-<div *ngIf="mostrarFormEdicion" 
-     class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-all duration-300"
-     (click)="mostrarFormEdicion = false">
-  <div (click)="$event.stopPropagation()" class="w-full max-w-2xl max-h-[90vh] overflow-y-auto transform scale-100 transition-transform">
-    <app-venta-form 
-      [isModal]="true"
-      [ventaEditar]="ventaSeleccionada"
-      (onSave)="onVentaActualizada($event)"
-      (onClose)="mostrarFormEdicion = false">
-    </app-venta-form>
+<!-- ══ MODAL FORMULARIO EDICIÓN / REGISTRO ════ -->
+@if (mostrarFormEdicion) {
+  <div class="fixed inset-0 bg-[#0d0f14]/40 backdrop-blur-sm z-50 flex items-center justify-center p-4" (click)="mostrarFormEdicion = false">
+    <div (click)="$event.stopPropagation()" class="w-full max-w-2xl max-h-[90vh] overflow-y-auto transform scale-100 transition-all bg-white rounded-[10px] border border-[#e8e8e8]">
+      <app-venta-form 
+        [isModal]="true"
+        [ventaEditar]="ventaSeleccionada"
+        (onSave)="onVentaActualizada($event)"
+        (onClose)="mostrarFormEdicion = false">
+      </app-venta-form>
+    </div>
   </div>
-</div>
+}

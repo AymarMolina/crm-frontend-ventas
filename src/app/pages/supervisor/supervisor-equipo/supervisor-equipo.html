@@ -1,124 +1,146 @@
-<!-- Wrapper principal que reemplaza a :host y .equipo-shell -->
-<div class="block min-h-screen px-4 py-4 sm:px-10 sm:py-8 bg-[#f6f7fb] font-['Outfit',_sans-serif] text-slate-800">
+<div class="min-h-screen bg-slate-50 p-4 md:p-8 text-slate-800">
 
-  <!-- ── HEADER ─────────────────────────────────────────── -->
-  <header class="flex flex-wrap items-start justify-between gap-4 mb-8">
+  <!-- ── HEADER DE LA PÁGINA ────────────────────────────────────────────────── -->
+  <header class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
     <div>
-      <h1 class="m-0 font-['Fraunces',_serif] text-3xl font-bold tracking-tight text-slate-900">Mi Equipo</h1>
-      <p class="mt-1 mb-0 text-sm text-slate-500">Seguimiento de objetivos y ventas por asesor</p>
+      <h1 class="text-2xl font-bold text-slate-800 tracking-tight">
+        Mi Equipo
+      </h1>
+      <p class="text-xs text-slate-500 font-medium mt-0.5">
+        Seguimiento de objetivos comerciales y ventas liquidadas por asesor
+      </p>
     </div>
 
-    <div class="flex flex-wrap gap-2.5" *ngIf="!loading && !error">
-      <!-- Chip Normal -->
-      <div class="flex flex-col items-center px-4 py-1.5 bg-white border-[1.5px] border-slate-200 rounded-full shadow-sm">
-        <span class="font-['Fraunces',_serif] text-xl font-bold leading-none text-slate-900">{{ equipo.length }}</span>
-        <span class="text-[0.65rem] font-semibold tracking-wider text-slate-500 uppercase mt-0.5">asesores</span>
+    <!-- Indicadores consolidados del equipo -->
+    <div class="flex flex-wrap gap-3" *ngIf="!loading && !error">
+      
+      <!-- Asesores Totales -->
+      <div class="flex flex-col items-center px-4 py-1.5 bg-white border border-slate-200 rounded-lg shadow-sm min-w-[75px]">
+        <span class="text-lg font-bold text-slate-800 leading-none">{{ equipo.length }}</span>
+        <span class="text-[9px] font-bold tracking-wider text-slate-400 uppercase mt-1">Asesores</span>
       </div>
-      <!-- Chip Accent -->
-      <div class="flex flex-col items-center px-4 py-1.5 bg-indigo-500 border-[1.5px] border-indigo-500 rounded-full shadow-sm text-white">
-        <span class="font-['Fraunces',_serif] text-xl font-bold leading-none">{{ totalVentasEquipo }}</span>
-        <span class="text-[0.65rem] font-semibold tracking-wider uppercase mt-0.5 opacity-90">ventas activas</span>
+      
+      <!-- Ventas Activas (Foco de Marca: Teal) -->
+      <div class="flex flex-col items-center px-4 py-1.5 bg-teal-50 border border-teal-200/60 rounded-lg shadow-sm min-w-[90px]">
+        <span class="text-lg font-bold text-teal-700 leading-none">{{ totalVentasEquipo }}</span>
+        <span class="text-[9px] font-bold tracking-wider text-teal-600 uppercase mt-1">Ventas Activas</span>
       </div>
-      <!-- Chip Green -->
-      <div class="flex flex-col items-center px-4 py-1.5 bg-green-600 border-[1.5px] border-green-600 rounded-full shadow-sm text-white">
-        <span class="font-['Fraunces',_serif] text-xl font-bold leading-none">{{ totalCompletados }}</span>
-        <span class="text-[0.65rem] font-semibold tracking-wider uppercase mt-0.5 opacity-90">metas al 100%</span>
+      
+      <!-- Metas al 100% (Éxito: Emerald) -->
+      <div class="flex flex-col items-center px-4 py-1.5 bg-emerald-50 border border-emerald-200/60 rounded-lg shadow-sm min-w-[90px]">
+        <span class="text-lg font-bold text-emerald-700 leading-none">{{ totalCompletados }}</span>
+        <span class="text-[9px] font-bold tracking-wider text-emerald-600 uppercase mt-1">Al 100%</span>
       </div>
+
     </div>
   </header>
 
-  <!-- ── SKELETON ───────────────────────────────────────── -->
+  <!-- ── ESTADO: LOADING SKELETON ─────────────────────────────────────────── -->
   <div class="grid gap-6 grid-cols-[repeat(auto-fill,minmax(320px,1fr))]" *ngIf="loading">
-    <div class="p-6 bg-white shadow-sm rounded-2xl" *ngFor="let i of [1,2,3]">
+    <div class="p-5 bg-white border border-slate-200/60 rounded-xl shadow-sm" *ngFor="let i of [1,2,3]">
       <div class="flex items-center gap-3 mb-5">
-        <div class="w-11 h-11 bg-slate-200 rounded-full animate-pulse shrink-0"></div>
-        <div class="flex flex-col flex-1 gap-2">
-          <div class="w-[65%] h-3 bg-slate-200 rounded-md animate-pulse"></div>
-          <div class="w-[42%] h-3 bg-slate-200 rounded-md animate-pulse"></div>
+        <div class="w-10 h-10 bg-slate-100 border border-slate-200/40 rounded-lg animate-pulse shrink-0"></div>
+        <div class="flex flex-col flex-1 gap-1.5">
+          <div class="w-[60%] h-3 bg-slate-100 rounded animate-pulse"></div>
+          <div class="w-[40%] h-2.5 bg-slate-100 rounded animate-pulse"></div>
         </div>
       </div>
-      <div class="w-[110px] h-[110px] mx-auto mb-4 bg-slate-200 rounded-full animate-pulse"></div>
-      <div class="w-[90%] h-3 mt-2 bg-slate-200 rounded-md animate-pulse"></div>
-      <div class="w-[75%] h-3 mt-2 bg-slate-200 rounded-md animate-pulse"></div>
+      <div class="w-24 h-24 mx-auto mb-5 bg-slate-50 border border-slate-100 rounded-full animate-pulse flex items-center justify-center">
+        <div class="w-16 h-16 bg-white rounded-full"></div>
+      </div>
+      <div class="w-[90%] h-2 bg-slate-100 rounded animate-pulse mb-2"></div>
+      <div class="w-[70%] h-2 bg-slate-100 rounded animate-pulse"></div>
     </div>
   </div>
 
-  <!-- ── ERROR ──────────────────────────────────────────── -->
-  <div class="px-4 py-16 text-center text-slate-400" *ngIf="error && !loading">
-    <span class="block mb-2 text-4xl">⚠</span>
-    <p class="m-0 mb-4 text-sm text-slate-500">No se pudo cargar el equipo.</p>
-    <button class="px-5 py-2 text-sm font-semibold text-white transition-colors border-none rounded-lg cursor-pointer bg-indigo-500 hover:bg-indigo-600 font-inherit" (click)="cargarEquipo()">Reintentar</button>
+  <!-- ── ESTADO: ERROR (Rose Corporativo) ─────────────────────────────────── -->
+  <div class="max-w-md mx-auto my-12 text-center p-6 bg-white border border-slate-200 rounded-xl shadow-sm" *ngIf="error && !loading">
+    <div class="w-10 h-10 bg-rose-50 border border-rose-100 rounded-lg flex items-center justify-center text-rose-600 font-bold mx-auto mb-3 text-sm">
+      ⚠
+    </div>
+    <p class="m-0 text-xs font-semibold text-slate-700">No se pudo recuperar la nómina del equipo</p>
+    <p class="text-[11px] text-slate-400 mt-1 mb-4 font-medium">Verifica tu conexión o los permisos del rol.</p>
+    <button class="px-4 py-1.5 text-xs font-bold text-white bg-teal-600 hover:bg-teal-700 rounded-lg shadow-sm transition-colors" (click)="cargarEquipo()">
+      Reintentar conexión
+    </button>
   </div>
 
-  <!-- ── EQUIPO VACÍO ───────────────────────────────────── -->
-  <div class="px-4 py-16 text-center text-slate-400" *ngIf="!loading && !error && equipo.length === 0">
-    <span class="block mb-2 text-4xl">👥</span>
-    <p class="m-0 mb-4 text-sm text-slate-500">No tienes asesores asignados aún.</p>
+  <!-- ── ESTADO: SIN REGISTROS ────────────────────────────────────────────── -->
+  <div class="max-w-md mx-auto my-12 text-center p-8 bg-white border border-slate-200 rounded-xl shadow-sm" *ngIf="!loading && !error && equipo.length === 0">
+    <div class="w-10 h-10 bg-slate-50 border border-slate-200/60 rounded-lg flex items-center justify-center text-slate-400 mx-auto mb-3 text-sm">
+      👥
+    </div>
+    <p class="m-0 text-xs font-semibold text-slate-700">Sin personal a cargo</p>
+    <p class="text-[11px] text-slate-400 mt-1 font-medium">No posees asesores asignados bajo tu estructura jerárquica actual.</p>
   </div>
 
-  <!-- ── GRID DE ASESORES ───────────────────────────────── -->
-  <div class="grid gap-6 grid-cols-[repeat(auto-fill,minmax(330px,1fr))]" *ngIf="!loading && !error && equipo.length > 0">
+  <!-- ── CUADRÍCULA DE ASESORES ───────────────────────────────────────────── -->
+  <div class="grid gap-5 grid-cols-[repeat(auto-fill,minmax(330px,1fr))]" *ngIf="!loading && !error && equipo.length > 0">
 
-    <div class="flex flex-col gap-4 p-[1.4rem] bg-white border-[1.5px] border-[#eef0f5] shadow-[0_2px_10px_rgba(0,0,0,.06)] rounded-[20px] transition-all duration-200 hover:-translate-y-[3px] hover:shadow-[0_10px_28px_rgba(99,102,241,.13)]"
+    <div class="flex flex-col gap-4 p-5 bg-white border border-slate-200/60 shadow-sm rounded-xl transition-all duration-200 hover:border-slate-300"
          *ngFor="let asesor of equipoData; trackBy: trackById"
-         [ngClass]="{'border-green-200 bg-[linear-gradient(160deg,#fff_60%,#f0fdf4_100%)]': getPromedio(asesor) >= 100}">
+         [ngClass]="{'border-emerald-200/80 bg-emerald-50/10': getPromedio(asesor) >= 100}">
 
-      <!-- CABECERA -->
+      <!-- Ficha de Identidad del Asesor -->
       <div class="flex items-center gap-3">
-        <div class="flex items-center justify-center shrink-0 w-[46px] h-[46px] rounded-full font-['Fraunces',_serif] font-bold text-[0.95rem] text-white tracking-wide" 
+        <div class="flex items-center justify-center shrink-0 w-10 h-10 rounded-md font-bold text-xs text-white tracking-wide border shadow-sm border-black/5" 
              [style.background]="getAvatarColor(asesor.agente.nombres)">
           {{ getInitials(asesor.agente.nombres, asesor.agente.apellidos) }}
         </div>
+        
         <div class="flex flex-col flex-1 min-w-0">
-          <span class="text-sm font-semibold truncate text-slate-900">
+          <span class="text-xs font-bold truncate text-slate-800 leading-tight">
             {{ asesor.agente.nombres }} {{ asesor.agente.apellidos }}
           </span>
-          <span class="text-xs truncate text-slate-400">{{ asesor.agente.email }}</span>
+          <span class="text-[11px] font-medium truncate text-slate-400 mt-0.5">{{ asesor.agente.email }}</span>
         </div>
-        <span class="px-2.5 py-1 text-[0.68rem] font-semibold whitespace-nowrap rounded-full shrink-0" 
+
+        <!-- Badge de Estado de Desempeño Unificado -->
+        <span class="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded border shrink-0" 
               [class]="getBadgeClass(asesor)">
           {{ getBadgeLabel(asesor) }}
         </span>
       </div>
 
-      <!-- SIN OBJETIVOS -->
-      <div class="py-4 text-[0.82rem] text-center text-slate-400" *ngIf="asesor.objetivos.length === 0">
-        <span>📋</span> Sin objetivos asignados
+      <!-- Alerta interna: Sin Metas -->
+      <div class="py-5 text-[11px] font-medium text-center text-slate-400 border border-dashed border-slate-200 rounded-lg bg-slate-50/50" *ngIf="asesor.objetivos.length === 0">
+        Sin campañas u objetivos asignados este período
       </div>
 
-      <!-- CUERPO: donut + campañas -->
+      <!-- Bloque de Métricas e Indicador Gráfico (Donut + Barras) -->
       <div class="flex items-start gap-4" *ngIf="asesor.objetivos.length > 0">
 
-        <!-- DONUT -->
-        <div class="relative shrink-0 w-[110px] h-[110px]">
-          <canvas [id]="'donut-' + asesor.agente.id" width="110" height="110" class="block"></canvas>
-          <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-            <strong class="font-['Fraunces',_serif] text-[1.05rem] font-bold leading-none text-slate-900">{{ getPromedio(asesor) }}%</strong>
-            <small class="text-[0.6rem] font-semibold tracking-wider text-slate-400 uppercase mt-0.5">promedio</small>
+        <!-- Contenedor Donut Gráfico Minimalista -->
+        <div class="relative shrink-0 w-24 h-24 bg-slate-50/40 border border-slate-100 rounded-full flex items-center justify-center">
+          <canvas [id]="'donut-' + asesor.agente.id" width="96" height="96" class="block absolute inset-0"></canvas>
+          <div class="flex flex-col items-center justify-center pointer-events-none z-10">
+            <strong class="text-sm font-bold tracking-tight text-slate-800 leading-none">{{ getPromedio(asesor) }}%</strong>
+            <small class="text-[8px] font-bold tracking-wider text-slate-400 uppercase mt-0.5">Promedio</small>
           </div>
         </div>
 
-        <!-- LISTA DE CAMPAÑAS -->
-        <div class="flex flex-col flex-1 min-w-0 gap-3">
+        <!-- Listado de Cobertura de Campañas -->
+        <div class="flex flex-col flex-1 min-w-0 gap-3.5">
           <div class="flex flex-col gap-1" *ngFor="let obj of asesor.objetivos">
 
-            <div class="flex items-baseline justify-between">
-              <span class="text-[0.78rem] font-semibold text-slate-700 truncate max-w-[58%]">{{ obj.campanaNombre }}</span>
-              <span class="text-[0.74rem] text-slate-500 tabular-nums whitespace-nowrap">
-                {{ getVentasActuales(asesor, obj) }}&nbsp;/&nbsp;{{ obj.objetivoVentas }}
+            <div class="flex items-baseline justify-between text-[11px]">
+              <span class="font-bold text-slate-700 truncate max-w-[60%]">{{ obj.campanaNombre }}</span>
+              <span class="font-bold text-slate-500 tabular-nums whitespace-nowrap">
+                {{ getVentasActuales(asesor, obj) }} <span class="text-slate-300 font-normal">/</span> {{ obj.objetivoVentas }}
               </span>
             </div>
 
-            <div class="h-[6px] overflow-hidden rounded-full bg-slate-100">
-              <div class="h-full rounded-full transition-[width] duration-900 ease-[cubic-bezier(0.4,0,0.2,1)]"
+            <!-- Barra de Progreso Lineal Limpia -->
+            <div class="h-1.5 overflow-hidden rounded-full bg-slate-100 border border-slate-200/20">
+              <div class="h-full rounded-full transition-all duration-700 ease-out"
                    [class]="getBarClass(asesor, obj)"
                    [style.width]="getPorcentaje(asesor, obj) + '%'">
               </div>
             </div>
 
-            <div class="flex justify-between">
-              <span class="text-[0.68rem] text-slate-400">S/ {{ obj.montoComision | number:'1.2-2' }} comisión</span>
-              <span class="text-[0.68rem] font-semibold text-slate-600">{{ getPorcentaje(asesor, obj) }}%</span>
+            <div class="flex justify-between text-[10px] font-medium">
+              <span class="text-slate-400">S/ {{ obj.montoComision | number:'1.2-2' }} est.</span>
+              <span class="font-bold text-slate-600">{{ getPorcentaje(asesor, obj) }}%</span>
             </div>
 
           </div>
@@ -126,10 +148,12 @@
 
       </div>
 
-      <!-- TOTAL VENTAS FOOTER -->
-      <div class="flex items-center justify-between pt-3 mt-auto border-t border-slate-100" *ngIf="asesor.objetivos.length > 0">
-        <span class="text-xs text-slate-400">Total ventas activas</span>
-        <span class="font-['Fraunces',_serif] text-[1.1rem] font-bold text-indigo-500">{{ asesor.totalVentas }}</span>
+      <!-- Pie de Tarjeta: Consolidado de Ventas Activas -->
+      <div class="flex items-center justify-between pt-2.5 mt-auto border-t border-slate-100 text-xs" *ngIf="asesor.objetivos.length > 0">
+        <span class="text-slate-400 font-medium">Total de ventas validadas</span>
+        <span class="font-bold text-teal-600 bg-teal-50 px-2 py-0.5 border border-teal-100 rounded-md text-sm">
+          {{ asesor.totalVentas }}
+        </span>
       </div>
 
     </div>

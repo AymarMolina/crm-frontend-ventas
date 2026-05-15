@@ -1,279 +1,277 @@
 <div class="min-h-screen bg-slate-50 p-4 md:p-8">
 
-  <!-- ── Header ────────────────────────────────────────────────────────────── -->
+  <!-- ── HEADER DE LA PÁGINA ────────────────────────────────────────────────── -->
   <header class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
     <div>
-      <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">
+      <h1 class="text-2xl font-bold text-slate-800 tracking-tight">
         Generar Reporte
       </h1>
-      <p class="text-slate-500 font-medium">
+      <p class="text-xs text-slate-500 font-medium mt-0.5">
         Exporta tus ventas en Excel con tablas dinámicas incluidas
       </p>
     </div>
 
-    <!-- Badge de rol -->
+    <!-- Badge de rol corporativo unificado -->
     <div class="flex items-center gap-3">
       <span [ngClass]="{
-        'bg-blue-100 text-blue-700 border-blue-200':    esAsesor,
-        'bg-violet-100 text-violet-700 border-violet-200': esSupervisor,
-        'bg-amber-100 text-amber-700 border-amber-200':  esGerente
-      }" class="px-4 py-1.5 rounded-full text-xs font-bold border uppercase tracking-wider">
+        'bg-slate-100 text-slate-700 border-slate-200': esAsesor,
+        'bg-amber-50 text-amber-700 border-amber-200/60': esSupervisor,
+        'bg-teal-50 text-teal-700 border-teal-200/60': esGerente
+      }" class="px-3 py-1 rounded-md text-xs font-bold border uppercase tracking-wider">
         {{ rolUsuario }}
       </span>
     </div>
   </header>
 
-  <!-- ── Mensajes de estado ─────────────────────────────────────────────────── -->
+  <!-- ── MENSAJES DE ESTADO (FEEDBACK) ─────────────────────────────────────── -->
+  <!-- Éxito: Verde esmeralda limpio -->
   <div *ngIf="mensajeExito"
-    class="mb-5 px-5 py-3 bg-emerald-50 border border-emerald-200 rounded-2xl text-sm font-semibold text-emerald-700 flex items-center gap-3 shadow-sm">
-    <svg class="w-5 h-5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+    class="mb-5 px-4 py-2.5 bg-emerald-50 border border-emerald-200/60 rounded-xl text-xs font-semibold text-emerald-700 flex items-center gap-2.5 shadow-sm">
+    <svg class="w-4 h-4 shrink-0 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
       <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
     </svg>
     {{ mensajeExito }}
   </div>
 
+  <!-- Error: Ajustado a Rose de la paleta corporativa -->
   <div *ngIf="mensajeError"
-    class="mb-5 px-5 py-3 bg-red-50 border border-red-200 rounded-2xl text-sm font-semibold text-red-700 flex items-center gap-3 shadow-sm">
-    <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    class="mb-5 px-4 py-2.5 bg-rose-50 border border-rose-200 text-xs font-semibold text-rose-700 flex items-center gap-2.5 shadow-sm">
+    <svg class="w-4 h-4 shrink-0 text-rose-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
     </svg>
     {{ mensajeError }}
   </div>
 
-  <!-- ── Panel principal ───────────────────────────────────────────────────── -->
-  <div class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
+  <!-- ── PANEL PRINCIPAL DE CONFIGURACIÓN ───────────────────────────────────── -->
+  <div class="bg-white rounded-xl shadow-sm border border-slate-200/60 overflow-hidden">
 
     <!-- Encabezado del panel -->
-    <div class="px-6 py-4 border-b border-slate-100 bg-slate-50 flex items-center gap-3">
-      <!-- Icono Excel -->
-      <div class="p-2 bg-emerald-100 rounded-xl">
-        <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+    <div class="px-5 py-4 border-b border-slate-100 bg-slate-50/70 flex items-center gap-3">
+      <!-- Icono contenedor Excel -->
+      <div class="p-2 bg-emerald-50 rounded-lg border border-emerald-100">
+        <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
         </svg>
       </div>
       <div>
-        <h2 class="text-base font-bold text-slate-800">Configurar Exportación</h2>
-        <p class="text-xs text-slate-400">Selecciona el rango y filtros para tu reporte</p>
+        <h2 class="text-sm font-bold text-slate-800">Configurar Exportación</h2>
+        <p class="text-[11px] text-slate-400 font-medium">Selecciona el rango y filtros para tu reporte</p>
       </div>
     </div>
 
-    <div class="p-6 space-y-6">
+    <div class="p-5 space-y-6">
 
-      <!-- ── Bloque: Rango de fechas ──────────────────────────────────────── -->
+      <!-- ── Bloque: Rango de fechas ── -->
       <div>
-        <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">
-          Rango de fechas <span class="text-red-400">*</span>
+        <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2.5">
+          Rango de fechas <span class="text-rose-500">*</span>
         </p>
-        <div class="flex flex-wrap gap-4">
+        <div class="flex flex-wrap items-start gap-4">
 
           <!-- Desde -->
-          <div class="flex flex-col gap-1.5">
-            <label class="text-xs font-bold text-slate-500 uppercase ml-1">Desde</label>
+          <div class="flex flex-col gap-1">
+            <label class="text-[10px] font-bold text-slate-500 uppercase ml-0.5">Desde</label>
             <div class="relative">
               <input type="date" [(ngModel)]="fechaDesde"
-                class="pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm
-                       focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all text-slate-700">
-              <div class="absolute left-3 top-2.5 text-slate-400">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                class="pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-800 focus:outline-none focus:border-slate-400 focus:ring-[3px] focus:ring-teal-500/10 focus:bg-white outline-none transition-all">
+              <div class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                 </svg>
               </div>
             </div>
           </div>
 
           <!-- Hasta -->
-          <div class="flex flex-col gap-1.5">
-            <label class="text-xs font-bold text-slate-500 uppercase ml-1">Hasta</label>
+          <div class="flex flex-col gap-1">
+            <label class="text-[10px] font-bold text-slate-500 uppercase ml-0.5">Hasta</label>
             <div class="relative">
               <input type="date" [(ngModel)]="fechaHasta"
-                class="pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm
-                       focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all text-slate-700">
-              <div class="absolute left-3 top-2.5 text-slate-400">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                class="pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-800 focus:outline-none focus:border-slate-400 focus:ring-[3px] focus:ring-teal-500/10 focus:bg-white outline-none transition-all">
+              <div class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                 </svg>
               </div>
             </div>
           </div>
 
-          <!-- Rango legible -->
-          <div *ngIf="filtrosValidos" class="flex items-end pb-0.5">
-            <span class="text-xs text-slate-400 bg-slate-100 px-3 py-2 rounded-xl font-medium">
+          <!-- Rango legible o alertas de fecha en línea -->
+          <div *ngIf="filtrosValidos" class="self-end pt-1">
+            <span class="text-xs text-slate-500 bg-slate-100 px-2.5 py-1.5 rounded-lg font-medium border border-slate-200/40">
                {{ rangoLegible }}
             </span>
           </div>
-          <div *ngIf="!filtrosValidos && fechaDesde && fechaHasta" class="flex items-end pb-0.5">
-            <span class="text-xs text-red-500 bg-red-50 px-3 py-2 rounded-xl font-medium border border-red-100">
+          <div *ngIf="!filtrosValidos && fechaDesde && fechaHasta" class="self-end pt-1">
+            <span class="text-xs text-rose-600 bg-rose-50 px-2.5 py-1.5 rounded-lg font-medium border border-rose-100">
                La fecha inicial debe ser menor a la final
             </span>
           </div>
         </div>
       </div>
 
-      <!-- ── Bloque: Filtros opcionales ──────────────────────────────────── -->
+      <!-- ── Bloque: Filtros opcionales ── -->
       <div>
-        <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">
+        <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2.5">
           Filtros opcionales
         </p>
         <div class="flex flex-wrap gap-4">
-
           <!-- Campaña -->
-          <div class="flex flex-col gap-1.5">
-            <label class="text-xs font-bold text-slate-500 uppercase ml-1">Campaña</label>
-            <select [(ngModel)]="campanaIdSeleccionada"
-              class="pl-3 pr-8 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm
-                     focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all text-slate-700 min-w-[200px]">
-              <option value="">Todas las campañas</option>
-              <option *ngFor="let c of campanas" [value]="c.id">{{ c.nombre }}</option>
-            </select>
+          <div class="flex flex-col gap-1">
+            <label class="text-[10px] font-bold text-slate-500 uppercase ml-0.5">Campaña</label>
+            <div class="relative min-w-[220px]">
+              <select [(ngModel)]="campanaIdSeleccionada"
+                class="appearance-none w-full pl-3 pr-9 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-800 focus:outline-none focus:border-slate-400 focus:ring-[3px] focus:ring-teal-500/10 focus:bg-white transition-all">
+                <option value="">Todas las campañas</option>
+                <option *ngFor="let c of campanas" [value]="c.id">{{ c.nombre }}</option>
+              </select>
+              <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M6 9l6 6 6-6"/>
+              </svg>
+            </div>
           </div>
-
         </div>
       </div>
 
-      <!-- ── Bloque: Info de cobertura según rol ──────────────────────────── -->
-      <div class="rounded-2xl border p-4 flex items-start gap-4"
+      <!-- ── Bloque: Info de cobertura según rol ── -->
+      <div class="rounded-xl border p-4 flex items-start gap-3.5 transition-colors"
         [ngClass]="{
-          'bg-blue-50 border-blue-100':   esAsesor,
-          'bg-violet-50 border-violet-100': esSupervisor,
-          'bg-amber-50 border-amber-100':  esGerente
+          'bg-slate-50 border-slate-200/70': esAsesor,
+          'bg-amber-50/50 border-amber-200/40': esSupervisor,
+          'bg-teal-50/40 border-teal-200/40': esGerente,
+          'bg-red-50/40 border-red-200/40': esBackoffice
         }">
 
-        <!-- Icono -->
-        <div class="p-2 rounded-xl shrink-0"
+        <!-- Icono de contexto -->
+        <div class="p-2 rounded-lg shrink-0 border"
           [ngClass]="{
-            'bg-blue-100':   esAsesor,
-            'bg-violet-100': esSupervisor,
-            'bg-amber-100':  esGerente
+            'bg-white border-slate-200 text-slate-600': esAsesor,
+            'bg-amber-50 border-amber-200/60 text-amber-600': esSupervisor,
+            'bg-teal-50 border-teal-200/60 text-teal-600': esGerente,
+            'bg-red-50 border-red-200/60 text-red-600': esBackoffice
           }">
-          <!-- Asesor: persona -->
-          <svg *ngIf="esAsesor" class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+          <!-- Asesor -->
+          <svg *ngIf="esAsesor" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
           </svg>
-          <!-- Supervisor: grupo -->
-          <svg *ngIf="esSupervisor" class="w-5 h-5 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+          <!-- Supervisor -->
+          <svg *ngIf="esSupervisor" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
           </svg>
-          <!-- Gerente: gráfica -->
-          <svg *ngIf="esGerente" class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+          <!-- Gerente -->
+          <svg *ngIf="esGerente" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+          </svg>
+          <svg *ngIf="esBackoffice" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
           </svg>
         </div>
 
-        <!-- Texto -->
+        <!-- Texto explicativo -->
         <div>
-          <p class="text-sm font-bold mb-0.5"
+          <p class="text-xs font-bold mb-0.5"
             [ngClass]="{
-              'text-blue-800':   esAsesor,
-              'text-violet-800': esSupervisor,
-              'text-amber-800':  esGerente
+              'text-slate-800': esAsesor,
+              'text-amber-800': esSupervisor,
+              'text-teal-800': esGerente,
+              'text-red-800': esBackoffice,
+              
             }">
             <ng-container *ngIf="esAsesor">Tu reporte personal</ng-container>
-            <ng-container *ngIf="esSupervisor">Reporte de tu equipo</ng-container>
-            <ng-container *ngIf="esGerente">Reporte general del sistema</ng-container>
+            <ng-container *ngIf="esSupervisor">Reporte de tu equipo asignado</ng-container>
+            <ng-container *ngIf="esGerente">Reporte consolidado del sistema</ng-container>
+            <ng-container *ngIf="esBackoffice">Reporte consolidado del sistema</ng-container>
           </p>
-          <p class="text-xs leading-relaxed"
+          <p class="text-xs leading-relaxed font-medium"
             [ngClass]="{
-              'text-blue-600':   esAsesor,
-              'text-violet-600': esSupervisor,
-              'text-amber-600':  esGerente
+              'text-slate-500': esAsesor,
+              'text-amber-600/90': esSupervisor,
+              'text-teal-600/90': esGerente,
+              'text-black-200/90': esBackoffice,
             }">
             <ng-container *ngIf="esAsesor">
-              Incluye únicamente tus ventas registradas en el período seleccionado.
+              Incluye únicamente tus ventas individuales liquidadas en el período seleccionado.
             </ng-container>
             <ng-container *ngIf="esSupervisor">
-              Incluye tus ventas y las de todos los asesores a tu cargo.
+              Incluye tus métricas directas junto a las de todos los asesores bajo tu supervisión actual.
             </ng-container>
+
             <ng-container *ngIf="esGerente">
-              Incluye todas las ventas del sistema. Puedes filtrar por supervisor específico si lo necesitas.
+              Acceso global a todas las operaciones. Tienes habilitada la segmentación cruzada avanzada por zonas.
+            </ng-container>
+            <ng-container *ngIf="esBackoffice">
+              Acceso global a todas las operaciones. Tienes habilitada la segmentación cruzada avanzada por zonas.
             </ng-container>
           </p>
         </div>
       </div>
 
-      <!-- ── Bloque: Hojas que contendrá el Excel ─────────────────────────── -->
+      <!-- ── Bloque: Estructura interna del Excel ── -->
       <div>
-        <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">
-          El archivo Excel incluirá
+        <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2.5">
+          El archivo Excel incluirá las siguientes pestañas
         </p>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
 
-          <div class="flex items-center gap-2 bg-slate-50 rounded-xl p-3 border border-slate-100">
-            <div>
-              <p class="text-xs font-bold text-slate-700">Ventas</p>
-              <p class="text-[10px] text-slate-400">Detalle completo</p>
-            </div>
+          <div class="bg-slate-50 rounded-xl p-3 border border-slate-200/50">
+            <p class="text-xs font-bold text-slate-700">Ventas</p>
+            <p class="text-[10px] text-slate-400 font-medium">Detalle plano completo</p>
           </div>
 
-          <div class="flex items-center gap-2 bg-slate-50 rounded-xl p-3 border border-slate-100">
-            <div>
-              <p class="text-xs font-bold text-slate-700">Por Asesor</p>
-              <p class="text-[10px] text-slate-400">Resumen agrupado</p>
-            </div>
+          <div class="bg-slate-50 rounded-xl p-3 border border-slate-200/50">
+            <p class="text-xs font-bold text-slate-700">Por Asesor</p>
+            <p class="text-[10px] text-slate-400 font-medium">Métricas agrupadas</p>
           </div>
 
-          <div class="flex items-center gap-2 bg-slate-50 rounded-xl p-3 border border-slate-100">
-            <div>
-              <p class="text-xs font-bold text-slate-700">Por Campaña</p>
-              <p class="text-[10px] text-slate-400">Alcance y montos</p>
-            </div>
+          <div class="bg-slate-50 rounded-xl p-3 border border-slate-200/50">
+            <p class="text-xs font-bold text-slate-700">Por Campaña</p>
+            <p class="text-[10px] text-slate-400 font-medium">Distribución e impacto</p>
           </div>
 
-          <div class="flex items-center gap-2 bg-slate-50 rounded-xl p-3 border border-slate-100" *ngIf="!esAsesor">
-            <div>
-              <p class="text-xs font-bold text-slate-700">Alertas</p>
-              <p class="text-[10px] text-slate-400">Ventas observadas</p>
-            </div>
+          <div class="bg-slate-50 rounded-xl p-3 border border-slate-200/50" *ngIf="!esAsesor">
+            <p class="text-xs font-bold text-slate-700">Alertas</p>
+            <p class="text-[10px] text-slate-400 font-medium">Registros observados</p>
           </div>
 
-          <div class="flex items-center gap-2 bg-emerald-50 rounded-xl p-3 border border-emerald-100">
-            <div>
-              <p class="text-xs font-bold text-emerald-700">Tabla Dinámica</p>
-              <p class="text-[10px] text-emerald-500">Instrucciones incluidas</p>
-            </div>
+          <!-- Destacado dinámico con el color de la marca (Teal) -->
+          <div class="bg-teal-50/40 rounded-xl p-3 border border-teal-200/60">
+            <p class="text-xs font-bold text-teal-700">Tabla Dinámica</p>
+            <p class="text-[10px] text-teal-600 font-medium">Estructura interactiva</p>
           </div>
 
         </div>
       </div>
 
-    </div><!-- /p-6 -->
+    </div>
 
-    <!-- ── Footer: botones de acción ──────────────────────────────────────── -->
-    <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
+    <!-- ── FOOTER DEL PANEL (ACCIONES DE ENVÍO) ───────────────────────────────── -->
+    <div class="px-5 py-3.5 bg-slate-50 border-t border-slate-100 flex items-center justify-between gap-3">
 
       <button (click)="limpiarFiltros()"
-        class="px-5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-sm font-bold transition-all">
+        class="px-4 py-2 border border-slate-200 rounded-lg bg-white text-xs font-bold text-slate-600 hover:bg-slate-50 transition-colors shadow-sm">
         Restablecer filtros
       </button>
 
+      <!-- Botón de acción principal usando Teal de acento -->
       <button (click)="generarReporte()"
         [disabled]="!filtrosValidos || descargando"
-        class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed
-               text-white rounded-xl text-sm font-bold shadow-lg shadow-emerald-200 transition-all
-               flex items-center gap-2">
+        class="px-5 py-2 bg-teal-600 text-white text-xs font-bold rounded-lg hover:bg-teal-700 transition-colors shadow-sm disabled:opacity-50 disabled:pointer-events-none flex items-center gap-2">
 
-        <!-- Spinner de carga -->
-        <svg *ngIf="descargando" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+        <!-- Spinner adaptado a la estética minimalista del sistema -->
+        <svg *ngIf="descargando" class="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"/>
           <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
         </svg>
 
         <!-- Icono descarga -->
-        <svg *ngIf="!descargando" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+        <svg *ngIf="!descargando" class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
         </svg>
 
         {{ descargando ? 'Generando reporte...' : 'Descargar Excel' }}
       </button>
 
     </div>
-  </div><!-- /card -->
+  </div>
 
 </div>

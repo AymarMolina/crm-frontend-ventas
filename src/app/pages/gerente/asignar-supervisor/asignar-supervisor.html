@@ -1,120 +1,150 @@
-<!-- Spinner -->
-<div *ngIf="loading" class="flex justify-center items-center min-h-screen">
-  <span class="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></span>
-</div>
-
-<div *ngIf="!loading" class="p-6 bg-gray-50 min-h-screen">
-
-  <div class="flex items-center justify-between mb-6">
-    <h1 class="text-2xl font-bold text-gray-800">Designar Supervisor</h1>
+<!-- Spinner Global de Carga -->
+@if (loading) {
+  <div class="flex justify-center items-center min-h-screen bg-[#0d0f14]/10">
+    <span class="w-10 h-10 border-4 border-white/90 border-t-[#63c896] rounded-full animate-spin"></span>
   </div>
+}
 
-  <div class="bg-white rounded-xl shadow-sm border border-gray-100 max-w-xl">
+@if (!loading) {
+  <div class="p-6 bg-gray-50 min-h-screen font-['DM_Sans',sans-serif]">
 
-    <div class="p-6 border-b border-gray-100">
-      <h2 class="font-semibold text-gray-700">Asignación de supervisor</h2>
-      <p class="text-sm text-gray-400 mt-1">Vincula un asesor a su supervisor correspondiente</p>
+    <!-- Encabezado de Sección -->
+    <div class="flex items-center justify-between mb-6 max-w-xl">
+      <h1 class="font-['DM_Serif_Display',serif] text-3xl text-[#0d0f14]">Designar Supervisor</h1>
     </div>
 
-    <div class="p-6 space-y-5">
+    <!-- Card Principal del Formulario -->
+    <div class="bg-white rounded-[10px] border-[1.5px] border-[#e8e8e8] max-w-xl overflow-hidden">
 
-      <!-- Alerta error -->
-      <div *ngIf="error" class="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-lg">
-        {{ error }}
+      <div class="p-6 border-b border-[#e8e8e8]">
+        <h2 class="font-['DM_Serif_Display',serif] text-[20px] text-[#0d0f14]">Asignación de supervisor</h2>
+        <p class="text-[13px] text-[#888] mt-1">Vincula un asesor a su supervisor correspondiente</p>
       </div>
 
-      <!-- Alerta éxito -->
-      <div *ngIf="exito" class="bg-green-50 border border-green-200 text-green-700 text-sm px-4 py-3 rounded-lg">
-        ✓ Supervisor designado correctamente.
+      <div class="p-6 space-y-5">
+
+        <!-- Alerta error del servidor -->
+        @if (error) {
+          <div class="bg-[#fef2f2] border border-[#fca5a5] rounded-lg py-3 px-3.5 text-[13px] text-[#991b1b]">
+            {{ error }}
+          </div>
+        }
+
+        <!-- Alerta éxito -->
+        @if (exito) {
+          <div class="bg-[#d1fae5] border border-[#34d399]/40 text-[#059669] text-[13px] px-4 py-3 rounded-lg flex items-center gap-2">
+            <svg viewBox="0 0 24 24" class="w-4 h-4 stroke-current fill-none stroke-2">
+              <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
+              <polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+            <span>Supervisor designado correctamente.</span>
+          </div>
+        }
+
+        <!-- Selector: Asesor -->
+        <div>
+          <label class="block text-[12px] font-medium text-[#444] tracking-[.4px] mb-[7px] uppercase">
+            Asesor
+          </label>
+          <div class="relative">
+            <select
+              [(ngModel)]="form.agenteId"
+              class="w-full h-[46px] border-[1.5px] border-[#e8e8e8] rounded-[10px] px-3.5 text-[14px] text-[#0d0f14] outline-none transition-colors focus:border-[#0d0f14] bg-white appearance-none cursor-pointer">
+              <option value="">Selecciona un asesor</option>
+              <option *ngFor="let a of asesores" [value]="a.id">
+                {{ a.nombres }} {{ a.apellidos }}
+              </option>
+            </select>
+            <!-- Icono flecha personalizado -->
+            <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#aaa]">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Info supervisor actual -->
+        @if (asesorSeleccionado) {
+          <div class="bg-[#0d0f14]/[0.02] border border-[#e8e8e8] text-[#555] text-[13px] px-4 py-3 rounded-[10px] flex justify-between items-center">
+            <span>Supervisor actual:</span>
+            <span class="font-medium text-[#0d0f14]">{{ asesorSeleccionado.nombreSupervisor }}</span>
+          </div>
+        }
+
+        <!-- Selector: Supervisor -->
+        <div>
+          <label class="block text-[12px] font-medium text-[#444] tracking-[.4px] mb-[7px] uppercase">
+            Nuevo supervisor
+          </label>
+          <div class="relative">
+            <select
+              [(ngModel)]="form.supervisorId"
+              class="w-full h-[46px] border-[1.5px] border-[#e8e8e8] rounded-[10px] px-3.5 text-[14px] text-[#0d0f14] outline-none transition-colors focus:border-[#0d0f14] bg-white appearance-none cursor-pointer">
+              <option value="">Selecciona un supervisor</option>
+              <option *ngFor="let s of supervisores" [value]="s.id">
+                {{ s.nombres }} {{ s.apellidos }}
+              </option>
+            </select>
+            <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#aaa]">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="flex gap-3 pt-2">
+          <button
+            (click)="guardar()"
+            [disabled]="guardando || !formValido"
+            class="flex-1 h-[48px] bg-[#0d0f14] text-white rounded-[10px] text-[15px] font-medium transition-all flex items-center justify-center gap-2 hover:bg-[#1a1d24] active:scale-[0.98] disabled:bg-[#aaa] disabled:hover:bg-[#aaa] disabled:active:scale-100 disabled:cursor-not-allowed">
+            @if (guardando) {
+              <span class="w-[18px] h-[18px] border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+              <span>Guardando...</span>
+            } @else {
+              <span>Designar supervisor</span>
+            }
+          </button>
+
+          <button
+            (click)="limpiar()"
+            class="px-5 h-[48px] bg-slate-100 hover:bg-slate-200 text-[#555] rounded-[10px] text-[14px] font-medium transition-colors">
+            Limpiar
+          </button>
+        </div>
+
       </div>
-
-      <!-- Asesor -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Asesor</label>
-        <select
-          [(ngModel)]="form.agenteId"
-          class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm
-                 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
-          <option value="">Selecciona un asesor</option>
-          <option *ngFor="let a of asesores" [value]="a.id">
-            {{ a.nombres }} {{ a.apellidos }}
-          </option>
-        </select>
-      </div>
-
-      <!-- Info supervisor actual -->
-      <div *ngIf="asesorSeleccionado"
-           class="bg-slate-50 border border-slate-200 text-slate-600 text-xs px-4 py-3 rounded-lg">
-        Supervisor actual:
-        <span class="font-bold text-slate-800">{{ asesorSeleccionado.nombreSupervisor }}</span>
-      </div>
-
-      <!-- Supervisor -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Nuevo supervisor</label>
-        <select
-          [(ngModel)]="form.supervisorId"
-          class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm
-                 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
-          <option value="">Selecciona un supervisor</option>
-          <option *ngFor="let s of supervisores" [value]="s.id">
-            {{ s.nombres }} {{ s.apellidos }}
-          </option>
-        </select>
-      </div>
-
-      <!-- Botones -->
-      <div class="flex gap-3">
-        <button
-          (click)="guardar()"
-          [disabled]="guardando || !formValido"
-          class="flex-1 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-300
-                 disabled:cursor-not-allowed text-white font-medium py-2 px-4
-                 rounded-lg text-sm transition-colors">
-          <span *ngIf="guardando">Guardando...</span>
-          <span *ngIf="!guardando">Designar supervisor</span>
-        </button>
-
-        <button
-          (click)="limpiar()"
-          class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600
-                 rounded-lg text-sm font-medium transition-colors">
-          Limpiar
-        </button>
-      </div>
-
     </div>
-  </div>
 
-  <!-- Tabla resumen de asesores -->
-  <div class="mt-8 bg-white rounded-xl shadow-sm border border-gray-100 max-w-xl overflow-hidden">
-    <div class="p-4 border-b border-gray-100">
-      <h3 class="font-semibold text-gray-700 text-sm">Asesores y sus supervisores</h3>
+    <!-- Tabla Resumen de Asesores -->
+    <div class="mt-8 bg-white rounded-[10px] border-[1.5px] border-[#e8e8e8] max-w-xl overflow-hidden">
+      <div class="p-4 border-b border-[#e8e8e8]">
+        <h3 class="font-['DM_Serif_Display',serif] text-[16px] text-[#0d0f14]">Asesores y sus supervisores</h3>
+      </div>
+      
+      <table class="w-full text-[14px]">
+        <thead class="bg-[#0d0f14]/[0.02] border-b border-[#e8e8e8]">
+          <tr>
+            <th class="px-4 py-3 text-left text-[11px] font-bold text-[#444] tracking-[.8px] uppercase">Asesor</th>
+            <th class="px-4 py-3 text-left text-[11px] font-bold text-[#444] tracking-[.8px] uppercase">Supervisor</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-[#e8e8e8]">
+          <tr *ngFor="let a of asesores" class="hover:bg-[#0d0f14]/[0.01] transition-colors">
+            <td class="px-4 py-3">
+              <p class="font-medium text-[#0d0f14]">{{ a.nombres }} {{ a.apellidos }}</p>
+              <p class="text-[12px] text-[#888]">{{ a.email }}</p>  
+            </td>
+            <td class="px-4 py-3">
+              <span [ngClass]="a.nombreSupervisor === 'Sin asignar'
+                ? 'bg-slate-100 text-[#888]'
+                : 'bg-[#d1fae5] text-[#059669]'"
+                class="px-2.5 py-1 rounded-full text-[12px] font-medium inline-block">
+                {{ a.nombreSupervisor }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <table class="w-full text-sm">
-      <thead class="bg-slate-50">
-        <tr>
-          <th class="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase">Asesor</th>
-          <th class="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase">Supervisor</th>
-        </tr>
-      </thead>
-      <tbody class="divide-y divide-slate-100">
-        <tr *ngFor="let a of asesores" class="hover:bg-slate-50 transition-colors">
-          <td class="px-4 py-3">
-            <p class="font-medium text-slate-800">{{ a.nombres }} {{ a.apellidos }}</p>
-            <p class="text-xs text-slate-400">{{ a.email }}</p>
-          </td>
-          <td class="px-4 py-3">
-            <span [ngClass]="a.nombreSupervisor === 'Sin asignar'
-              ? 'bg-slate-100 text-slate-500'
-              : 'bg-indigo-100 text-indigo-700'"
-              class="px-2 py-1 rounded-full text-xs font-semibold">
-              {{ a.nombreSupervisor }}
-            </span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
 
-</div>
+  </div>
+}

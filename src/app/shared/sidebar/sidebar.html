@@ -1,60 +1,86 @@
 <aside
-  class="fixed top-[60px] left-0 bottom-0 bg-[#f5f5f5] border-r border-[#e2e4e9] flex flex-col overflow-hidden z-[90] transition-[width] duration-[220ms] ease-[cubic-bezier(0.4,0,0.2,1)]"
+  class="fixed top-[60px] left-0 bottom-0 bg-slate-50 border-r border-slate-200 flex flex-col overflow-hidden z-[90] transition-[width] duration-[220ms] ease-[cubic-bezier(0.4,0,0.2,1)] shadow-xs"
   [ngClass]="{'w-[64px]': collapsed, 'w-[232px]': !collapsed}"
 >
-  <!-- Header: Solo el botón de colapso -->
+  <!-- ── HEADER: CONTROL DE COLAPSO INTERNO ────────────────────────────── -->
   <div
-    class="flex items-center h-[60px] transition-all"
+    class="flex items-center h-[56px] transition-all shrink-0"
     [ngClass]="{'justify-center px-0': collapsed, 'justify-end px-4': !collapsed}"
   >
     <button
-      class="w-7 h-7 rounded-md border border-[#e2e4e9] bg-white flex items-center justify-center cursor-pointer text-[#8b8fa8] transition-all duration-200 hover:bg-[#e0e0e0] hover:text-[#1a1d23] shrink-0"
+      class="w-7 h-7 rounded-lg border border-slate-200 bg-white flex items-center justify-center cursor-pointer text-slate-400 transition-colors duration-150 hover:bg-slate-100 hover:text-slate-700 shrink-0 shadow-xs focus:outline-none"
       (click)="toggleCollapse()"
-      [title]="collapsed ? 'Expandir' : 'Colapsar'"
+      [title]="collapsed ? 'Expandir menú' : 'Colapsar menú'"
     >
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
         <polyline *ngIf="!collapsed" points="15 18 9 12 15 6"/>
         <polyline *ngIf="collapsed"  points="9 18 15 12 9 6"/>
       </svg>
     </button>
   </div>
 
-  <!-- Línea divisora superior -->
-  <div class="h-px bg-[#e2e4e9] mx-[14px] shrink-0"></div>
+  <!-- Divisor Estructural Superior -->
+  <div class="h-px bg-slate-200 mx-3 shrink-0"></div>
 
-  <!-- Menú nav -->
-  <nav class="flex-1 pt-2.5 px-2.5 pb-0 overflow-y-auto overflow-x-hidden custom-scrollbar">
-    <p class="text-[0.67rem] font-semibold uppercase tracking-[0.08em] text-[#8b8fa8] pt-2.5 px-2 pb-1.5" *ngIf="!collapsed">
-      Menú
+  <!-- ── NAVEGACIÓN Y ENLACES OPERATIVOS ───────────────────────────────── -->
+  <nav class="flex-1 pt-3 px-2.5 pb-0 overflow-y-auto overflow-x-hidden custom-scrollbar space-y-0.5">
+    
+    <!-- Etiqueta de Sección Semántica -->
+    <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400 pt-2 px-2.5 pb-1.5 block" *ngIf="!collapsed">
+      Menú Comercial
     </p>
 
-    <!-- Usamos una clase auxiliar "active-link" junto con las utilidades de Tailwind -->
+    <!-- Enlace de Navegación Unificado -->
+    <!-- Nota: routerLinkActive inyecta los estilos planos e institucionales cuando la ruta coincide -->
     <a
-      class="flex items-center gap-2.5 py-[9px] px-2.5 rounded-[10px] no-underline text-gray-600 text-[0.84rem] font-medium mb-[2px] transition-all duration-150 whitespace-nowrap overflow-hidden relative hover:bg-[#ebebeb] hover:text-[#1a1d23] group"
+      class="flex items-center gap-2.5 py-2 px-2.5 rounded-lg no-underline text-slate-600 text-xs font-semibold transition-all duration-150 whitespace-nowrap overflow-hidden relative hover:bg-slate-200/60 hover:text-slate-900 group"
       *ngFor="let item of items"
       [routerLink]="item.route"
-      routerLinkActive="!bg-blue-100 !text-blue-600 font-semibold active-link"
+      routerLinkActive="!bg-teal-50 !text-teal-700 font-bold border-l-2 border-teal-600 rounded-l-none active-link"
       [title]="collapsed ? item.label : ''"
     >
-      <span class="flex items-center justify-center text-[1.3rem] text-gray-500 shrink-0 icon-wrap" [innerHTML]="item.icon"></span>
-      <span class="flex-1 overflow-hidden text-ellipsis" *ngIf="!collapsed">{{ item.label }}</span>
-      <span class="bg-red-500 text-white text-[10px] font-bold py-[1px] px-1.5 rounded-full shrink-0" *ngIf="item.badge && !collapsed">{{ item.badge }}</span>
+      <!-- Contenedor del Icono Dinámico -->
+      <span 
+        class="flex items-center justify-center text-base text-slate-400 group-hover:text-slate-600 transition-colors shrink-0 w-5 h-5 icon-wrap" 
+        [innerHTML]="item.icon">
+      </span>
+      
+      <!-- Texto del Enlace -->
+      <span class="flex-1 overflow-hidden text-ellipsis tracking-tight" *ngIf="!collapsed">
+        {{ item.label }}
+      </span>
+      
+      <!-- Badge de Alerta/Notificación Estricta -->
+      <span 
+        class="bg-red-500 text-white text-[10px] font-bold py-0.5 px-1.5 rounded-full shrink-0 tabular-nums shadow-sm" 
+        *ngIf="item.badge && !collapsed">
+        {{ item.badge }}
+      </span>
     </a>
   </nav>
 
-  <!-- Footer sidebar -->
-  <div class="pb-3 shrink-0">
-    <div class="h-px bg-[#e2e4e9] mx-[14px] shrink-0 mb-1"></div>
+  <!-- ── FOOTER: PERFIL DE AUDITORÍA Y SOFTWARE ────────────────────────── -->
+  <div class="pb-4 shrink-0 bg-slate-50">
+    <!-- Divisor Estructural Inferior -->
+    <div class="h-px bg-slate-200 mx-3 shrink-0 mb-2"></div>
+    
     <div
-      class="flex items-center gap-[9px] pt-3 px-[14px] pb-1 overflow-hidden"
+      class="flex items-center gap-3 pt-2 px-4 pb-1 overflow-hidden"
       [ngClass]="{'justify-center': collapsed}"
     >
-      <div class="w-[30px] h-[30px] rounded-lg bg-gradient-to-br from-blue-600 to-blue-700 text-white text-xs font-bold flex items-center justify-center shrink-0">
+      <!-- Avatar Corporativo Plano -->
+      <div class="w-8 h-8 rounded-lg bg-slate-900 text-white text-xs font-bold flex items-center justify-center shrink-0 border border-slate-950 uppercase shadow-xs">
         {{ auth.nombre.charAt(0) }}
       </div>
-      <div class="flex flex-col overflow-hidden" *ngIf="!collapsed">
-        <span class="text-[0.78rem] font-semibold text-[#1a1d23] whitespace-nowrap overflow-hidden text-ellipsis">{{ auth.nombre }}</span>
-        <span class="text-[0.68rem] text-[#8b8fa8]">v{{ version }}</span>
+      
+      <!-- Metadatos de Autenticación y Versión -->
+      <div class="flex flex-col overflow-hidden text-left" *ngIf="!collapsed">
+        <span class="text-xs font-bold text-slate-800 whitespace-nowrap overflow-hidden text-ellipsis tracking-tight">
+          {{ auth.nombre }}
+        </span>
+        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5 tabular-nums">
+          v{{ version }}
+        </span>
       </div>
     </div>
   </div>

@@ -1,10 +1,10 @@
 <div [ngClass]="{'min-h-[90vh] bg-slate-50 p-4 flex justify-center items-start overflow-y-auto': !isModal}">
-  <div class="w-full max-h-[80vh] flex flex-col bg-white rounded-xl shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)] border border-slate-200 overflow-hidden">
+  <div class="w-full max-h-[80vh] flex flex-col bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
 
     <!-- Header -->
     <div class="p-6 border-b border-slate-200 flex justify-between items-center bg-white">
       <div class="flex items-center gap-4">
-        <div class="w-10 h-10 bg-indigo-50 text-[#0f172b] flex items-center justify-center rounded-lg">
+        <div class="w-10 h-10 bg-indigo-50 text-slate-900 flex items-center justify-center rounded-lg">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
             <path d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"/>
           </svg>
@@ -29,38 +29,36 @@
         <div class="flex justify-between items-center mb-4">
           <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Información del cliente</span>
           <!-- Ocultar toggle en modo edición -->
-          <button *ngIf="!modoEdicion" type="button" (click)="toggleClienteNuevo()" class="bg-transparent border-none text-[#0f172b] font-semibold text-[0.85rem] cursor-pointer">
+          <button *ngIf="!modoEdicion" type="button" (click)="toggleClienteNuevo()" class="text-slate-900 font-semibold text-sm hover:underline transition-all">
             {{ esClienteNuevo ? '← Buscar existente' : '+ Cliente nuevo' }}
           </button>
         </div>
         
         <!-- MODO EDICIÓN: cliente bloqueado (solo lectura) -->
-        <div *ngIf="modoEdicion" class="bg-[#e3e3e4] border border-dashed border-[#0f172b] rounded-lg p-4 mb-4">
+        <div *ngIf="modoEdicion" class="bg-slate-100 border border-dashed border-slate-300 rounded-lg p-4 mb-4">
           <div class="flex items-center gap-2 mb-4">
-            <span class="font-bold text-black text-sm">Cliente</span>
-            <span class="ml-auto bg-[#dadada] text-slate-500 px-2 py-0.5 rounded-full text-xs font-semibold">
+            <span class="font-bold text-slate-800 text-sm">Cliente</span>
+            <span class="ml-auto bg-slate-200 text-slate-600 px-2 py-0.5 rounded-full text-xs font-semibold">
               {{ ventaEditar?.clienteDoc }}
             </span>
           </div>
-          <div>
-            <div class="flex items-center gap-4 mb-4">
-              <div class="w-[45px] h-[45px] bg-[#f5f5f5] text-black flex items-center justify-center rounded-full font-bold">{{ inicialesEdicion }}</div>
-              <div>
-                <p class="font-bold text-slate-800 m-0">{{ ventaEditar?.clienteNombre }}</p>
-                <p class="text-[0.8rem] text-slate-500 m-0">{{ ventaEditar?.clienteTelefono }}</p>
-              </div>
+          <div class="flex items-center gap-4 mb-2">
+            <div class="w-11 h-11 bg-white border border-slate-200 text-slate-800 flex items-center justify-center rounded-full font-bold shadow-sm">{{ inicialesEdicion }}</div>
+            <div>
+              <p class="font-bold text-slate-800 m-0 text-sm">{{ ventaEditar?.clienteNombre }}</p>
+              <p class="text-xs text-slate-500 m-0">{{ ventaEditar?.clienteTelefono }}</p>
             </div>
           </div>
-          <p class="text-xs text-indigo-500 mt-2">El cliente no puede modificarse en una venta existente.</p>
+          <p class="text-xs text-indigo-600 font-medium mt-3 m-0">El cliente no puede modificarse en una venta existente.</p>
         </div>
 
         <ng-container *ngIf="!modoEdicion">
           <!-- Documento -->
-          <div class="grid grid-cols-1 sm:grid-cols-[120px_1fr] gap-4 mb-4">
-            <div class="mb-4">
+          <div class="grid grid-cols-1 sm:grid-cols-[140px_1fr] gap-4 mb-4">
+            <div>
               <label class="block text-sm font-semibold text-slate-600 mb-1.5">Tipo doc.</label>
               <div class="relative">
-                <select formControlName="tipoDoc" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-[0.95rem] bg-white text-slate-800 focus:outline-none focus:border-[#0f172b] focus:ring-[3px] focus:ring-indigo-500/10 transition-all appearance-none pr-10">
+                <select formControlName="tipoDoc" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm bg-white text-slate-800 focus:outline-none focus:border-slate-900 focus:ring-[3px] focus:ring-indigo-500/10 transition-all appearance-none pr-10">
                   <option value="DNI">DNI</option>
                   <option value="CE">Carnet de Extranjería</option>
                   <option value="RUC">RUC</option>
@@ -72,16 +70,16 @@
               </div>
             </div>
 
-            <div class="mb-4">
+            <div>
               <label class="block text-sm font-semibold text-slate-600 mb-1.5">Número de documento</label>
               <div class="relative">
                 <input type="text" formControlName="nroDoc"
                   [placeholder]="placeholderDoc"
-                  class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-[0.95rem] bg-white text-slate-800 focus:outline-none focus:border-[#0f172b] focus:ring-[3px] focus:ring-indigo-500/10 transition-all font-mono pr-14"
+                  class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm bg-white text-slate-800 focus:outline-none focus:border-slate-900 focus:ring-[3px] focus:ring-indigo-500/10 transition-all font-mono pr-14"
                   [class.border-red-400]="ventaForm.get('nroDoc')?.invalid && ventaForm.get('nroDoc')?.touched"
                   [style.text-transform]="ventaForm.get('tipoDoc')?.value === 'CE' || ventaForm.get('tipoDoc')?.value === 'PASAPORTE' ? 'uppercase' : 'none'"
                   (input)="onDocumentoInput($event)">
-                <button type="button" (click)="buscarCliente()" [disabled]="loadingCliente" class="absolute right-1 top-1 bottom-1 w-10 bg-[#0f172b] text-white rounded-md flex items-center justify-center disabled:bg-slate-300 disabled:cursor-not-allowed hover:bg-[#0f172b]/90 transition-colors">
+                <button type="button" (click)="buscarCliente()" [disabled]="loadingCliente" class="absolute right-1 top-1 bottom-1 w-10 bg-slate-900 text-white rounded-md flex items-center justify-center disabled:bg-slate-200 disabled:text-slate-400 hover:bg-slate-800 transition-colors">
                   <ng-container *ngIf="!loadingCliente">
                     <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                       <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -95,75 +93,75 @@
           </div>
 
           <!-- Cliente encontrado -->
-          <div *ngIf="ventaForm.get('clienteId')?.value" class="bg-[#e3e3e4] border border-dashed border-[#0f172b] rounded-lg p-4 mb-4">
+          <div *ngIf="ventaForm.get('clienteId')?.value" class="bg-slate-50 border border-slate-200 rounded-lg p-4 mb-4">
             <div class="flex items-center gap-2 mb-4">
-              <span class="font-bold text-black text-sm">Cliente encontrado</span>
-              <span class="ml-auto bg-[#dadada] text-slate-500 px-2 py-0.5 rounded-full text-xs font-semibold">
+              <span class="font-bold text-slate-800 text-sm">Cliente encontrado</span>
+              <span class="ml-auto bg-slate-200 text-slate-600 px-2 py-0.5 rounded-full text-xs font-semibold">
                 {{ ventaForm.get('tipoDoc')?.value }} · {{ ventaForm.get('nroDoc')?.value }}
               </span>
             </div>
             <div>
               <div class="flex items-center gap-4 mb-4">
-                <div class="w-[45px] h-[45px] bg-[#f5f5f5] text-black flex items-center justify-center rounded-full font-bold">{{ inicialesCliente }}</div>
+                <div class="w-11 h-11 bg-white border border-slate-200 text-slate-800 flex items-center justify-center rounded-full font-bold shadow-sm">{{ inicialesCliente }}</div>
                 <div>
-                  <p class="font-bold text-slate-800 m-0">{{ ventaForm.get('nombre')?.value }}</p>
-                  <p class="text-[0.8rem] text-slate-500 m-0">{{ ventaForm.get('distrito')?.value }} · {{ ventaForm.get('email')?.value }}</p>
+                  <p class="font-bold text-slate-800 m-0 text-sm">{{ ventaForm.get('nombre')?.value }}</p>
+                  <p class="text-xs text-slate-500 m-0">{{ ventaForm.get('distrito')?.value }} · {{ ventaForm.get('email')?.value }}</p>
                 </div>
               </div>
               <div class="grid grid-cols-2 gap-3">
-                <div class="bg-white/50 py-2 px-3 rounded-md">
-                  <p class="text-[0.7rem] text-slate-500 m-0 uppercase">Teléfono</p>
-                  <p class="text-sm font-semibold m-0">{{ ventaForm.get('telefono')?.value }}</p>
+                <div class="bg-white border border-slate-100 py-2 px-3 rounded-md shadow-sm">
+                  <p class="text-[0.7rem] text-slate-400 m-0 uppercase font-bold tracking-wider">Teléfono</p>
+                  <p class="text-sm font-semibold text-slate-700 m-0 mt-0.5">{{ ventaForm.get('telefono')?.value }}</p>
                 </div>
-                <div class="bg-white/50 py-2 px-3 rounded-md">
-                  <p class="text-[0.7rem] text-slate-500 m-0 uppercase">Alt.</p>
-                  <p class="text-sm font-semibold m-0">{{ ventaForm.get('telefonoAlt')?.value || '—' }}</p>
+                <div class="bg-white border border-slate-100 py-2 px-3 rounded-md shadow-sm">
+                  <p class="text-[0.7rem] text-slate-400 m-0 uppercase font-bold tracking-wider">Alt.</p>
+                  <p class="text-sm font-semibold text-slate-700 m-0 mt-0.5">{{ ventaForm.get('telefonoAlt')?.value || '—' }}</p>
                 </div>
-                <div class="bg-white/50 py-2 px-3 rounded-md col-span-2">
-                  <p class="text-[0.7rem] text-slate-500 m-0 uppercase">Dirección</p>
-                  <p class="text-sm font-semibold m-0">{{ ventaForm.get('direccion')?.value }}, {{ ventaForm.get('distrito')?.value }}</p>
+                <div class="bg-white border border-slate-100 py-2 px-3 rounded-md shadow-sm col-span-2">
+                  <p class="text-[0.7rem] text-slate-400 m-0 uppercase font-bold tracking-wider">Dirección</p>
+                  <p class="text-sm font-semibold text-slate-700 m-0 mt-0.5">{{ ventaForm.get('direccion')?.value }}, {{ ventaForm.get('distrito')?.value }}</p>
                 </div>
               </div>
             </div>
           </div>
 
           <!-- Formulario Cliente Nuevo -->
-          <div *ngIf="esClienteNuevo" class="bg-[#e3e3e4] border border-dashed border-[#0f172b] rounded-lg p-4 mb-4">
-            <p class="font-bold text-[#0f172b] mb-4 text-[0.9rem]">Datos del nuevo cliente</p>
+          <div *ngIf="esClienteNuevo" class="bg-slate-50 border border-slate-200 rounded-lg p-5 mb-4">
+            <p class="font-bold text-slate-800 mb-4 text-sm tracking-wide uppercase">Datos del nuevo cliente</p>
 
             <div class="mb-4">
               <label class="block text-sm font-semibold text-slate-600 mb-1.5">Nombres <span class="text-red-400">*</span></label>
-              <input type="text" formControlName="nombre" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-[0.95rem] bg-white text-slate-800 focus:outline-none focus:border-[#0f172b] focus:ring-[3px] focus:ring-indigo-500/10 transition-all"
+              <input type="text" formControlName="nombre" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm bg-white text-slate-800 focus:outline-none focus:border-slate-900 focus:ring-[3px] focus:ring-indigo-500/10 transition-all"
                     placeholder="Ej. Juan Manuel"
                     [class.border-red-400]="ventaForm.get('nombre')?.invalid && ventaForm.get('nombre')?.touched">
               <p *ngIf="getError('nombre')" class="text-red-500 text-xs mt-1 ml-1">{{ getError('nombre') }}</p>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div class="mb-4">
                 <label class="block text-sm font-semibold text-slate-600 mb-1.5">Apellido Paterno <span class="text-red-400">*</span></label>
-                <input type="text" formControlName="apellidoP" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-[0.95rem] bg-white text-slate-800 focus:outline-none focus:border-[#0f172b] focus:ring-[3px] focus:ring-indigo-500/10 transition-all"
+                <input type="text" formControlName="apellidoP" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm bg-white text-slate-800 focus:outline-none focus:border-slate-900 focus:ring-[3px] focus:ring-indigo-500/10 transition-all"
                       [class.border-red-400]="ventaForm.get('apellidoP')?.invalid && ventaForm.get('apellidoP')?.touched">
                 <p *ngIf="getError('apellidoP')" class="text-red-500 text-xs mt-1 ml-1">{{ getError('apellidoP') }}</p>
               </div>
               <div class="mb-4">
                 <label class="block text-sm font-semibold text-slate-600 mb-1.5">Apellido Materno</label>
-                <input type="text" formControlName="apellidoM" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-[0.95rem] bg-white text-slate-800 focus:outline-none focus:border-[#0f172b] focus:ring-[3px] focus:ring-indigo-500/10 transition-all">
+                <input type="text" formControlName="apellidoM" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm bg-white text-slate-800 focus:outline-none focus:border-slate-900 focus:ring-[3px] focus:ring-indigo-500/10 transition-all">
                 <p *ngIf="getError('apellidoM')" class="text-red-500 text-xs mt-1 ml-1">{{ getError('apellidoM') }}</p>
               </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div class="mb-4">
                 <label class="block text-sm font-semibold text-slate-600 mb-1.5">Email</label>
-                <input type="email" formControlName="email" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-[0.95rem] bg-white text-slate-800 focus:outline-none focus:border-[#0f172b] focus:ring-[3px] focus:ring-indigo-500/10 transition-all"
+                <input type="email" formControlName="email" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm bg-white text-slate-800 focus:outline-none focus:border-slate-900 focus:ring-[3px] focus:ring-indigo-500/10 transition-all"
                       placeholder="correo@ejemplo.com"
                       [class.border-red-400]="ventaForm.get('email')?.invalid && ventaForm.get('email')?.touched">
                 <p *ngIf="getError('email')" class="text-red-500 text-xs mt-1 ml-1">{{ getError('email') }}</p>
               </div>
               <div class="mb-4">
                 <label class="block text-sm font-semibold text-slate-600 mb-1.5">Teléfono</label>
-                <input type="text" formControlName="telefono" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-[0.95rem] bg-white text-slate-800 focus:outline-none focus:border-[#0f172b] focus:ring-[3px] focus:ring-indigo-500/10 transition-all"
+                <input type="text" formControlName="telefono" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm bg-white text-slate-800 focus:outline-none focus:border-slate-900 focus:ring-[3px] focus:ring-indigo-500/10 transition-all"
                       placeholder="9XXXXXXXX"
                       [class.border-red-400]="ventaForm.get('telefono')?.invalid && ventaForm.get('telefono')?.touched">
                 <p *ngIf="getError('telefono')" class="text-red-500 text-xs mt-1 ml-1">{{ getError('telefono') }}</p>
@@ -171,13 +169,12 @@
             </div>
 
             <!-- Ubigeo: Departamento / Provincia / Distrito -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-              <!-- DEPARTAMENTO -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div class="mb-4">
                 <label class="block text-sm font-semibold text-slate-600 mb-1.5">Departamento</label>
                 <div class="relative">
                   <input type="text"
-                        class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-[0.95rem] bg-white text-slate-800 focus:outline-none focus:border-[#0f172b] focus:ring-[3px] focus:ring-indigo-500/10 transition-all"
+                        class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm bg-white text-slate-800 focus:outline-none focus:border-slate-900 focus:ring-[3px] focus:ring-indigo-500/10 transition-all"
                         placeholder="Buscar departamento..."
                         [(ngModel)]="deptoFiltro"
                         [ngModelOptions]="{standalone: true}"
@@ -186,23 +183,22 @@
                         (focus)="deptoOpen = true"
                         (blur)="onBlurDepto()"
                         [value]="ventaForm.get('departamento')?.value || deptoFiltro">
-                  <ul *ngIf="deptoOpen && departamentosFiltrados.length > 0" class="absolute z-50 top-[calc(100%+4px)] left-0 right-0 bg-white border border-slate-200 rounded-lg max-h-[180px] overflow-y-auto shadow-[0_4px_12px_rgba(0,0,0,0.15)] py-1 m-0 list-none custom-scrollbar">
+                  <ul *ngIf="deptoOpen && departamentosFiltrados.length > 0" class="absolute z-50 top-[calc(100%+4px)] left-0 right-0 bg-white border border-slate-200 rounded-lg max-h-[180px] overflow-y-auto shadow-lg py-1 m-0 list-none custom-scrollbar">
                     <li *ngFor="let d of departamentosFiltrados"
                         class="px-3 py-2 cursor-pointer text-sm text-slate-800 hover:bg-slate-50 transition-colors"
                         (mousedown)="seleccionarDepto(d)">
                       {{ d }}
                     </li>
                   </ul>
-                  <p *ngIf="getError('departamento')" class="text-red-500 text-xs mt-1 ml-1">{{ getError('departamento') }}</p>
                 </div>
+                <p *ngIf="getError('departamento')" class="text-red-500 text-xs mt-1 ml-1">{{ getError('departamento') }}</p>
               </div>
 
-              <!-- PROVINCIA -->
               <div class="mb-4">
                 <label class="block text-sm font-semibold text-slate-600 mb-1.5">Provincia</label>
                 <div class="relative">
                   <input type="text"
-                  class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-[0.95rem] bg-white text-slate-800 focus:outline-none focus:border-[#0f172b] focus:ring-[3px] focus:ring-indigo-500/10 transition-all"
+                  class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm bg-white text-slate-800 focus:outline-none focus:border-slate-900 focus:ring-[3px] focus:ring-indigo-500/10 transition-all"
                   placeholder="Buscar provincia..."
                   [(ngModel)]="provFiltro"
                   [ngModelOptions]="{standalone: true}"
@@ -211,25 +207,25 @@
                   (focus)="provOpen = true"
                   (blur)="onBlurProv()"
                   [value]="ventaForm.get('provincia')?.value || provFiltro">
-                  <ul *ngIf="provOpen && provinciasFiltradas.length > 0" class="absolute z-50 top-[calc(100%+4px)] left-0 right-0 bg-white border border-slate-200 rounded-lg max-h-[180px] overflow-y-auto shadow-[0_4px_12px_rgba(0,0,0,0.15)] py-1 m-0 list-none custom-scrollbar">
+                  <ul *ngIf="provOpen && provinciasFiltradas.length > 0" class="absolute z-50 top-[calc(100%+4px)] left-0 right-0 bg-white border border-slate-200 rounded-lg max-h-[180px] overflow-y-auto shadow-lg py-1 m-0 list-none custom-scrollbar">
                     <li *ngFor="let p of provinciasFiltradas"
                         class="px-3 py-2 cursor-pointer text-sm text-slate-800 hover:bg-slate-50 transition-colors"
                         (mousedown)="seleccionarProv(p)">
                       {{ p }}
                     </li>
                   </ul>
-                  <p *ngIf="getError('provincia')" class="text-red-500 text-xs mt-1 ml-1">{{ getError('provincia') }}</p>
                 </div>
+                <p *ngIf="getError('provincia')" class="text-red-500 text-xs mt-1 ml-1">{{ getError('provincia') }}</p>
               </div>
             </div>
 
             <!-- DISTRITO + DIRECCIÓN -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div class="mb-4">
+              <div>
                 <label class="block text-sm font-semibold text-slate-600 mb-1.5">Distrito</label>
                 <div class="relative">
                   <input type="text"
-                        class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-[0.95rem] bg-white text-slate-800 focus:outline-none focus:border-[#0f172b] focus:ring-[3px] focus:ring-indigo-500/10 transition-all"
+                        class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm bg-white text-slate-800 focus:outline-none focus:border-slate-900 focus:ring-[3px] focus:ring-indigo-500/10 transition-all"
                         placeholder="Buscar distrito..."
                         [(ngModel)]="distFiltro"
                         [ngModelOptions]="{standalone: true}"
@@ -238,20 +234,20 @@
                         (focus)="distOpen = true"
                         (blur)="onBlurDist()"
                         [value]="ventaForm.get('distrito')?.value || distFiltro">
-                  <ul *ngIf="distOpen && distritosFiltrados.length > 0" class="absolute z-50 top-[calc(100%+4px)] left-0 right-0 bg-white border border-slate-200 rounded-lg max-h-[180px] overflow-y-auto shadow-[0_4px_12px_rgba(0,0,0,0.15)] py-1 m-0 list-none custom-scrollbar">
+                  <ul *ngIf="distOpen && distritosFiltrados.length > 0" class="absolute z-50 top-[calc(100%+4px)] left-0 right-0 bg-white border border-slate-200 rounded-lg max-h-[180px] overflow-y-auto shadow-lg py-1 m-0 list-none custom-scrollbar">
                     <li *ngFor="let d of distritosFiltrados"
                         class="px-3 py-2 cursor-pointer text-sm text-slate-800 hover:bg-slate-50 transition-colors"
                         (mousedown)="seleccionarDist(d)">
                       {{ d }}
                     </li>
                   </ul>
-                  <p *ngIf="getError('distrito')" class="text-red-500 text-xs mt-1 ml-1">{{ getError('distrito') }}</p>
                 </div>
+                <p *ngIf="getError('distrito')" class="text-red-500 text-xs mt-1 ml-1">{{ getError('distrito') }}</p>
               </div>
-              <div class="mb-4">
+              <div>
                 <label class="block text-sm font-semibold text-slate-600 mb-1.5">Dirección</label>
-                <input type="text" formControlName="direccion" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-[0.95rem] bg-white text-slate-800 focus:outline-none focus:border-[#0f172b] focus:ring-[3px] focus:ring-indigo-500/10 transition-all" placeholder="Ej. Av. Larco 123">
-                <p *ngIf="getError('nombre')" class="text-red-500 text-xs mt-1 ml-1">{{ getError('nombre') }}</p>
+                <input type="text" formControlName="direccion" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm bg-white text-slate-800 focus:outline-none focus:border-slate-900 focus:ring-[3px] focus:ring-indigo-500/10 transition-all" placeholder="Ej. Av. Larco 123">
+                <p *ngIf="getError('direccion')" class="text-red-500 text-xs mt-1 ml-1">{{ getError('direccion') }}</p>
               </div>
             </div>
           </div>
@@ -271,7 +267,7 @@
         <div class="mb-4">
           <label class="block text-sm font-semibold text-slate-600 mb-1.5">Campaña <span class="text-red-400">*</span></label>
           <div class="relative">
-            <select formControlName="campanaId" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-[0.95rem] bg-white text-slate-800 focus:outline-none focus:border-[#0f172b] focus:ring-[3px] focus:ring-indigo-500/10 transition-all appearance-none pr-10"
+            <select formControlName="campanaId" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm bg-white text-slate-800 focus:outline-none focus:border-slate-900 focus:ring-[3px] focus:ring-indigo-500/10 transition-all appearance-none pr-10"
                     [class.border-red-400]="ventaForm.get('campanaId')?.invalid && ventaForm.get('campanaId')?.touched">
               <option value="">Seleccionar campaña...</option>
               <option *ngFor="let c of campanas" [value]="c.id">{{ c.nombre }}</option>
@@ -290,17 +286,17 @@
             <span *ngIf="loadingProductos" class="inline-block w-3.5 h-3.5 border-2 border-slate-200 border-t-indigo-500 rounded-full animate-spin ml-1.5 align-middle"></span>
           </label>
           <div class="relative">
-                <select formControlName="productoId" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-[0.95rem] bg-white text-slate-800 focus:outline-none focus:border-[#0f172b] focus:ring-[3px] focus:ring-indigo-500/10 transition-all appearance-none pr-10">
-                  <option [value]="null">Seleccionar producto...</option>
-                  <option *ngFor="let p of productos" [value]="p.id">
-                    {{ p.nombre }} — S/ {{ p.precio | number:'1.2-2' }}
-                  </option>
-                </select>
+            <select formControlName="productoId" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm bg-white text-slate-800 focus:outline-none focus:border-slate-900 focus:ring-[3px] focus:ring-indigo-500/10 transition-all appearance-none pr-10">
+              <option [value]="null">Seleccionar producto...</option>
+              <option *ngFor="let p of productos" [value]="p.id">
+                {{ p.nombre }} — S/ {{ p.precio | number:'1.2-2' }}
+              </option>
+            </select>
             <svg class="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 pointer-events-none text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path d="M6 9l6 6 6-6"/>
             </svg>
           </div>
-          <p class="text-xs text-indigo-500 mt-1" *ngIf="ventaForm.get('productoId')?.value">
+          <p class="text-xs text-indigo-600 font-medium mt-1.5" *ngIf="ventaForm.get('productoId')?.value">
             El monto se completó automáticamente con el precio del producto.
           </p>
         </div>
@@ -309,8 +305,8 @@
         <div class="mb-4">
           <label class="block text-sm font-semibold text-slate-600 mb-1.5">Monto <span class="text-red-400">*</span></label>
           <div class="relative">
-            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 font-bold">S/</span>
-            <input type="number" formControlName="monto" class="w-full pl-10 pr-3.5 py-2.5 border border-slate-200 rounded-lg text-[0.95rem] bg-white text-slate-800 focus:outline-none focus:border-[#0f172b] focus:ring-[3px] focus:ring-indigo-500/10 transition-all"
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 font-bold text-sm">S/</span>
+            <input type="number" formControlName="monto" class="w-full pl-10 pr-3.5 py-2.5 border border-slate-200 rounded-lg text-sm bg-white text-slate-800 focus:outline-none focus:border-slate-900 focus:ring-[3px] focus:ring-indigo-500/10 transition-all"
                    placeholder="0.00"
                    [class.border-red-400]="ventaForm.get('monto')?.invalid && ventaForm.get('monto')?.touched">
           </div>
@@ -322,29 +318,30 @@
           <label class="block text-sm font-semibold text-slate-600 mb-1.5">Observaciones internas</label>
           <textarea formControlName="observaciones" rows="3"
                     placeholder="Notas adicionales... (máx. 500 caracteres)"
-                    class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-[0.95rem] bg-white text-slate-800 focus:outline-none focus:border-[#0f172b] focus:ring-[3px] focus:ring-indigo-500/10 transition-all"
+                    class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm bg-white text-slate-800 focus:outline-none focus:border-slate-900 focus:ring-[3px] focus:ring-indigo-500/10 transition-all resize-none"
                     [class.border-red-400]="ventaForm.get('observaciones')?.invalid && ventaForm.get('observaciones')?.touched">
           </textarea>
           <p *ngIf="getError('observaciones')" class="text-red-500 text-xs mt-1 ml-1">{{ getError('observaciones') }}</p>
         </div>
       </div>
 
-      <div *ngIf="formularioBloqueado" class="mx-6 mb-4 p-3 bg-amber-50 border border-amber-200 rounded-xl flex items-center gap-2">
+      <!-- Alerta de Bloqueo -->
+      <div *ngIf="formularioBloqueado" class="mb-5 p-3.5 bg-amber-50 border border-amber-200 rounded-xl flex items-center gap-3">
         <svg class="w-5 h-5 text-amber-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
         </svg>
-        <p class="text-sm text-amber-700 font-medium">
-          Esta venta está en estado <strong>{{ ventaEditar?.estadoNombre }}</strong> y no puede modificarse.
+        <p class="text-sm text-amber-800 font-medium m-0">
+          Esta venta está en estado <strong class="text-amber-900">{{ ventaEditar?.estadoNombre }}</strong> y no puede modificarse.
         </p>
       </div>
 
       <!-- Acciones -->
-      <div class="flex flex-col sm:flex-row-reverse gap-4 mt-4">
+      <div class="flex flex-col sm:flex-row-reverse gap-3 mt-4">
         <button type="submit" [disabled]="submitting || formularioBloqueado" 
-                class="bg-[#0f172b] text-white border-none px-6 py-3 rounded-lg font-semibold cursor-pointer transition-colors hover:bg-[#0f172b]/90 disabled:opacity-60 disabled:cursor-not-allowed">
+                class="bg-slate-900 text-white px-6 py-2.5 rounded-lg font-semibold transition-colors hover:bg-slate-800 disabled:opacity-50 disabled:pointer-events-none text-sm shadow-sm">
           {{ submitting ? 'Procesando...' : (modoEdicion ? 'Guardar cambios' : 'Confirmar venta') }}
         </button>
-        <button type="button" (click)="onClose.emit()" class="bg-white text-slate-500 border border-slate-200 px-6 py-3 rounded-lg font-semibold cursor-pointer hover:bg-slate-50 hover:text-slate-800 transition-colors">
+        <button type="button" (click)="onClose.emit()" class="bg-white text-slate-600 border border-slate-200 px-6 py-2.5 rounded-lg font-semibold hover:bg-slate-50 hover:text-slate-800 transition-colors text-sm">
           Cancelar
         </button>
       </div>

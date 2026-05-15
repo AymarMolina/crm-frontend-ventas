@@ -5,7 +5,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { ReporteService, FiltroReporte } from '../../../core/services/reporte.service';
 import { CampanasService } from '../../../core/services/campanas.service';
 
-export type RolReporte = 'AGENTE' | 'SUPERVISOR' | 'GERENTE';
+export type RolReporte = 'AGENTE' | 'SUPERVISOR' | 'GERENTE' | 'BACK_OFFICE';
 
 interface Campana {
   id: string;
@@ -41,6 +41,7 @@ export class GenerarReporte implements OnInit {
   get esAsesor():     boolean { return this.rolUsuario === 'AGENTE';     }
   get esSupervisor(): boolean { return this.rolUsuario === 'SUPERVISOR'; }
   get esGerente():    boolean { return this.rolUsuario === 'GERENTE';    }
+  get esBackoffice():    boolean { return this.rolUsuario === 'BACK_OFFICE';}
 
   get filtrosValidos(): boolean {
     return !!this.fechaDesde && !!this.fechaHasta && this.fechaDesde <= this.fechaHasta;

@@ -1,61 +1,79 @@
-<div class="page">
+<div class="min-h-screen grid grid-cols-1 md:grid-cols-2 font-['DM_Sans',sans-serif] bg-[#0d0f14]">
 
-  <!-- Panel izquierdo -->
-  <div class="left">
-    <div class="grid-bg"></div>
-    <div class="accent-blob"></div>
+  <!-- Panel izquierdo (con evento de mouse) -->
+  <div 
+    class="relative hidden md:flex flex-col justify-end p-12 overflow-hidden" 
+    (mousemove)="onMouseMove($event)"
+  >
+    <!-- Fondo de cuadrícula -->
+    <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.03)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
 
-    <div class="brand">
-      <div class="brand-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <!-- Círculo animado que sigue el mouse -->
+    <div 
+      class="absolute top-0 left-0 w-[300px] h-[300px] rounded-full pointer-events-none transition-transform duration-75 ease-out"
+      style="background: radial-gradient(circle, rgba(99,200,150,.15) 0%, transparent 70%);"
+      [style.transform]="'translate(' + mouseX + 'px, ' + mouseY + 'px)'"
+    ></div>
+
+    <!-- Branding -->
+    <div class="absolute top-10 left-12 flex items-center gap-3">
+      <div class="w-9 h-9 border border-[rgba(99,200,150,.5)] rounded-lg flex items-center justify-center">
+        <svg viewBox="0 0 24 24" class="w-[18px] h-[18px] stroke-[#63c896] fill-none stroke-2">
           <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
         </svg>
       </div>
-      <span class="brand-name">CRM Ventas</span>
+      <span class="font-['DM_Serif_Display',serif] text-[18px] text-white tracking-[.5px]">CRM Ventas</span>
     </div>
-
   </div>
 
   <!-- Panel derecho -->
-  <div class="right">
-    <div class="form-card">
-      <h2>Bienvenido</h2>
-      <p class="sub">Ingresa tus credenciales para continuar</p>
+  <div class="bg-white flex items-center justify-center p-12">
+    <div class="w-full max-w-[380px]">
+      <h2 class="font-['DM_Serif_Display',serif] text-[28px] text-[#0d0f14] mb-1.5">Bienvenido</h2>
+      <p class="text-[13px] text-[#888] mb-9">Ingresa tus credenciales para continuar</p>
 
       <!-- Alerta de error del servidor -->
       @if (errorMsg) {
-        <div class="alert">{{ errorMsg }}</div>
+        <div class="bg-[#fef2f2] border border-[#fca5a5] rounded-lg py-3 px-3.5 text-[13px] text-[#991b1b] mb-5">
+          {{ errorMsg }}
+        </div>
       }
 
       <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
 
         <!-- Email -->
-        <div class="field">
-          <label for="email">Correo electrónico</label>
+        <div class="mb-5">
+          <label for="email" class="block text-[12px] font-medium text-[#444] tracking-[.4px] mb-[7px] uppercase">
+            Correo electrónico
+          </label>
           <input
             id="email"
             type="email"
             formControlName="email"
             placeholder="usuario@crm.com"
-            [class.error-input]="email.invalid && email.touched"
+            class="w-full h-[46px] border-[1.5px] border-[#e8e8e8] rounded-[10px] px-3.5 text-[14px] text-[#0d0f14] outline-none transition-colors focus:border-[#0d0f14]"
+            [class.!border-[#e24b4a]]="email.invalid && email.touched"
           />
           @if (email.invalid && email.touched) {
-            <span class="error-msg">Ingresa un correo válido</span>
+            <span class="block text-[12px] text-[#e24b4a] mt-1.5">Ingresa un correo válido</span>
           }
         </div>
 
         <!-- Contraseña -->
-        <div class="field">
-          <label for="password">Contraseña</label>
-          <div class="pass-wrap">
+        <div class="mb-5">
+          <label for="password" class="block text-[12px] font-medium text-[#444] tracking-[.4px] mb-[7px] uppercase">
+            Contraseña
+          </label>
+          <div class="relative">
             <input
               id="password"
               [type]="showPass ? 'text' : 'password'"
               formControlName="password"
               placeholder="••••••••"
-              [class.error-input]="password.invalid && password.touched"
+              class="w-full h-[46px] border-[1.5px] border-[#e8e8e8] rounded-[10px] pl-3.5 pr-11 text-[14px] text-[#0d0f14] outline-none transition-colors focus:border-[#0d0f14]"
+              [class.!border-[#e24b4a]]="password.invalid && password.touched"
             />
-            <button type="button" class="eye-btn" (click)="showPass = !showPass">
+            <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-[#aaa] hover:text-[#555] transition-colors flex items-center" (click)="showPass = !showPass">
               @if (!showPass) {
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
@@ -71,19 +89,28 @@
             </button>
           </div>
           @if (password.invalid && password.touched) {
-            <span class="error-msg">Mínimo 6 caracteres</span>
+            <span class="block text-[12px] text-[#e24b4a] mt-1.5">Mínimo 6 caracteres</span>
           }
         </div>
 
-        <button type="submit" class="btn-login" [disabled]="loading">
+        <!-- Botón Ingresar -->
+        <button 
+          type="submit" 
+          [disabled]="loading" 
+          class="w-full h-[50px] bg-[#0d0f14] text-white rounded-[10px] text-[15px] font-medium transition-all flex items-center justify-center gap-2.5 mt-1 hover:bg-[#1a1d24] active:scale-[0.98] disabled:bg-[#aaa] disabled:hover:bg-[#aaa] disabled:active:scale-100 disabled:cursor-not-allowed"
+        >
           @if (loading) {
-            <span class="spinner"></span>
+            <span class="w-[18px] h-[18px] border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
           } @else {
             Ingresar
           }
         </button>
-        <p class="back-link">
-          <a (click)="irAForgot()">¿Olvidaste tu contraseña?</a>
+        
+        <!-- Enlace inferior -->
+        <p class="text-center mt-5">
+          <a class="text-[13px] text-[#555] hover:text-[#0d0f14] cursor-pointer transition-colors" (click)="irAForgot()">
+            ¿Olvidaste tu contraseña?
+          </a>
         </p>
 
       </form>

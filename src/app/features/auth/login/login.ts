@@ -16,7 +16,9 @@ export class LoginComponent {
   loading = false;
   errorMsg = '';
   showPass = false;
-
+  // Variables para la animación del mouse
+  mouseX = -150; // Inicializado fuera de pantalla o centrado
+  mouseY = -150;
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
@@ -31,7 +33,12 @@ export class LoginComponent {
 
   get email()    { return this.form.get('email')!; }
   get password() { return this.form.get('password')!; }
-
+  onMouseMove(event: MouseEvent) {
+    // Restamos 150px porque el círculo mide 300x300, 
+    // así el centro del círculo queda exactamente en la punta del cursor.
+    this.mouseX = event.clientX - 150;
+    this.mouseY = event.clientY - 150;
+  }
   onSubmit(): void {
     if (this.form.invalid) { this.form.markAllAsTouched(); return; }
     this.loading = true;

@@ -16,7 +16,9 @@ export class ForgotPassword implements OnDestroy {
   loading  = false;
   errorMsg = '';
   enviado  = false;
-
+  // Variables para la animación del mouse en el panel izquierdo
+  mouseX = -150;
+  mouseY = -150;
   private timer: any;
 
   constructor(
@@ -31,7 +33,10 @@ export class ForgotPassword implements OnDestroy {
   }
 
   get email() { return this.form.get('email')!; }
-
+  onMouseMove(event: MouseEvent) {
+    this.mouseX = event.clientX - 150;
+    this.mouseY = event.clientY - 150;
+  }
   onSubmit(): void {
     if (this.form.invalid) { this.form.markAllAsTouched(); return; }
     this.loading  = true;

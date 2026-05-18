@@ -126,6 +126,18 @@ export const routes: Routes = [
             path: 'generar-reporte',
             loadComponent: () => import('./shared/components/generar-reporte/generar-reporte').then(m => m.GenerarReporte)
           },
+          {
+            path: 'reporte-asesores',
+            loadComponent: () => import('./shared/components/reporte-asesores/reporte-asesores').then(m => m.ReporteAsesores)
+          },
+          {
+            path: 'asignar-objetivo',
+            loadComponent: () => import('./pages/gerente/asignar-objetivos/asignar-objetivos').then(m => m.AsignarObjetivos)
+          },
+          {
+            path: 'reporte-supervisor',
+            loadComponent: () => import('./pages/gerente/reporte-supervisor/reporte-supervisor').then(m => m.ReporteSupervisor)
+          },
         ]
       },
 

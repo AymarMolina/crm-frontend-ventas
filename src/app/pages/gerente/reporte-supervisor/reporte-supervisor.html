@@ -1,0 +1,163 @@
+@if (loading) {
+  <div class="flex justify-center items-center min-h-screen bg-[#0d0f14]/10">
+    <span class="w-10 h-10 border-4 border-white/20 border-t-[#63c896] rounded-full animate-spin"></span>
+  </div>
+}
+
+@if (!loading) {
+<div class="p-6 bg-gray-50 min-h-screen font-['DM_Sans',sans-serif]">
+
+  <!-- Encabezado -->
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="font-['DM_Serif_Display',serif] text-3xl text-[#0d0f14]">Reporte de Supervisores</h1>
+      <p class="text-[13px] text-[#888] mt-1">Ventas por agente agrupadas por supervisor</p>
+    </div>
+
+    <!-- Botón exportar -->
+    @if (filas.length > 0) {
+      <button
+        (click)="exportarExcel()"
+        [disabled]="exportando"
+        class="flex items-center gap-2 bg-[#16a34a] hover:bg-[#15803d] disabled:bg-[#16a34a]/40
+               text-white text-[14px] font-medium px-5 h-[44px] rounded-[10px] transition-all
+               active:scale-[0.97] disabled:cursor-not-allowed">
+        @if (exportando) {
+          <span class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+          <span>Generando...</span>
+        } @else {
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          <span>Exportar Excel</span>
+        }
+      </button>
+    }
+  </div>
+
+  <!-- Selector de campaña -->
+  <div class="bg-white rounded-[10px] border-[1.5px] border-[#e8e8e8] p-5 mb-6 max-w-sm">
+    <label class="block text-[12px] font-medium text-[#444] tracking-[.4px] mb-[7px] uppercase">
+      Campaña
+    </label>
+    <div class="relative">
+      <select
+        [(ngModel)]="campanaSeleccionada"
+        (ngModelChange)="cargarReporte()"
+        class="w-full h-[46px] border-[1.5px] border-[#e8e8e8] rounded-[10px] px-3.5 text-[14px]
+               text-[#0d0f14] outline-none transition-colors focus:border-[#0d0f14] bg-white
+               appearance-none cursor-pointer">
+        <option value="">Selecciona una campaña</option>
+        <option *ngFor="let c of campanas" [value]="c.id">{{ c.nombre }}</option>
+      </select>
+      <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#aaa]">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Estado vacío -->
+  @if (!campanaSeleccionada) {
+    <div class="flex flex-col items-center justify-center py-20 text-[#aaa]">
+      <svg class="w-12 h-12 mb-3 opacity-30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/>
+        <line x1="9" y1="21" x2="9" y2="9"/>
+      </svg>
+      <p class="text-[14px]">Selecciona una campaña para ver el reporte</p>
+    </div>
+  }
+
+  <!-- Spinner de carga de tabla -->
+  @if (cargandoReporte) {
+    <div class="flex items-center gap-3 py-10 justify-center text-[#888] text-[13px]">
+      <span class="w-5 h-5 border-2 border-gray-300 border-t-[#0d0f14] rounded-full animate-spin"></span>
+      <span>Cargando reporte...</span>
+    </div>
+  }
+
+  <!-- Error -->
+  @if (error) {
+    <div class="bg-[#fef2f2] border border-[#fca5a5] rounded-lg py-3 px-4 text-[13px] text-[#991b1b] mb-4">
+      {{ error }}
+    </div>
+  }
+
+  <!-- Tabla -->
+  @if (!cargandoReporte && filas.length > 0) {
+    <div class="bg-white rounded-[10px] border-[1.5px] border-[#e8e8e8] overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-[13px]">
+          <thead>
+            <tr class="bg-[#0d0f14] text-white">
+              <th class="text-left px-4 py-3 font-medium">Supervisor</th>
+              <th class="text-left px-4 py-3 font-medium">Agente</th>
+              <th class="text-center px-4 py-3 font-medium">Meta Sup.</th>
+              <th class="text-center px-4 py-3 font-medium">Meta Agente</th>
+              <th class="text-center px-4 py-3 font-medium">Ventas Activas</th>
+              <th class="text-right px-4 py-3 font-medium">Monto Total</th>
+              <th class="text-right px-4 py-3 font-medium">Comisión Gen.</th>
+              <th class="text-center px-4 py-3 font-medium">% Alcance</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (fila of filas; track fila.agenteId; let i = $index) {
+              <tr class="border-t border-[#f0f0f0] hover:bg-gray-50 transition-colors">
+                <!-- Si es la primera fila del grupo, mostrar supervisor -->
+                <td class="px-4 py-3 font-medium text-[#0d0f14]">
+                  @if (esPrimerDeGrupo(i)) {
+                    <span class="flex items-center gap-1.5">
+                      <span class="w-2 h-2 rounded-full bg-[#63c896] inline-block"></span>
+                      {{ fila.supervisor }}
+                    </span>
+                  }
+                </td>
+                <td class="px-4 py-3 text-[#444]">{{ fila.agente }}</td>
+                <td class="px-4 py-3 text-center text-[#888]">
+                  @if (esPrimerDeGrupo(i)) { {{ fila.metaSupervisor ?? '—' }} }
+                </td>
+                <td class="px-4 py-3 text-center">{{ fila.metaAgente ?? '—' }}</td>
+                <td class="px-4 py-3 text-center font-medium text-[#0d0f14]">{{ fila.ventasActivas }}</td>
+                <td class="px-4 py-3 text-right">S/ {{ fila.montoTotal | number:'1.2-2' }}</td>
+                <td class="px-4 py-3 text-right text-[#059669] font-medium">
+                  S/ {{ fila.comisionGenerada | number:'1.2-2' }}
+                </td>
+                <td class="px-4 py-3 text-center">
+                  <span [class]="getBadgeClass(fila.pctAlcanceAgente)"
+                        class="px-2.5 py-0.5 rounded-full text-[12px] font-medium">
+                    {{ fila.pctAlcanceAgente ?? 0 | number:'1.1-1' }}%
+                  </span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Totales -->
+      <div class="border-t-2 border-[#e8e8e8] bg-[#f9f9f9] px-4 py-3 flex gap-8 text-[13px]">
+        <span class="text-[#888]">
+          Total ventas: <strong class="text-[#0d0f14]">{{ totalVentas }}</strong>
+        </span>
+        <span class="text-[#888]">
+          Monto total: <strong class="text-[#0d0f14]">S/ {{ totalMonto | number:'1.2-2' }}</strong>
+        </span>
+        <span class="text-[#888]">
+          Comisión total: <strong class="text-[#059669]">S/ {{ totalComision | number:'1.2-2' }}</strong>
+        </span>
+      </div>
+    </div>
+  }
+
+  <!-- Sin resultados -->
+  @if (!cargandoReporte && campanaSeleccionada && filas.length === 0 && !error) {
+    <div class="flex flex-col items-center justify-center py-16 text-[#aaa]">
+      <p class="text-[14px]">No hay datos para esta campaña.</p>
+    </div>
+  }
+
+</div>
+}

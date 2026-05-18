@@ -219,5 +219,34 @@ export class Clientes implements OnInit {
     const ctrl = this.clienteForm.get(field);
     return !!(ctrl && ctrl.invalid && ctrl.touched);
   }
+  exportarExcel(): void {
+    this.errorMsg = '';
+    
+    this.clientesService.descargarReporteExcel().subscribe({
+      next: (blob: Blob) => {
+        // Generar URL del archivo binario recibido
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        
+        // Formato del nombre: reporte_clientes_YYYYMMDD.xlsx
+        const fecha = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+        a.download = `reporte_clientes_${fecha}.xlsx`;
+        
+        // Trigger de click físico simulado para iniciar descarga
+        document.body.appendChild(a);
+        a.click();
+        
+        // Limpieza del árbol DOM
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => {
+        console.error('Error bajando el reporte:', err);
+        this.errorMsg = 'Ocurrió un error al intentar generar el archivo Excel.';
+        this.cdr.detectChanges();
+      }
+    });
+  }
 }
  

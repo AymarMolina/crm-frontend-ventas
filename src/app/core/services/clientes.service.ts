@@ -48,5 +48,10 @@ export class ClientesService {
   crearCliente(cliente: Partial<Cliente>): Observable<Cliente> {
     return this.http.post<Cliente>(this.base, cliente);
   }
+  descargarReporteExcel(): Observable<Blob> {
+    return this.http.get(`${environment.apiUrl}/api/reporte/excel`, {
+      responseType: 'blob'
+    });
+  }
 
 }

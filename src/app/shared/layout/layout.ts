@@ -40,10 +40,13 @@ const MENUS: Record<string, NavItem[]> = {
     { label: 'Dashboard',          route: '/gerente/dashboard',         icon: ICONS.dashboard  },
     { label: 'Mis Ventas',         route: '/gerente/ventas',            icon: ICONS.ventas     },
     { label: 'Asignar Supervisor', route: '/gerente/asignar-supervisor',icon: ICONS.supervisor },
+    { label: 'Objetivos Supervisor',route: '/gerente/asignar-objetivo', icon: ICONS.supervisor },
     { label: 'Crear Campaña',      route: '/gerente/crear-campana',     icon: ICONS.campana    },
     { label: 'Clientes',           route: '/gerente/clientes',          icon: ICONS.clientes   },
     { label: 'Gestión Usuarios',   route: '/gerente/gestion-usuarios',  icon: ICONS.usuarios   },
-    { label: 'Reporte',            route: '/gerente/generar-reporte',   icon: ICONS.reporte    },
+    { label: 'Reportes',           route: '/gerente/reporte-asesores',   icon: ICONS.reporte    },
+    { label: 'Reporte Supervisor',           route: '/gerente/reporte-supervisor',   icon: ICONS.reporte    },
+    
   ],
   BACK_OFFICE: [
     { label: 'Mis Ventas',route: '/backoffice/ventas',          icon: ICONS.ventas    },

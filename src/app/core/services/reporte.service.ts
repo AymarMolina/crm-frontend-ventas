@@ -66,4 +66,12 @@ export class ReporteService {
     a.click();
     window.URL.revokeObjectURL(url);
   }
+
+  descargarReporteAsesores(filtro: FiltroReporte): Observable<Blob> {
+    const params = this.buildParams(filtro);
+    return this.http.get(`${this.base}/asesores/excel`, {
+      params,
+      responseType: 'blob',
+    });
+  }
 }

@@ -35,7 +35,10 @@ export class ObjetivoService {
   private readonly API  = `${environment.apiUrl}/api`;
 
   constructor(private http: HttpClient) {}
-
+  // En tu archivo objetivo.service.ts
+  getUsuario(id: string): Observable<any> {
+    return this.http.get<any>(`${this.API}/${id}`);
+  }
   getMiEquipo(): Observable<AgenteEquipo[]> {
     return this.http.get<AgenteEquipo[]>(`${this.API}/usuarios/mi-equipo`);
   }
@@ -54,7 +57,9 @@ export class ObjetivoService {
       })
     );
   }
-
+  getSupervisores(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.API}/usuarios/supervisores`);
+  }
   actualizarObjetivo(id: number, data: CrearObjetivoRequest): Observable<ObjetivoResponse> {
     return this.http.put<ObjetivoResponse>(
       `${this.API}/objetivos/${id}`, data

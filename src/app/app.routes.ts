@@ -53,8 +53,8 @@ export const routes: Routes = [
             loadComponent: () => import('./pages/asesor/alerta/alerta').then(m => m.Alerta)
           },
           {
-            path: 'generar-reporte',
-            loadComponent: () => import('./shared/components/generar-reporte/generar-reporte').then(m => m.GenerarReporte)
+            path: 'reporte-asesores',
+            loadComponent: () => import('./shared/components/reporte-asesores/reporte-asesores').then(m => m.ReporteAsesores)
           },
         ]
       },
@@ -86,8 +86,8 @@ export const routes: Routes = [
             loadComponent: () => import('./pages/supervisor/asignar-objetivo/asignar-objetivo').then(m => m.AsignarObjetivo)
           },
           {
-            path: 'generar-reporte',
-            loadComponent: () => import('./shared/components/generar-reporte/generar-reporte').then(m => m.GenerarReporte)
+            path: 'reporte-asesores',
+            loadComponent: () => import('./shared/components/reporte-asesores/reporte-asesores').then(m => m.ReporteAsesores)
           },
         ]
       },

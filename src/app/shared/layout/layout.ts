@@ -26,7 +26,7 @@ const MENUS: Record<string, NavItem[]> = {
     { label: 'Clientes',    route: '/asesor/clientes',        icon: ICONS.clientes  },
     { label: 'Seguimiento', route: '/asesor/seguimiento',     icon: ICONS.seguimien },
     { label: 'Alertas',     route: '/asesor/alertas',         icon: ICONS.alertas   },
-    { label: 'Reporte',     route: '/asesor/generar-reporte', icon: ICONS.reporte   },
+    { label: 'Reporte',     route: '/asesor/reporte-asesores', icon: ICONS.reporte   },
   ],
   SUPERVISOR: [
     { label: 'Mi Equipo',         route: '/supervisor/supervisor-equipo', icon: ICONS.equipo    },
@@ -34,7 +34,7 @@ const MENUS: Record<string, NavItem[]> = {
     { label: 'Mis Ventas',        route: '/supervisor/ventas',            icon: ICONS.ventas    },
     { label: 'Asignar Objetivos', route: '/supervisor/asignar-objetivo',  icon: ICONS.objetivo  },
     { label: 'Clientes',          route: '/supervisor/clientes',          icon: ICONS.clientes  },
-    { label: 'Reporte',           route: '/supervisor/generar-reporte',   icon: ICONS.reporte   },
+    { label: 'Reporte',           route: '/supervisor/reporte-asesores',   icon: ICONS.reporte   },
   ],
   GERENTE: [
     { label: 'Dashboard',          route: '/gerente/dashboard',         icon: ICONS.dashboard  },
